@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+
+
+<html>
+
+<head>
+<title>W3.CSS</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="./templates/w3.css">
+<script type="text/javascript" src="includes/jquery-1.11.3.min.js" ></script>
+
+</head>
+<body>
+
+<nav class="w3-sidenav w3-white w3-card-2" style="display:none">
+  <a href="javascript:void(0)" 
+  onclick="w3_close()"
+  class="w3-closenav w3-large w3-xxlarge w3-center">&times;</a>
+  <a href="#a0" class="w3-center">即時訂單資訊</a>		
+  <br>
+  <a href="#a1" class="w3-center">報表產生</a>		
+  <br>
+  <a href="#a2" class="w3-center">菜單更新</a>		
+  <br>
+  <a href="/accounts/logout/" class="w3-center">登出</a>
+</nav>
+
+<div id="main">
+    <header class="w3-container w3-teal">
+      <span class="w3-opennav w3-xlarge" onclick="w3_open()">&#9776;</span>
+      <h1><center>早餐店後台管理系統</center></h1>
+    </header>
+
+
+    <div id="a0" class="w3-container">
+        <h3><center>即時訂單資訊</center></h3>
+    <table class="w3-table w3-bordered w3-striped w3-border w3-hoverable" id="allorders">
+        <tr>
+		<td>狀態</td>
+		<td>桌號</td>
+		<td>人數</td>
+		<td>總價錢</td>
+		<td>操作</td>
+        </tr>
+	
+	<tr onClick="toggle_ordershow(1)" id="order_title_1"> <!---- order title (with id 1)   ---->
+		<td>已全數出餐</td>
+		<td>#12</td>
+		<td>3</td>
+		<td>$160</td>
+		<td>
+			<input type="button" value="單子總結" class="button_viewsum" order_id="1">
+			<input type="button" value="計算小單價格" class="button_calshare" order_id="1">	
+			<input type="button" value="已做完" class="button_done" order_id="1">
+		</td>
+        </tr>
+	<tr id="order_detail_1"> 
+	    <td colspan=5>
+		<!--- viewsummary ---->
+		<table class="w3-table w3-bordered w3-striped w3-border w3-hoverable viewsummary">
+			<tr style="background-color:#AEF26D;"><td>漢堡</td><td>加起司</td><td>$50</td><td>x1</td><td>已出餐</td>
+				
+			</tr>
+			<tr style="background-color:#FF5640"><td>沙拉</td><td>加起司</td><td>$70</td><td>x1</td><td>等待中(從下單至今5分鐘)</td>
+				
+			</tr>
+			<tr style="background-color:#FFFA73;"><td>豆漿</td><td>溫,無糖</td><td>$20</td><td>x3</td><td>正在做</td>
+				
+			</tr>
+		</table>
+		<!--- viewshare ---->
+		<table class="w3-table w3-bordered w3-striped w3-border w3-hoverable viewshare">
+		<tr><td class="col1" >$70</td>
+			<td>
+			<table class="w3-table w3-bordered w3-striped w3-border w3-hoverable">
+				<tr style="background-color:#AEF26D;"><td>漢堡</td><td>加起司</td><td>$50</td><td>x1</td></tr>
+				<tr style="background-color:#AEF26D;"><td>豆漿</td><td>溫,無糖</td><td>$20</td><td>x1</td></tr>
+			</table>
+			</td>
+		</tr>
+		<tr><td class="col1">$90</td>
+			<td>
+			<table class="w3-table w3-bordered w3-striped w3-border w3-hoverable">
+				<tr style="background-color:#FF5640"><td>沙拉</td><td>加起司</td><td>$70</td><td>x1</td></tr>
+				<tr style="background-color:#FFFA73;"><td>豆漿</td><td>溫,無糖</td><td>$20</td><td>x1</td></tr>
+			</table>
+			</td>
+		</tr>		
+		<tr><td class="col1">$20</td>
+			<td>
+			<table class="w3-table w3-bordered w3-striped w3-border w3-hoverable">
+				<tr style="background-color:#AEF26D;"><td>豆漿</td><td>溫,無糖</td><td>$20</td><td>x1</td></tr>
+			</table>
+			</td>
+		</tr>		
+		</table>
+            </td>
+	</tr>
+
+	
+    </table>
+    </div>
+
+    <div id="a1" class="w3-container">
+        <h3><center>報表產生</center></h3>
+    </div>
+    
+    <div id="a2" class="w3-container">
+        <h3><center>菜單更新</center></h3>
+        <br>
+        <br>
+        <center>
+            <form method="post" action="upload.php" enctype="multipart/form-data">
+                <input type="file" name="filename" id="filename">
+                <input type="submit" value="上傳" name="submit" id="submit">
+            </form>
+        </center>
+    </div>
+
+    <footer class="w3-container w3-teal">
+      <p></p>
+    </footer>
+
+</div>
+      
+<script>
+
+//--------單子顯示相關的函式------------------------------
+//
+//	ordershow 顯示整張單子，包含viewsummary跟viewshare
+//	viewsummary 單子總結
+//	viewshare 以小單為單位顯示
+//
+//--------------------------------------------------------
+
+function toggle_ordershow( id ){
+	order_filter = "#order_detail_"+id;
+	$(order_filter).toggle();
+}
+
+function show_ordershow( id ){
+	order_filter = "#order_detail_"+id;
+	$(order_filter).show();
+}
+function toggle_viewsummary( id ){
+	summary_filter = "#order_detail_"+id+" .viewsummary";
+	$(summary_filter).toggle();
+}
+
+
+function show_viewsummary( id ){
+	summary_filter = "#order_detail_"+id+" .viewsummary";
+	$(summary_filter).show();
+}
+
+function show_viewshare( id ){
+	shareprice_filter = "#order_detail_"+id+" .viewshare";
+	$(shareprice_filter).show();
+	
+	shareprice_filter = "#order_detail_"+id+" .col1";
+	$(shareprice_filter).show();	
+}
+
+function hide_viewsummary( id ){
+	summary_filter = "#order_detail_"+id+" .viewsummary";
+	$(summary_filter).hide();
+	shareprice_filter = "#order_detail_"+id+" .col1";
+	$(shareprice_filter).hide();	
+}
+
+function hide_viewshare( id ){
+	shareprice_filter = "#order_detail_"+id+" .viewshare";
+	$(shareprice_filter).hide();
+}
+
+
+//-------------------------------單子的顯示設定---------------------------------->
+$('.viewshare').hide();
+$('.button_calshare').click(function(e){
+	//alert();
+	show_ordershow( $(this).attr('order_id') );
+	hide_viewsummary($(this).attr('order_id'));
+	show_viewshare($(this).attr('order_id'));
+	e.stopPropagation();
+});
+
+//toggle_viewsummary
+$('.button_viewsum').click(function(e){
+	//alert();
+	show_ordershow( $(this).attr('order_id') );
+	hide_viewshare($(this).attr('order_id'));
+	show_viewsummary($(this).attr('order_id'));
+	e.stopPropagation();
+});
+
+
+//w3_open();
+function w3_open() {
+  document.getElementById("main").style.marginLeft = "25%"
+  document.getElementsByClassName("w3-sidenav")[0].style.width ="25%";
+  document.getElementsByClassName("w3-sidenav")[0].style.display = "block";
+  document.getElementsByClassName("w3-opennav")[0].style.display = 'none';
+}
+function w3_close() {
+  document.getElementById("main").style.marginLeft = "0%";
+  document.getElementsByClassName("w3-sidenav")[0].style.display = "none";
+  document.getElementsByClassName("w3-opennav")[0].style.display = "inline-block";
+}
+
+</script>
+
+<!---  {{series.main.ai.name}} ---->
+<p> </p>
+</body>
+</html>

@@ -1,0 +1,60 @@
+.dateRangePicker {
+  position: relative;
+  width: 400px;
+  left: 50%;
+  margin-left: -200px;
+}
+
+.report {
+  display: inline-block;
+  width: 50%;
+  margin-top: 10px;
+  margin-bottom: 5px;
+  padding-left: 150px;
+  float: left;
+}
+
+.chart {
+  border-radius: 5px;
+}
+
+.orders_report {
+  position: relative;
+  width: 500px;
+  top: 10px;
+  left: 50%;
+  margin-left: -250px;
+}
+
+.bar {
+  display: inline-block;
+  margin-left: 2px;
+  margin-right: 3px;
+  width: 45px;
+  background-color: red;
+  text-align: center;
+  vertical-align: bottom;
+}
+
+.bar_name {
+  display: inline-block;
+  margin-left: 2px;
+  margin-right: 3px;
+  width: 45px;
+  text-align: center;
+}
+
+.menu_row {
+  position: relative;
+  width: 400px;
+  height: 30px;
+  margin: 0px auto;
+}
+
+.menu_item {
+  position: relative;
+  width: 100px;
+  display: inline-block;
+  vertical-align: middle;
+  text-align: center;
+}

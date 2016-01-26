@@ -1,0 +1,400 @@
+<!DOCTYPE html>
+
+
+<html>
+
+<head>
+<title>W3.CSS</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="./templates/w3.css">
+<script type="text/javascript" src="includes/jquery-1.11.3.min.js" ></script>
+
+<script>
+function toggle_ordershow( id ){
+	order_filter = "#oh"+id;
+	$(order_filter).toggle();
+}
+
+function show_ordershow( id ){
+	order_filter = "#oh"+id;
+	$(order_filter).show();
+}
+function toggle_viewsummary( id ){
+	summary_filter = ".viewsummary";
+	$(summary_filter).toggle();
+}
+
+function toggle_sharepriceshow( id ){
+	shareprice_filter = "#oh"+id+" .col1";
+	$(shareprice_filter).toggle();
+}
+
+function show_viewsummary( id ){
+	summary_filter = ".viewsummary";
+	$(summary_filter).show();
+}
+
+function show_viewshare( id ){
+	shareprice_filter = ".viewshare";
+	$(shareprice_filter).show();
+	
+	shareprice_filter = "#oh"+id+" .col1";
+	$(shareprice_filter).show();	
+}
+
+function hide_viewsummary( id ){
+	summary_filter = ".viewsummary";
+	$(summary_filter).hide();
+	shareprice_filter = "#oh"+id+" .col1";
+	$(shareprice_filter).hide();	
+}
+
+function hide_viewshare( id ){
+	shareprice_filter = ".viewshare";
+	$(shareprice_filter).hide();
+}
+
+
+
+showUser();
+function showUser() {
+    
+    if (window.XMLHttpRequest) {
+        // code for IE7+, Firefox, Chrome, Opera, Safari
+        xmlhttp = new XMLHttpRequest();
+    } else {
+        // code for IE6, IE5
+        xmlhttp = new ActiveXObject("Microsoft.XMLHTTP");
+    }
+    xmlhttp.onreadystatechange = function() {
+        if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
+              alert(xmlhttp.responseText);
+//                document.getElementById("txtHint").innerHTML = xmlhttp.responseText;
+        }
+    };
+    xmlhttp.open("POST","ajax.php",true);
+    
+    //xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+    xmlhttp.send();
+    
+}
+</script>
+
+</head>
+<body>
+
+<nav class="w3-sidenav w3-white w3-card-2" style="display:none">
+  <a href="javascript:void(0)" 
+  onclick="w3_close()"
+  class="w3-closenav w3-large w3-xxlarge w3-center">&times;</a>
+  <a href="#a0" class="w3-center">即時訂單資訊</a>		
+  <br>
+  <a href="#a1" class="w3-center">報表產生</a>		
+  <br>
+  <a href="#a2" class="w3-center">菜單更新</a>		
+  <br>
+  <a href="/accounts/logout/" class="w3-center">登出</a>
+</nav>
+
+<div id="main">
+
+    <header class="w3-container w3-teal">
+      <span class="w3-opennav w3-xlarge" onclick="w3_open()">&#9776;</span>
+      <h1><center>早餐店後台管理系統</center></h1>
+    </header>
+
+
+    <div id="a0" class="w3-container">
+        <h3><center>即時訂單資訊</center></h3>
+    <!--<input type="button" value="addrow" onclick="add_new_data()"> -->
+<!----------------------------------------------------------------------------
+	<div class="table">
+		<div class="row"> 
+			<div class="cell"> test1</div>  <div class="cell"> test2</div>
+		</div>
+		<div class="row"> 
+			<div class="cell"> test1</div>  <div class="cell"> test2</div>
+		</div>
+		<div class="row"> 
+			<div class="cell"> test1</div>  <div class="cell"> test2</div>
+		</div>
+	
+	
+	</div>----------->
+<!-------------------------------------------------------------------------------------->
+    <table class="w3-table w3-bordered w3-striped w3-border w3-hoverable" id="mytable">
+        <tr>
+            <td class="td01">桌號</td>
+            <td class="td01">人數</td>
+            <td class="td01">總價錢</td>
+            <td class="td01"></td>
+        </tr>
+	
+
+	<tr onClick="toggle_ordershow(1)" id="os1"> <!---- order show (with id 1)   ---->
+            <td>
+		#12
+            </td>
+            <td>
+		3
+            </td>
+            <td>
+		$160
+            </td>
+            <td>
+		<input type="button" value="單子總結" class="button_viewsum" order_id="1">
+		<input type="button" value="計算小單價格" class="button_calshare" order_id="1">	    
+            </td>
+        </tr>
+	<tr id="oh1"> 
+	    <td colspan=4>
+		<!----->
+		<table class="w3-table w3-bordered w3-striped w3-border w3-hoverable viewsummary">
+			<tr><td>漢堡</td><td>加起司</td><td>$50</td><td>x1</td></tr>
+			<tr><td>沙拉</td><td>加起司</td><td>$70</td><td>x1</td></tr>
+			<tr><td>豆漿</td><td>溫,無糖</td><td>$20</td><td>x3</td></tr>
+		</table>
+		<!----->
+		<table class="w3-table w3-bordered w3-striped w3-border w3-hoverable viewshare">
+		<tr><td class="col1" >$70</td>
+			<td>
+			<table class="w3-table w3-bordered w3-striped w3-border w3-hoverable">
+				<tr><td>漢堡</td><td>加起司</td><td>$50</td><td>x1</td></tr>
+				<tr><td>豆漿</td><td>溫,無糖</td><td>$20</td><td>x1</td></tr>
+			</table>
+			</td>
+		</tr>
+		<tr><td class="col1">$90</td>
+			<td>
+			<table class="w3-table w3-bordered w3-striped w3-border w3-hoverable">
+				<tr><td>沙拉</td><td>加起司</td><td>$70</td><td>x1</td></tr>
+				<tr><td>豆漿</td><td>溫,無糖</td><td>$20</td><td>x1</td></tr>
+			</table>
+			</td>
+		</tr>		
+		<tr><td class="col1">$20</td>
+			<td>
+			<table class="w3-table w3-bordered w3-striped w3-border w3-hoverable">
+				<tr><td>豆漿</td><td>溫,無糖</td><td>$20</td><td>x1</td></tr>
+			</table>
+			</td>
+		</tr>		
+		</table>
+            </td>
+	</tr>
+
+<!------ second for demo ---->
+	<tr onClick="toggle_ordershow(2)" id="os2"> <!---- order show (with id 1)   ---->
+            <td>
+		#15
+            </td>
+            <td>
+		2
+            </td>
+            <td>
+		$160
+            </td>
+            <td>
+		<input type="button" value="計算小單價格" class="calshare" order_id="2">
+            </td>
+        </tr>
+	<tr id="oh2" style=""> 
+	    <td colspan=4>
+		<table class="w3-table w3-bordered w3-striped w3-border w3-hoverable">
+		<!-- <tr><th>小單價錢</th> <th>細項</th> </tr> -->
+		<tr><td class="col1">$70</td>
+			<td>
+			<table class="w3-table w3-bordered w3-striped w3-border w3-hoverable">
+				<!-- <tr><th>項目</th><th>加點</th><th>備註</th><th>價錢</th></tr> -->
+				<tr><td>豬肉</td><td>加起司</td><td>$50</td><td>x1</td></tr>
+				<tr><td>豆漿</td><td>溫,無糖</td><td>$20</td><td>x1</td></tr>
+			</table>
+			</td>
+		</tr>
+		<tr><td class="col1">$90</td>
+			<td>
+			<table class="w3-table w3-bordered w3-striped w3-border w3-hoverable">
+				<tr><td>沙拉</td><td>加起司</td><td>$70</td><td>x1</td></tr>
+				<tr><td>豆漿</td><td>溫,無糖</td><td>$20</td><td>x1</td></tr>
+			</table>
+			</td>
+		</tr>		
+		</table>
+            </td>
+	</tr>
+
+
+	
+			{% for ai in mainitem.ais %}
+				
+			
+			{% endfor %}
+
+			{% for ro in mainitem.ros %}
+			
+			
+			{% endfor %}
+
+			
+
+        
+	<!--------------------------------------->
+{% for orders in all_orders %}
+	{% for share in orders.shares %}
+		{%for mainitem in share.items%}
+	<tr>
+            <td>
+		{{mainitem.name}}
+            </td>
+            <td>
+            <input name="content[]" type="text" size="12">
+            </td>
+            <td>
+            <input name="inof[]" type="text" size="12">
+            </td>
+            <td>
+                <input  type="button" value="修改"  size="12">
+                <input  type="button" value="取消"  size="12">
+            </td>
+        </tr>
+		{% endfor %}
+	{% endfor %}
+{% endfor %}
+	<!---------------------------------------->
+	
+    </table>
+    </div>
+
+    <div id="a1" class="w3-container">
+        <h3><center>報表產生</center></h3>
+    </div>
+    
+    <div id="a2" class="w3-container">
+        <h3><center>菜單更新</center></h3>
+        <br>
+        <br>
+        <center>
+            <form method="post" action="upload.php" enctype="multipart/form-data">
+                <input type="file" name="filename" id="filename">
+                <input type="submit" value="上傳" name="submit" id="submit">
+            </form>
+        </center>
+    </div>
+
+    <footer class="w3-container w3-teal">
+      <p></p>
+    </footer>
+
+</div>
+      
+<script>
+
+function obj_ai(n,p){
+	this.name = n;
+	this.price = p;
+}
+
+function obj_item(main_name, p, s_id, q, ai_array, ro_array){
+	this.main = main_name;
+	this.m_price = p;
+	this.s_id = s_id;
+	this.quantity = q;
+	this.ai = ai_array;
+	this.ro = ro_array;
+}
+
+function obj_order(tn, pn, status, time, share){
+	this.tablenum = tn;
+	this.peoplenum = pn;
+	this.status = status;
+	this.time = time;
+	this.share = share;
+}
+ 
+//var ai_array = [ new obj_ai("add egg", 10), new obj_ai("add cheese", 20) ];
+//alert('test');
+//var ai1 = new obj_ai("add egg", 10);
+//alert(item1.ai[0].name);
+$('.viewshare').hide();
+$('.button_calshare').click(function(e){
+	//alert();
+	show_ordershow( $(this).attr('order_id') );
+	hide_viewsummary($(this).attr('order_id'));
+	show_viewshare($(this).attr('order_id'));
+	e.stopPropagation();
+});
+
+//toggle_viewsummary
+$('.button_viewsum').click(function(e){
+	//alert();
+	show_ordershow( $(this).attr('order_id') );
+	hide_viewshare($(this).attr('order_id'));
+	show_viewsummary($(this).attr('order_id'));
+	e.stopPropagation();
+});
+
+
+w3_open();
+function w3_open() {
+  document.getElementById("main").style.marginLeft = "25%"
+  document.getElementsByClassName("w3-sidenav")[0].style.width ="25%";
+  document.getElementsByClassName("w3-sidenav")[0].style.display = "block";
+  document.getElementsByClassName("w3-opennav")[0].style.display = 'none';
+}
+function w3_close() {
+  document.getElementById("main").style.marginLeft = "0%";
+  document.getElementsByClassName("w3-sidenav")[0].style.display = "none";
+  document.getElementsByClassName("w3-opennav")[0].style.display = "inline-block";
+}
+
+function add_new_data() {
+ var num = document.getElementById("mytable").rows.length;
+ var Tr = document.getElementById("mytable").insertRow(num);
+ Td = Tr.insertCell(Tr.cells.length);
+ Td.innerHTML='<input name="name[]" type="text" size="12">';
+
+ Td = Tr.insertCell(Tr.cells.length);
+ Td.innerHTML='<input name="content[]" type="text" size="12">';
+ 
+ Td = Tr.insertCell(Tr.cells.length);
+ Td.innerHTML='<input name="content[]" type="text" size="12">';
+ 
+ Td = Tr.insertCell(Tr.cells.length);
+ Td.innerHTML='<input  type="button" value="修改"  size="12"> <input  type="button" value="取消"  size="12">';
+}
+
+
+</script>
+     
+<h3> Simple replacement </h3>
+{% for series in all_series %}
+	<li> {{ series.name }} </li>
+	{% for main in series.main %}
+	<i>{{main.name}}</i>
+	{% endfor %}
+{% endfor %}
+
+{% for orders in all_orders %}
+	{% for share in orders.shares %}
+		{%for mainitem in share.items%}
+		
+			{% for ai in mainitem.ais %}
+				
+			
+			{% endfor %}
+
+			{% for ro in mainitem.ros %}
+			
+			
+			{% endfor %}
+
+			
+		{% endfor %}
+	{% endfor %}
+{% endfor %}
+
+
+<!---  {{series.main.ai.name}} ---->
+<p> </p>
+</body>
+</html>
