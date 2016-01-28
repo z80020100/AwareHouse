@@ -22,32 +22,66 @@ function parse() {
 
 //REFRESH REPORT OF THE 10 BEST SALES AND 10 WORST SALES
 function getSalesReport(ret, t1) {
-  var birth_rate = ret[0];
-  var death_rate = ret[1];
+  // var size = 10;
+  // var menu = ret[0];  //THE WHOLE MENU ARRAY
+  // var order_info = ret[1], order_info_size = ret[1].length;
+
+  // console.log(menu);
+  // console.log(order_info);
+
+  // for (var i = 0; i < order_info_size; i++) {
+  //   var sub_menu = order_info[i]['summary_array'];
+  //   var sub_menu_size = sub_menu.length;
+  //   for (var j = 0; j < sub_menu_size; j++) {
+  //     var name = sub_menu[j]['name'];
+  //     menu[name]++;
+  //   }
+  // }
+
+  var best_ten_raw = ret[0] ,best_ten_total = 0, best_ten = [];
+  var worst_ten_raw = ret[1], worst_ten_total = 0, worst_ten = [];
+  console.log(best_ten_raw);
+  console.log(best_ten_raw['台灣T']);
+  console.log(worst_ten_raw);
+
+  $.each(best_ten_raw, function(key, value) {
+    best_ten_total += value;
+    var tmp_object = {key:key, value:value};
+    best_ten.push(tmp_object);
+  });
+  $.each(worst_ten_raw, function(key, value) {
+    worst_ten_total += value;
+    var tmp_object = {key:key, value:value};
+    worst_ten.push(tmp_object)
+  });
+  console.log(best_ten_total);
+  console.log(worst_ten_total);
+  console.log(best_ten);
+  console.log(worst_ten);
   $('.chart').remove();
 
   var div_data_bind = d3.select("#report1").selectAll("div")
-  .data(birth_rate).enter().append("div").attr("class", "chart");
+  .data(best_ten).enter().append("div").attr("class", "chart");
   div_data_bind.text(function(a,i) {
-    return (i+1) + " / " + a[0];
+    return (i+1) + " / " + a.key;
   });
   div_data_bind.style("height", "20px");
   div_data_bind.style("background", "#ff8bb6");
   div_data_bind.style("margin", "5px");
   div_data_bind.style("width", function(d,i) {
-    return (d[1] * 10)+"px";
+    return (d.value / best_ten_total * 500)+"px";
   });
 
   var div_data_bind = d3.select("#report2").selectAll("div")
-  .data(death_rate).enter().append("div").attr("class", "chart");
+  .data(worst_ten).enter().append("div").attr("class", "chart");
   div_data_bind.text(function(a,i) {
-    return (i+1) + " / " + a[0];
+    return (i+1) + " / " + a.key;
   });
   div_data_bind.style("height", "20px");
   div_data_bind.style("background", "#ff8bb6");
   div_data_bind.style("margin", "5px");
   div_data_bind.style("width", function(d,i) {
-    return (d[1] * 10)+"px";
+    return (d.value / worst_ten_total * 500)+"px";
   });
 }
 
