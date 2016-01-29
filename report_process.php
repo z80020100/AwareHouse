@@ -1,8 +1,64 @@
 <?php
 require_once('includes/general.php');
 
-function getOrderInfo($start_time, $end_time) {
-    $sql = "SELECT * FROM `orders` WHERE `o_time` > '".$start_time."' AND `o_time` < '".$end_time."' AND `status` != '".$GLOBALS['STATUS'][0]."' ";
+function itemCompare($a,$b){
+    if ($a['s_id'] > $b['s_id'])
+        return 1;
+    else if ($a['s_id'] < $b['s_id'])
+        return -1;
+
+    if ($a['m_id'] > $b['m_id'])
+        return 1;
+    else if ($a['m_id'] < $b['m_id'])
+        return -1;
+
+    sort($a['RO_array']);
+    sort($b['RO_array']);
+    if ($a['RO_array'] > $b['RO_array'])
+        return 1;
+    else if ($a['RO_array'] < $b['RO_array'])
+        return -1;
+
+    sort($a['AI_array']);
+    sort($b['AI_array']);
+    if ($a['AI_array'] > $b['AI_array'])
+        return 1;
+    else if ($a['AI_array'] < $b['AI_array'])
+        return -1;
+
+    return 0;
+}
+
+function makeSummary($share_array){
+    $all_items = array();
+    foreach ($share_array as $share){
+        $all_items = array_merge($all_items, $share['items_array']);
+    }
+    usort($all_items, "itemCompare");
+
+    $i = -1;
+    $sum_array = array();
+    foreach($all_items as $item){
+        if($i == -1){
+            array_push($sum_array, $item);
+            $i++;
+        }
+        else{
+            if( itemCompare($sum_array[$i], $item) == 0){
+                $sum_array[$i]['quantity'] += $item['quantity'];
+            }
+            else{
+                array_push($sum_array, $item);
+                $i++;
+            }
+        }
+    }
+
+    return $sum_array;
+
+}
+function getOrderInfo($db, $start_time, $end_time) {
+    $sql = "SELECT * FROM `orders` WHERE `o_time` >= '".$start_time."' AND `o_time` <= '".$end_time."' AND `status` != '".$GLOBALS['STATUS'][0]."' ";
     $result = $db->query($sql);
     $order_info = array();
     while($order = $db->fetch_array($result)){
@@ -86,14 +142,12 @@ function getOrderInfo($start_time, $end_time) {
     return $order_info;
 }
 
-function getMenu() {
+function getMenu($db) {
     $sql = "SELECT * FROM `main`";
     $result = $db->query($sql);
     $menu = array();
     while ($menu_item = $db->fetch_array($result)) {
-        $item = array();
-        $item[$menu_item['name']] = 0;
-        array_push($menu, $item);
+        $menu[$menu_item['name']] = 0;
     }
 
     return $menu;
@@ -106,17 +160,17 @@ $end_time = $_REQUEST['request']['time'][1];
 switch ($type) {
   case "sales":
     $sales = array();
-    $sales[0] = array('台灣T' => 17.73, '美國A' => 29.95, 'K韓國'=> 32.14, 'J日本' => 17.68);
-    $sales[1] = array('V越南' => 24.26, 'A阿魯巴' => 17.48, '關島K' => 10.01, '澳門A' => 8.84);
+    // $sales[0] = array('台灣T' => 17.73, '美國A' => 29.95, 'K韓國'=> 32.14, 'J日本' => 17.68);
+    // $sales[1] = array('V越南' => 24.26, 'A阿魯巴' => 17.48, '關島K' => 10.01, '澳門A' => 8.84);
 
     // //GET THE order_info FROM DATABASE
-    // $order_info = getOrderInfo($start_time, $end_time);
+    $order_info = getOrderInfo($db, $start_time, $end_time);
 
     // //GET THE WHOLE menu FROM THE DATABASE
-    // $menu = getMenu();
+    $menu = getMenu($db);
 
-    // $sales[0] = $menu;
-    // $sales[1] = $order_info;
+    $sales[0] = $menu;
+    $sales[1] = $order_info;
 
     echo json_encode($sales, JSON_UNESCAPED_UNICODE);
     break;
@@ -125,19 +179,38 @@ switch ($type) {
     $time = array();
     $shift_start = 4;
     $shift_end = 13;
-    for ($i = 0; $i < 30; $i++) {
-      array_push($time, rand($shift_start, $shift_end));
+    // for ($i = 0; $i < 30; $i++) {
+    //   array_push($time, rand($shift_start, $shift_end));
+    // }
+    $orders = getOrderInfo($db, $start_time, $end_time);
+    $orders_size = count($orders);
+    for ($i = 0; $i < $orders_size; $i++) {
+        $t_1 = explode(" ", $orders[$i]['o_time']);
+        $t_2 = explode(":", $t_1[1]);
+        for ($j = 0; $j < count($orders[$i]['share_array']); $j++) {
+            array_push($time, $t_2[0]);
+        }
     }
 
     echo json_encode($time, JSON_UNESCAPED_UNICODE);
     break;
 
   case "menu":
-    $name = array('apple', 'banana', 'cake', 'dessert');
-    $size = count($name);
+    $menu = getMenu($db);
+    $orders = getOrderInfo($db, $start_time, $end_time);
+    $orders_size = count($orders);
+    for ($i = 0; $i < $orders_size; $i++) {
+        $item_array = $orders[$i]['summary_array'];
+        $item_array_size = count($item_array);
+        for ($j = 0; $j < $item_array_size; $j++) {
+            $menu[$item_array[$j]['name']]++;
+        }
+    }
+
     $ret = array();
-    for ($i = 0; $i < 10; $i++) {
-      array_push($ret, $name[rand(0, $size-1)]);
+    foreach ($menu as $key => $value) {
+        $tmp = array('name' => $key, 'quantity' => $value);
+        array_push($ret, $tmp);
     }
 
     echo json_encode($ret, JSON_UNESCAPED_UNICODE);

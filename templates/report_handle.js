@@ -22,78 +22,123 @@ function parse() {
 
 //REFRESH REPORT OF THE 10 BEST SALES AND 10 WORST SALES
 function getSalesReport(ret, t1) {
-  // var size = 10;
-  // var menu = ret[0];  //THE WHOLE MENU ARRAY
-  // var order_info = ret[1], order_info_size = ret[1].length;
+  var sort_size = 10;
+  var menu_raw = ret[0];  //THE WHOLE MENU ARRAY
+  var order_info = ret[1], order_info_size = ret[1].length;
 
-  // console.log(menu);
-  // console.log(order_info);
+  console.log(menu_raw);
+  console.log(order_info);
 
-  // for (var i = 0; i < order_info_size; i++) {
-  //   var sub_menu = order_info[i]['summary_array'];
-  //   var sub_menu_size = sub_menu.length;
-  //   for (var j = 0; j < sub_menu_size; j++) {
-  //     var name = sub_menu[j]['name'];
-  //     menu[name]++;
-  //   }
-  // }
+  for (var i = 0; i < order_info_size; i++) { //LOOP ALL THE ORDERS
+    var item_array = order_info[i]['summary_array'];
+    var item_array_size = item_array.length;
+    for (var j = 0; j < item_array_size; j++) { //LOOP ALL ITEMS IN 1 ORDER
+      var name = item_array[j]['name'];
+      menu_raw[name]++;
+    }
+  }
 
-  var best_ten_raw = ret[0] ,best_ten_total = 0, best_ten = [];
-  var worst_ten_raw = ret[1], worst_ten_total = 0, worst_ten = [];
-  console.log(best_ten_raw);
-  console.log(best_ten_raw['台灣T']);
-  console.log(worst_ten_raw);
+  var menu = [];
+  for (var key in menu_raw) {
+    //console.log(key, menu_raw[key]);
+    var tmp = {name: key, quantity: menu_raw[key]};
+    menu.push(tmp);
+  }
 
-  $.each(best_ten_raw, function(key, value) {
-    best_ten_total += value;
-    var tmp_object = {key:key, value:value};
-    best_ten.push(tmp_object);
+  //ascending order
+  menu.sort(function(a, b) {
+    if (a.quantity > b.quantity) return 1;
+    else if (a.quantity < b.quantity) return -1;
+    return 0;
   });
-  $.each(worst_ten_raw, function(key, value) {
-    worst_ten_total += value;
-    var tmp_object = {key:key, value:value};
-    worst_ten.push(tmp_object)
-  });
-  console.log(best_ten_total);
-  console.log(worst_ten_total);
-  console.log(best_ten);
-  console.log(worst_ten);
+  var menu_size = menu.length;
+  console.log(menu);
+
+  var best_ten = [], best_ten_total = 0;
+  var worst_ten = [], worst_ten_total = 0;
+  var vacant = [];
+  //for best 10
+  for (var i = 0; i < sort_size; i++) {
+    if (menu_size-1-i >= 0 && menu[menu_size-1-i].quantity)
+      best_ten.push(menu[menu_size-1-i]);
+  }
+  for (var i = 0; i < best_ten.length; i++)
+    best_ten_total += best_ten[i].quantity;
+  console.log(best_ten, best_ten_total);
+
+  //for worst 10
+  for (var i = 0; i < sort_size; i++) {
+    if (i < menu_size && menu[i].quantity)
+      worst_ten.push(menu[i]);
+  }
+  for (var i = 0; i < worst_ten.length; i++)
+    worst_ten_total += worst_ten[i].quantity;
+  console.log(worst_ten, worst_ten_total);
+
+  //for item whose quantity is 0
+  for (var i = 0; i < menu_size && !menu[i].quantity; i++) {
+    vacant.push(menu[i].name);
+  }
+  console.log(vacant);
+  // var best_ten_raw = ret[0] ,best_ten_total = 0, best_ten = [];
+  // var worst_ten_raw = ret[1], worst_ten_total = 0, worst_ten = [];
+  // console.log(best_ten_raw);
+  // console.log(best_ten_raw['台灣T']);
+  // console.log(worst_ten_raw);
+
+  // $.each(best_ten_raw, function(key, value) {
+  //   best_ten_total += value;
+  //   var tmp_object = {key:key, value:value};
+  //   best_ten.push(tmp_object);
+  // });
+  // $.each(worst_ten_raw, function(key, value) {
+  //   worst_ten_total += value;
+  //   var tmp_object = {key:key, value:value};
+  //   worst_ten.push(tmp_object)
+  // });
+  // console.log(best_ten_total);
+  // console.log(worst_ten_total);
+  // console.log(best_ten);
+  // console.log(worst_ten);
   $('.chart').remove();
 
   var div_data_bind = d3.select("#report1").selectAll("div")
   .data(best_ten).enter().append("div").attr("class", "chart");
   div_data_bind.text(function(a,i) {
-    return (i+1) + " / " + a.key;
+    return (i+1) + " / " + a.name;
   });
   div_data_bind.style("height", "20px");
   div_data_bind.style("background", "#ff8bb6");
   div_data_bind.style("margin", "5px");
   div_data_bind.style("width", function(d,i) {
-    return (d.value / best_ten_total * 500)+"px";
+    return (d.quantity / best_ten_total * 500)+"px";
   });
 
   var div_data_bind = d3.select("#report2").selectAll("div")
   .data(worst_ten).enter().append("div").attr("class", "chart");
   div_data_bind.text(function(a,i) {
-    return (i+1) + " / " + a.key;
+    return (i+1) + " / " + a.name;
   });
   div_data_bind.style("height", "20px");
   div_data_bind.style("background", "#ff8bb6");
   div_data_bind.style("margin", "5px");
   div_data_bind.style("width", function(d,i) {
-    return (d.value / worst_ten_total * 500)+"px";
+    return (d.quantity / worst_ten_total * 500)+"px";
   });
+
+  for (var i = 0; i < vacant.length; i++)
+    $('#report3').append('<span class="vacant">'+vacant[i]+'</span>');
 }
 
 function getOrdersReport(ret, t2) {
+  console.log(ret);
   var count = [];
   var shift_start = 4, shift_end = 13, size = shift_end - shift_start + 1;
   for (var i = 0; i < size; i++) count[i] = 0;
-  for (var i = 0; i < 30; i++) {
+  for (var i = 0; i < ret.length; i++) {
     count[ret[i] - shift_start]++;
   }
-  // console.log(count);
-  // console.log(ret);
+  console.log(count);
 
   $('.bar').remove();
   $('.bar_name').remove();
@@ -115,6 +160,7 @@ function getOrdersReport(ret, t2) {
 }
 
 function getMenuReport(ret, t3) {
+  console.log(ret);
   var size = ret.length;
   var row = 4;
   var row_num = Math.floor(size / row);
@@ -125,7 +171,7 @@ function getMenuReport(ret, t3) {
     var tmp_row = "<div class='menu_row'>";
     for (var j = 0; j < row; j++) {
       var tmp = "<div class='menu_item'>";
-      tmp += ret[i*row+j] + "</div>";
+      tmp += ret[i*row+j].name + ' ' + ret[i*row+j].quantity + "</div>";
       tmp_row += tmp;
     }
     tmp_row += "</div>";
@@ -134,7 +180,7 @@ function getMenuReport(ret, t3) {
   var tmp_row = "<div class='menu_row'>";
   for (var i = row*row_num; i < size; i++) {
     var tmp = "<div class='menu_item'>";
-    tmp += ret[i] + "</div>";
+    tmp += ret[i].name + ' ' + ret[i].quantity + "</div>";
     tmp_row += tmp;
   }
   tmp_row += "</div>";
@@ -180,6 +226,11 @@ function getData() {
       alert("Please choose a range of time at Orders");
       return ;
     }
+    var start_time = t2.start + ' 00:00:00';
+    var end_time = t2.end + ' 23:59:59';
+    // console.log(start_time);
+    // console.log(end_time);
+    req['time'] = [start_time, end_time];
   }
   else if (type == "menu") {
     try {
@@ -193,6 +244,11 @@ function getData() {
       alert("Please choose a range of time at Menu");
       return ;
     }
+    var start_time = t3.start + ' 00:00:00';
+    var end_time = t3.end + ' 23:59:59';
+    // console.log(start_time);
+    // console.log(end_time);
+    req['time'] = [start_time, end_time];
   }
   else {
     alert("ERROR for types of ajax");
@@ -212,31 +268,9 @@ function getData() {
       getSalesReport(ret, t1);
     }
     else if (type == "orders") {
-      try {
-        var t2 = JSON.parse($('#datepicker2').val());
-      }
-      catch(e) {
-        var r2 = e instanceof SyntaxError;
-      }
-
-      if (r2) {
-        alert("Please choose a range of time at Orders");
-        return ;
-      }
       getOrdersReport(ret, t2);
     }
     else if (type == "menu") {
-      try {
-        var t3 = JSON.parse($('#datepicker3').val());
-      }
-      catch(e) {
-        var r3 = e instanceof SyntaxError;
-      }
-
-      if (r3) {
-        alert("Please choose a range of time at Menu");
-        return ;
-      }
       getMenuReport(ret, t3);
     }
     else alert("ERROR for types of ajax");
