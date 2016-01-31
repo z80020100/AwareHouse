@@ -3,9 +3,47 @@ $(function() {
   for (i = 1; i <= daterangepickerNum; i++) {
     var datepicker = '#datepicker'+i;
     $(datepicker).daterangepicker({
-      initialText : 'Select period...'
+      initialText : '選擇時段...'
     }, {
       datepickerOptions: {numberOfMonths: 2}
+    }, {
+      presetRanges: [{
+        text: '今天',
+        dateStart: function() {return moment()},
+        dateEnd: function() {return moment()}
+      }, {
+        text: '昨天',
+        dateStart: function() {return moment().add('day', -1)},
+        dateEnd: function() {return moment().add('day', -1)}
+      }, {
+        text: '上星期',
+        dateStart: function() {return moment().add('week', -1).startOf('week')},
+        dateEnd: function() {return moment().add('week', -1).endOf('week')}
+      } , {
+        text: '這個月',
+        dateStart: function() {return moment().startOf('month')},
+        dateEnd: function() {return moment().endOf('month')}
+      } , {
+        text: '上個月',
+        dateStart: function() {return moment().add('month', -1).startOf('month')},
+        dateEnd: function() {return moment().add('month', -1).endOf('month')}
+      } , {
+        text: '今年',
+        dateStart: function() {return moment().startOf('year')},
+        dateEnd: function() {return moment().endOf('year')}
+      } , {
+        text: '去年',
+        dateStart: function() {return moment().add('year', -1).startOf('year')},
+        dateEnd: function() {return moment().add('year', -1).endOf('year')}
+      }]
+    } , {
+      applyButtonText: '選取',
+      clearButtonText: '清除',
+      cancelButtonText: '取消'
+    }, {
+      monthNamesShort: [ "Janeiro", "Fevereiro", "Março", "Abril",
+                   "Maio", "Junho", "Julho", "Agosto", "Setembro",
+                   "Outubro", "Novembro", "Dezembro" ]
     });
   }
 });
@@ -76,10 +114,11 @@ function getSalesReport(ret, t1) {
   console.log(worst_ten, worst_ten_total);
 
   //for item whose quantity is 0
-  for (var i = 0; i < menu_size && !menu[i].quantity; i++) {
-    vacant.push(menu[i].name);
-  }
-  console.log(vacant);
+  // for (var i = 0; i < menu_size && !menu[i].quantity; i++) {
+  //   vacant.push(menu[i].name);
+  // }
+  // console.log(vacant);
+
   // var best_ten_raw = ret[0] ,best_ten_total = 0, best_ten = [];
   // var worst_ten_raw = ret[1], worst_ten_total = 0, worst_ten = [];
   // console.log(best_ten_raw);
@@ -160,6 +199,7 @@ function getOrdersReport(ret, t2) {
 }
 
 function getMenuReport(ret, t3) {
+  $('#total_menu_report > div').remove();
   console.log(ret);
   var size = ret.length;
   var row = 4;
@@ -205,7 +245,7 @@ function getData() {
     }
 
     if (r1) {
-      alert("Please choose a range of time at Sales");
+      alert("請先選取一個時段");
       return ;
     }
     var start_time = t1.start + ' 00:00:00';
@@ -223,7 +263,7 @@ function getData() {
     }
 
     if (r2) {
-      alert("Please choose a range of time at Orders");
+      alert("請先選取一個時段");
       return ;
     }
     var start_time = t2.start + ' 00:00:00';
@@ -241,7 +281,7 @@ function getData() {
     }
 
     if (r3) {
-      alert("Please choose a range of time at Menu");
+      alert("請先選取一個時段");
       return ;
     }
     var start_time = t3.start + ' 00:00:00';
