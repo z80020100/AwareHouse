@@ -28,6 +28,8 @@ else
 
 $db = new Db("localhost", "root" , "Mysqlgavidy9", "bfproj");
 
+$shift_start = 0;
+$shift_end = 23;
 
 
 
