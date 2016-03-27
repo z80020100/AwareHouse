@@ -1,3 +1,4 @@
+//LOAD THE DATE RANGE PICKER
 $(function() {
   var daterangepickerNum = 3;
   for (i = 1; i <= daterangepickerNum; i++) {
@@ -47,10 +48,14 @@ $(function() {
     });
   }
 });
+//End -- LOAD THE DATE RANGE PICKER
+
 
 $('#submitSales').on("click", getData);
 $('#submitOrders').on("click", getData);
 $('#submitMenu').on("click", getData);
+
+$('#graph').css("display", "none");
 
 function parse() {
   var ret = JSON.parse($('#datepicker1').val());
@@ -58,30 +63,91 @@ function parse() {
   alert(ret.end);
 }
 
-//REFRESH REPORT OF THE 10 BEST SALES AND 10 WORST SALES
+
+//REFRESH REPORT OF THE 10 BEST SALES AND 10 WORST SALES ALSO THE GRAPH OF MENU
 function getSalesReport(ret, t1) {
   var sort_size = 10;
-  var menu_raw = ret[0];  //THE WHOLE MENU ARRAY
+  var menu_raw = {};
   var order_info = ret[1], order_info_size = ret[1].length;
+  var all_series = ret[2], all_series_size = ret[2].length;
+  var graph_json = {"name": "價錢", "children": []};
 
-  console.log(menu_raw);
   console.log(order_info);
+  console.log(all_series);
 
+  // CONSTRUCT menu_raw
+  for (var i = 0; i < all_series_size; i++) {
+    var main_of_series = all_series[i].main, main_of_series_size = all_series[i].main.length;
+    // console.log(series, main_of_series, main_of_series_size);
+
+    for (var j = 0; j < main_of_series_size; j++) {
+      // initialize all the menu item quantity and price into zero
+      menu_raw[main_of_series[j].name] = {};
+      menu_raw[main_of_series[j].name]["quantity"] = 0;
+      menu_raw[main_of_series[j].name]["price"] = 0;
+    }
+  }
+
+  // CALCULATE THE quantity AND price OF ALL ITEM IN menu_raw
   for (var i = 0; i < order_info_size; i++) { //LOOP ALL THE ORDERS
     var item_array = order_info[i]['summary_array'];
     var item_array_size = item_array.length;
     for (var j = 0; j < item_array_size; j++) { //LOOP ALL ITEMS IN 1 ORDER
       var name = item_array[j]['name'];
-      menu_raw[name]++;
+      menu_raw[name]["quantity"] += parseInt(item_array[j]["quantity"]);
+
+      menu_raw[name]["price"] += parseInt(item_array[j]["main_price"]);
+      var ro = item_array[j]["RO_array"], ro_size = ro.length;
+      var ai = item_array[j]["AI_array"], ai_size = ai.length;
+      for (var k = 0; k < ro_size; k++) menu_raw[name]["price"] += parseInt(ro[k]["price"]);
+      for (var k = 0; k < ai_size; k++) menu_raw[name]["price"] += parseInt(ai[k]["price"]);
     }
   }
+
+  // UPDATE graph_json
+  for (var i = 0; i < all_series_size; i++) {
+    var series = {"name": all_series[i].name, "children": []};
+    var main_of_series = all_series[i].main, main_of_series_size = all_series[i].main.length;
+
+    var check = 0; // check if there's thing in series
+
+    for (var j = 0; j < main_of_series_size; j++) {
+      //update the data in json
+      var name = main_of_series[j].name;
+
+      var tmp = {};
+      tmp["name"] = name;
+      tmp["quantity"] = menu_raw[name]["quantity"];
+      tmp["price"] = menu_raw[name]["price"];
+      if (tmp["quantity"] == 0) continue;
+
+      series["children"].push(tmp);   //push into the series array
+      check = 1;
+    }
+    if (check == 0) continue;
+    graph_json["children"].push(series);  //push into the json array
+  }
+
+  if (graph_json["children"].length == 0) {
+    var tmp = {};
+    tmp["name"] = ' ';
+    tmp["quantity"] = 0;
+    tmp["price"] = 0;
+
+    graph_json["children"].push(tmp);
+  }
+
+  console.log(graph_json);
+  console.log(menu_raw);
 
   var menu = [];
   for (var key in menu_raw) {
     //console.log(key, menu_raw[key]);
-    var tmp = {name: key, quantity: menu_raw[key]};
+    var tmp = {name: key, quantity: menu_raw[key]["quantity"]};
     menu.push(tmp);
   }
+
+  console.log(menu);
 
   //ascending order
   menu.sort(function(a, b) {
@@ -113,32 +179,6 @@ function getSalesReport(ret, t1) {
     worst_ten_total += worst_ten[i].quantity;
   console.log(worst_ten, worst_ten_total);
 
-  //for item whose quantity is 0
-  // for (var i = 0; i < menu_size && !menu[i].quantity; i++) {
-  //   vacant.push(menu[i].name);
-  // }
-  // console.log(vacant);
-
-  // var best_ten_raw = ret[0] ,best_ten_total = 0, best_ten = [];
-  // var worst_ten_raw = ret[1], worst_ten_total = 0, worst_ten = [];
-  // console.log(best_ten_raw);
-  // console.log(best_ten_raw['台灣T']);
-  // console.log(worst_ten_raw);
-
-  // $.each(best_ten_raw, function(key, value) {
-  //   best_ten_total += value;
-  //   var tmp_object = {key:key, value:value};
-  //   best_ten.push(tmp_object);
-  // });
-  // $.each(worst_ten_raw, function(key, value) {
-  //   worst_ten_total += value;
-  //   var tmp_object = {key:key, value:value};
-  //   worst_ten.push(tmp_object)
-  // });
-  // console.log(best_ten_total);
-  // console.log(worst_ten_total);
-  // console.log(best_ten);
-  // console.log(worst_ten);
   $('.chart').remove();
 
   var div_data_bind = d3.select("#report1").selectAll("div")
@@ -165,24 +205,181 @@ function getSalesReport(ret, t1) {
     return (d.quantity / worst_ten_total * 500)+"px";
   });
 
-  for (var i = 0; i < vacant.length; i++)
-    $('#report3').append('<span class="vacant">'+vacant[i]+'</span>');
+  // for (var i = 0; i < vacant.length; i++)
+  //   $('#report3').append('<span class="vacant">'+vacant[i]+'</span>');
+
+  $('#graph svg').remove();
+  $('#graph').css("display", "block");
+  console.log(graph_json);
+
+  var countOrSize = 1;    //default: 1(price)
+  d3.selectAll("input").on("click", function change() {
+    if (this.value == "quantity") {
+      countOrSize = 0;   // 0: quantity
+      graph_json["name"] = "數量";
+    }
+    else {
+      countOrSize = 1;     //1: price
+      graph_json["name"] = "價錢";
+    }
+
+    $('#graph svg').remove();
+    instantChange(countOrSize);
+  });
+  instantChange(countOrSize);
+
+  function instantChange(set) {
+    //alert(set);
+    var width = 960,
+        height = 700,
+        radius = (Math.min(width, height) / 2) - 10
+
+    var x = d3.scale.linear()
+        .range([0, 2 * Math.PI]);
+
+    var y = d3.scale.sqrt()
+        .range([0, radius]);
+
+    var color = d3.scale.category20c();
+
+    var svg = d3.select("#graph").append("svg")
+        .attr("width", width)
+        .attr("height", height)
+      .append("g")
+        .attr("transform", "translate(" + width / 2 + "," + (height / 2) + ")");
+
+    console.log(graph_json);
+
+    var partition = d3.layout.partition()
+        .sort(null)
+        .value(function(d) {
+          if (set == 0) return d.quantity;
+          else return d.price;
+        });
+
+    var arc = d3.svg.arc()
+        .startAngle(function(d) { return Math.max(0, Math.min(2 * Math.PI, x(d.x))); })
+        .endAngle(function(d) { return Math.max(0, Math.min(2 * Math.PI, x(d.x + d.dx))); })
+        .innerRadius(function(d) { return Math.max(0, y(d.y)); })
+        .outerRadius(function(d) { return Math.max(0, y(d.y + d.dy)); });
+
+    // Keep track of the node that is currently being displayed as the root.
+    var node;
+
+    var g = svg.selectAll("g")
+              .data(partition.nodes(graph_json))
+              .enter().append("g");
+
+    var path = g.append("path")
+              .attr("d", arc)
+              .style("fill", function(d) { return color((d.children ? d : d.parent).name); })
+              .style("stroke", "#fff")
+              .style("fill-rule", "evenodd")
+              .on("click", click);
+
+    var text = g.append("text")
+              .attr("transform", function(d) { return "rotate(" + computeTextRotation(d) + ")"; })
+              .attr("x", function(d) { return y(d.y); })
+              .attr("dx", "6") // margin
+              .attr("dy", ".35em") // vertical-align
+              .text(function(d) { return d.name; });
+
+    function click(d) {
+      // fade out all text elements
+      text.transition().attr("opacity", 0);
+
+      path.transition()
+          .duration(750)
+          .attrTween("d", arcTweenZoom(d))
+          .each("end", function(e, i) {
+          // check if the animated element's data e lies within the visible angle span given in d
+            if (e.x >= d.x && e.x < (d.x + d.dx)) {
+            // get a selection of the associated text element
+              var arcText = d3.select(this.parentNode).select("text");
+              // fade in the text element and recalculate positions
+              arcText.transition().duration(750)
+              .attr("opacity", 1)
+              .attr("transform", function() { return "rotate(" + computeTextRotation(e) + ")" })
+              .attr("x", function(d) { return y(d.y); });
+            }
+          });
+    }
+
+
+    d3.select(self.frameElement).style("height", height + "px");
+
+    // Setup for switching data: stash the old values for transition.
+    function stash(d) {
+      d.x0 = d.x;
+      d.dx0 = d.dx;
+    }
+
+    // When switching data: interpolate the arcs in data space.
+    function arcTweenData(a, i) {
+      var oi = d3.interpolate({x: a.x0, dx: a.dx0}, a);
+      function tween(t) {
+        var b = oi(t);
+        a.x0 = b.x;
+        a.dx0 = b.dx;
+        return arc(b);
+      }
+      if (i == 0) {
+       // If we are on the first arc, adjust the x domain to match the root node
+       // at the current zoom level. (We only need to do this once.)
+        var xd = d3.interpolate(x.domain(), [node.x, node.x + node.dx]);
+        return function(t) {
+          x.domain(xd(t));
+          return tween(t);
+        };
+      } else {
+        return tween;
+      }
+    }
+
+    // When zooming: interpolate the scales.
+    function arcTweenZoom(d) {
+      var xd = d3.interpolate(x.domain(), [d.x, d.x + d.dx]),
+          yd = d3.interpolate(y.domain(), [d.y, 1]),
+          yr = d3.interpolate(y.range(), [d.y ? 20 : 0, radius]);
+      return function(d, i) {
+        return i
+            ? function(t) { return arc(d); }
+            : function(t) { x.domain(xd(t)); y.domain(yd(t)).range(yr(t)); return arc(d); };
+      };
+    }
+    // Interpolate the scales!
+    function computeTextRotation(d) {
+      return (x(d.x + d.dx / 2) - Math.PI / 2) / Math.PI * 180;
+    }
+  }
 }
+//END -- REFRESH REPORT OF THE 10 BEST SALES AND 10 WORST SALES ALSO THE GRAPH OF MENU
+
+var dataset = [
+    { label: 'Abulia', count: "10" },
+    { label: 'Betelgeuse', count: "20"},
+    { label: 'Cantaloupe', count: "30"},
+    { label: 'Dijkstra', count: "40" }
+];
 
 function getOrdersReport(ret, t2) {
   console.log(ret);
   var count = [];
-  var shift_start = 4, shift_end = 13, size = shift_end - shift_start + 1;
+  var shift_start = ret[0], shift_end = ret[1], size = shift_end - shift_start + 1;
   for (var i = 0; i < size; i++) count[i] = 0;
-  for (var i = 0; i < ret.length; i++) {
-    count[ret[i] - shift_start]++;
+  for (var i = 0; i < ret[2].length; i++) {
+    count[ret[2][i] - shift_start]++;
   }
+  console.log(typeof shift_start);
+  console.log(typeof shift_end);
   console.log(count);
 
   $('.bar').remove();
   $('.bar_name').remove();
+  var num = 50*(shift_end-shift_start+1);
+  $('.orders_report').css('width', num.toString()+'px');
 
-  d3.select("#total_orders_report").selectAll("div")
+  d3.select("#orders_report").selectAll("div")
   .data(count).enter().append("div").attr("class", "bar")
   .style("height", function (a) {
     var h = a * 20;
@@ -196,7 +393,126 @@ function getOrdersReport(ret, t2) {
     var app = "<div class='bar_name'>" + (i+shift_start) + "~" + (i+shift_start+1) + "</div>";
     $('#orders_timestamp').append(app);
   }
+
+  drawPieChart(dataset);
+
 }
+
+function drawPieChart(dataset) {
+  'use strict';
+
+  var width = 360;
+  var height = 360;
+  var radius = Math.min(width, height) / 2;
+  var donutWidth = 75;
+  var legendRectSize = 18;
+  var legendSpacing = 4;
+
+  var color = d3.scale.category20b();
+
+  var svg = d3.select('#total_orders_report')
+    .append('svg')
+    .attr('width', width)
+    .attr('height', height)
+    .append('g')
+    .attr('transform', 'translate(' + (width / 2) +
+      ',' + (height / 2) + ')');
+
+  var arc = d3.svg.arc()
+    .innerRadius(radius - donutWidth)
+    .outerRadius(radius);
+
+  var pie = d3.layout.pie()
+    .value(function(d) { return d.count; })
+    .sort(null);
+
+  var tooltip = d3.select('#total_orders_report')                               // NEW
+    .append('div')                                                // NEW
+    .attr('class', 'tooltip');                                    // NEW
+
+  tooltip.append('div')                                           // NEW
+    .attr('class', 'label');                                      // NEW
+
+  tooltip.append('div')                                           // NEW
+    .attr('class', 'count');                                      // NEW
+
+  tooltip.append('div')                                           // NEW
+    .attr('class', 'percent');                                    // NEW
+
+    var path = svg.selectAll('path')
+      .data(pie(dataset))
+      .enter()
+      .append('path')
+      .attr('d', arc)
+      .attr('fill', function(d, i) {
+        return color(d.data.label);
+      });
+
+    path.on('mouseover', function(d) {                            // NEW
+      var total = d3.sum(dataset.map(function(d) {                // NEW
+        return d.count;                                           // NEW
+      }));                                                        // NEW
+      var percent = Math.round(1000 * d.data.count / total) / 10; // NEW
+      tooltip.select('.label').html(d.data.label);                // NEW
+      tooltip.select('.count').html(d.data.count);                // NEW
+      tooltip.select('.percent').html(percent + '%');             // NEW
+      tooltip.style('display', 'block');                          // NEW
+    });                                                           // NEW
+
+    path.on('mouseout', function() {                              // NEW
+      tooltip.style('display', 'none');                           // NEW
+    });                                                           // NEW
+
+    path.on('click', function(d) {                              // NEW
+      //alert("click "+d.data.label+" "+d.data.count);
+
+      // add ajax to query data
+
+      dataset = [
+            { label: 'isaac', count: "40" },
+            { label: 'Betelgeuse', count: "20"},
+            { label: 'Cantaloupe', count: "30"},
+            { label: 'Dijkstra', count: "40" }
+      ];
+      d3.select('#total_orders_report').html("");
+      drawPieChart(dataset);
+
+    });                                                           // NEW
+
+    /* OPTIONAL
+    path.on('mousemove', function(d) {                            // NEW
+      tooltip.style('top', (d3.event.pageY + 10) + 'px')          // NEW
+        .style('left', (d3.event.pageX + 10) + 'px');             // NEW
+    });                                                           // NEW
+    */
+
+    var legend = svg.selectAll('.legend')
+      .data(color.domain())
+      .enter()
+      .append('g')
+      .attr('class', 'legend')
+      .attr('transform', function(d, i) {
+        var height = legendRectSize + legendSpacing;
+        var offset =  height * color.domain().length / 2;
+        var horz = -2 * legendRectSize;
+        var vert = i * height - offset;
+        return 'translate(' + horz + ',' + vert + ')';
+      });
+
+    legend.append('rect')
+      .attr('width', legendRectSize)
+      .attr('height', legendRectSize)
+      .style('fill', color)
+      .style('stroke', color);
+
+    legend.append('text')
+      .attr('x', legendRectSize + legendSpacing)
+      .attr('y', legendRectSize - legendSpacing)
+      .text(function(d) { return d; });
+
+
+}
+
 
 function getMenuReport(ret, t3) {
   $('#total_menu_report > div').remove();
@@ -323,4 +639,3 @@ function getData() {
   });
 }
 //End func getSalesReport
-
