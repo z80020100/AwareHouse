@@ -59,6 +59,12 @@
           <div id="report1" class="report"></div>
           <div id="report2" class="report"></div>
           <div id="report3"></div>
+          <div id="graph">
+            <form>
+              <label><input type="radio" name="mode" value="quantity"> 數量</label>
+              <label><input type="radio" name="mode" value="price" checked> 價錢</label>
+            </form>
+          </div>
         </div>
       </div>
 
@@ -70,9 +76,11 @@
           <input id="datepicker2" name="datepicker2">
           <input type="submit" id="submitOrders" value="送出" data-type="orders">
         </div>
-        <div id="total_orders_report" class="orders_report">
-        </div>
-        <div id="orders_timestamp" class="orders_report">
+        <div id="total_orders_report" style="width: 100%">
+          <div id="orders_report" class="orders_report">
+          </div>
+          <div id="orders_timestamp" class="orders_report">
+          </div>
         </div>
       </div>
 
