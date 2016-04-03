@@ -55,7 +55,8 @@ $('#submitSales').on("click", getData);
 $('#submitOrders').on("click", getData);
 $('#submitMenu').on("click", getData);
 
-$('#graph').css("display", "none");
+$('#graph').css("display", "none"); // sunburst graph
+$('#piechart').css("display", "none"); // piechart graph
 
 function parse() {
   var ret = JSON.parse($('#datepicker1').val());
@@ -355,13 +356,8 @@ function getSalesReport(ret, t1) {
 }
 //END -- REFRESH REPORT OF THE 10 BEST SALES AND 10 WORST SALES ALSO THE GRAPH OF MENU
 
-var dataset = [
-    { label: 'Abulia', count: "10" },
-    { label: 'Betelgeuse', count: "20"},
-    { label: 'Cantaloupe', count: "30"},
-    { label: 'Dijkstra', count: "40" }
-];
 
+//GET THE ORDERS REPORT FROM THE TIME INTERVAL SET IN THE general.php
 function getOrdersReport(ret, t2) {
   console.log(ret);
   var count = [];
@@ -378,6 +374,12 @@ function getOrdersReport(ret, t2) {
   $('.bar_name').remove();
   var num = 50*(shift_end-shift_start+1);
   $('.orders_report').css('width', num.toString()+'px');
+
+
+  $('#piechart svg').remove();
+  $('#piechart').css("display", "block");
+
+
 
   d3.select("#orders_report").selectAll("div")
   .data(count).enter().append("div").attr("class", "bar")
@@ -397,6 +399,22 @@ function getOrdersReport(ret, t2) {
   drawPieChart(dataset);
 
 }
+//END -- GET THE ORDERS REPORT FROM THE TIME INTERVAL SET IN THE general.php
+
+
+var dataset = new Array();
+dataset[0]= {label:"John", count:"10" };
+dataset[1]= {label:"haha", count:"120" };
+dataset[2]= {label:"isaac2", count:"90" };
+dataset[3]= {label:"isaac3", count:"90" };
+dataset[4]= {label:"isaac4", count:"90" };
+dataset[5]= {label:"isaac5", count:"90" };
+dataset[6]= {label:"isaac6", count:"90" };
+dataset[7]= {label:"isaac7", count:"90" };
+dataset[8]= {label:"isaac8", count:"90" };
+dataset[9]= {label:"isaac9", count:"90" };
+dataset[10]= {label:"isaac10", count:"90" };
+
 
 function drawPieChart(dataset) {
   'use strict';
@@ -408,11 +426,11 @@ function drawPieChart(dataset) {
   var legendRectSize = 18;
   var legendSpacing = 4;
 
-  var color = d3.scale.category20b();
+  var color = d3.scale.category20();
 
-  var svg = d3.select('#total_orders_report')
+  var svg = d3.select('#piechart')
     .append('svg')
-    .attr('width', width)
+    .attr('width', width + 2*radius)
     .attr('height', height)
     .append('g')
     .attr('transform', 'translate(' + (width / 2) +
@@ -426,7 +444,7 @@ function drawPieChart(dataset) {
     .value(function(d) { return d.count; })
     .sort(null);
 
-  var tooltip = d3.select('#total_orders_report')                               // NEW
+  var tooltip = d3.select('#piechart')                               // NEW
     .append('div')                                                // NEW
     .attr('class', 'tooltip');                                    // NEW
 
@@ -464,22 +482,26 @@ function drawPieChart(dataset) {
     });                                                           // NEW
 
     path.on('click', function(d) {                              // NEW
-      //alert("click "+d.data.label+" "+d.data.count);
+      alert("click "+d.data.label+" "+d.data.count);
 
       // add ajax to query data
-
+      /*
       dataset = [
             { label: 'isaac', count: "40" },
             { label: 'Betelgeuse', count: "20"},
             { label: 'Cantaloupe', count: "30"},
             { label: 'Dijkstra', count: "40" }
-      ];
-      d3.select('#total_orders_report').html("");
+      ];*/
+
+      dataset[0] = {label:"abc", count:"70"};
+      dataset[1] = {label:"def", count:"70"};
+      d3.select('#chart').html("");
       drawPieChart(dataset);
 
     });                                                           // NEW
 
-    /* OPTIONAL
+    // OPTIONAL
+    /*
     path.on('mousemove', function(d) {                            // NEW
       tooltip.style('top', (d3.event.pageY + 10) + 'px')          // NEW
         .style('left', (d3.event.pageX + 10) + 'px');             // NEW
@@ -494,7 +516,7 @@ function drawPieChart(dataset) {
       .attr('transform', function(d, i) {
         var height = legendRectSize + legendSpacing;
         var offset =  height * color.domain().length / 2;
-        var horz = -2 * legendRectSize;
+        var horz = 13 * legendRectSize;
         var vert = i * height - offset;
         return 'translate(' + horz + ',' + vert + ')';
       });
@@ -514,6 +536,7 @@ function drawPieChart(dataset) {
 }
 
 
+//GET ALL THE DETAILS OF ALL MENU
 function getMenuReport(ret, t3) {
   $('#total_menu_report > div').remove();
   console.log(ret);
@@ -544,7 +567,10 @@ function getMenuReport(ret, t3) {
 
   $('#total_menu_report').append(menu);
 }
+//END -- GET ALL THE DETAILS OF ALL MENU
 
+
+//THE EVENT WHICH THE CLICK TOUCHED
 function getData() {
   var req = {};
   var type = $(this).data('type');
