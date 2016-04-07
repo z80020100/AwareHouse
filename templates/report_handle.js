@@ -356,6 +356,18 @@ function getSalesReport(ret, t1) {
 }
 //END -- REFRESH REPORT OF THE 10 BEST SALES AND 10 WORST SALES ALSO THE GRAPH OF MENU
 
+  var dataset = [];
+  dataset[0]= {label:"John", quantity:"10" };
+  dataset[1]= {label:"haha", quantity:"120" };
+  dataset[2]= {label:"isaac2", quantity:"90" };
+  dataset[3]= {label:"isaac3", quantity:"90" };
+  dataset[4]= {label:"isaac4", quantity:"90" };
+  dataset[5]= {label:"isaac5", quantity:"90" };
+  dataset[6]= {label:"isaac6", quantity:"90" };
+  dataset[7]= {label:"isaac7", quantity:"90" };
+  dataset[8]= {label:"isaac8", quantity:"90" };
+  dataset[9]= {label:"isaac9", quantity:"90" };
+  dataset[10]= {label:"isaac10", quantity:"90" };
 
 //GET THE ORDERS REPORT FROM THE TIME INTERVAL SET IN THE general.php
 function getOrdersReport(ret, t2) {
@@ -396,24 +408,90 @@ function getOrdersReport(ret, t2) {
     $('#orders_timestamp').append(app);
   }
 
-  drawPieChart(dataset);
+
+  var menu_raw = {};
+  var order_info = ret[3], order_info_size = ret[3].length;
+  var all_series = ret[4], all_series_size = ret[4].length;
+  var series_dataset = [];
+
+  console.log(order_info);
+  console.log(all_series);
+
+  // CONSTRUCT menu_raw
+  for (var i = 0; i < all_series_size; i++) {
+    var main_of_series = all_series[i].main, main_of_series_size = all_series[i].main.length;
+    // console.log(series, main_of_series, main_of_series_size);
+
+    for (var j = 0; j < main_of_series_size; j++) {
+      // initialize all the menu item quantity and price into zero
+      menu_raw[main_of_series[j].name] = {};
+      menu_raw[main_of_series[j].name]["quantity"] = 0;
+      menu_raw[main_of_series[j].name]["price"] = 0;
+    }
+  }
+
+  // CALCULATE THE quantity AND price OF ALL ITEM IN menu_raw
+  for (var i = 0; i < order_info_size; i++) { //LOOP ALL THE ORDERS
+    var item_array = order_info[i]['summary_array'];
+    var item_array_size = item_array.length;
+    for (var j = 0; j < item_array_size; j++) { //LOOP ALL ITEMS IN 1 ORDER
+      var name = item_array[j]['name'];
+      menu_raw[name]["quantity"] += parseInt(item_array[j]["quantity"]);
+
+      menu_raw[name]["price"] += parseInt(item_array[j]["main_price"]);
+      var ro = item_array[j]["RO_array"], ro_size = ro.length;
+      var ai = item_array[j]["AI_array"], ai_size = ai.length;
+      for (var k = 0; k < ro_size; k++) menu_raw[name]["price"] += parseInt(ro[k]["price"]);
+      for (var k = 0; k < ai_size; k++) menu_raw[name]["price"] += parseInt(ai[k]["price"]);
+    }
+  }
+
+  // UPDATE series_dataset
+  for (var i = 0; i < all_series_size; i++) {
+    var series = {"label": all_series[i].name, "details": []};
+    var main_of_series = all_series[i].main, main_of_series_size = all_series[i].main.length;
+
+    var check = 0; // check if there's thing in series
+    var total_quantity = 0;
+    var total_price = 0;
+
+    for (var j = 0; j < main_of_series_size; j++) {
+      //update the data in json
+      var name = main_of_series[j].name;
+
+      var tmp = {};
+      tmp["label"] = name;
+      tmp["quantity"] = menu_raw[name]["quantity"];
+      tmp["price"] = menu_raw[name]["price"];
+
+      total_quantity += parseInt(tmp["quantity"]);
+      total_price += parseInt(tmp["price"]);
+
+      if (tmp["quantity"] == 0) continue;
+
+      series["details"].push(tmp);   //push into the series array
+      check = 1;
+    }
+    if (check == 0) continue;
+    series["quantity"] = total_quantity;
+    series["price"] = total_price;
+    series_dataset.push(series);  //push into the json array
+  }
+
+  // if (graph_json["children"].length == 0) {
+  //   var tmp = {};
+  //   tmp["name"] = ' ';
+  //   tmp["quantity"] = 0;
+  //   tmp["price"] = 0;
+
+  //   graph_json["children"].push(tmp);
+  // }
+  console.log(series_dataset);
+  drawPieChart(series_dataset);
 
 }
 //END -- GET THE ORDERS REPORT FROM THE TIME INTERVAL SET IN THE general.php
 
-
-var dataset = new Array();
-dataset[0]= {label:"John", count:"10" };
-dataset[1]= {label:"haha", count:"120" };
-dataset[2]= {label:"isaac2", count:"90" };
-dataset[3]= {label:"isaac3", count:"90" };
-dataset[4]= {label:"isaac4", count:"90" };
-dataset[5]= {label:"isaac5", count:"90" };
-dataset[6]= {label:"isaac6", count:"90" };
-dataset[7]= {label:"isaac7", count:"90" };
-dataset[8]= {label:"isaac8", count:"90" };
-dataset[9]= {label:"isaac9", count:"90" };
-dataset[10]= {label:"isaac10", count:"90" };
 
 
 function drawPieChart(dataset) {
@@ -425,6 +503,7 @@ function drawPieChart(dataset) {
   var donutWidth = 75;
   var legendRectSize = 18;
   var legendSpacing = 4;
+
 
   var color = d3.scale.category20();
 
@@ -441,7 +520,7 @@ function drawPieChart(dataset) {
     .outerRadius(radius);
 
   var pie = d3.layout.pie()
-    .value(function(d) { return d.count; })
+    .value(function(d) { return d.quantity; })
     .sort(null);
 
   var tooltip = d3.select('#piechart')                               // NEW
@@ -452,7 +531,7 @@ function drawPieChart(dataset) {
     .attr('class', 'label');                                      // NEW
 
   tooltip.append('div')                                           // NEW
-    .attr('class', 'count');                                      // NEW
+    .attr('class', 'quantity');                                      // NEW
 
   tooltip.append('div')                                           // NEW
     .attr('class', 'percent');                                    // NEW
@@ -468,11 +547,11 @@ function drawPieChart(dataset) {
 
     path.on('mouseover', function(d) {                            // NEW
       var total = d3.sum(dataset.map(function(d) {                // NEW
-        return d.count;                                           // NEW
+        return d.quantity;                                           // NEW
       }));                                                        // NEW
-      var percent = Math.round(1000 * d.data.count / total) / 10; // NEW
+      var percent = Math.round(1000 * d.data.quantity / total) / 10; // NEW
       tooltip.select('.label').html(d.data.label);                // NEW
-      tooltip.select('.count').html(d.data.count);                // NEW
+      tooltip.select('.quantity').html(d.data.quantity);                // NEW
       tooltip.select('.percent').html(percent + '%');             // NEW
       tooltip.style('display', 'block');                          // NEW
     });                                                           // NEW
@@ -482,20 +561,22 @@ function drawPieChart(dataset) {
     });                                                           // NEW
 
     path.on('click', function(d) {                              // NEW
-      alert("click "+d.data.label+" "+d.data.count);
+      alert("click "+d.data.label+" "+d.data.quantity);
 
       // add ajax to query data
       /*
       dataset = [
-            { label: 'isaac', count: "40" },
-            { label: 'Betelgeuse', count: "20"},
-            { label: 'Cantaloupe', count: "30"},
-            { label: 'Dijkstra', count: "40" }
+            { label: 'isaac', quantity: "40" },
+            { label: 'Betelgeuse', quantity: "20"},
+            { label: 'Cantaloupe', quantity: "30"},
+            { label: 'Dijkstra', quantity: "40" }
       ];*/
 
-      dataset[0] = {label:"abc", count:"70"};
-      dataset[1] = {label:"def", count:"70"};
+      // dataset[0] = {label:"abc", quantity:"70"};
+      // dataset[1] = {label:"def", quantity:"70"};
+      dataset = d.data.details;
       d3.select('#chart').html("");
+      $('#piechart svg').remove();
       drawPieChart(dataset);
 
     });                                                           // NEW

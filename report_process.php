@@ -257,6 +257,8 @@ switch ($type) {
         }
     }
     array_push($ret, $time);
+    $ret[3] = getOrderInfo($db, $start_time, $end_time);
+    $ret[4] = getAllLists($db);
     echo json_encode($ret, JSON_UNESCAPED_UNICODE);
     break;
 
