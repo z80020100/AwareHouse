@@ -214,7 +214,7 @@ function getSalesReport(ret, t1) {
   console.log(graph_json);
 
   var countOrSize = 1;    //default: 1(price)
-  d3.selectAll("input").on("click", function change() {
+  d3.select("#g_form").selectAll("input").on("click", function change() {
     if (this.value == "quantity") {
       countOrSize = 0;   // 0: quantity
       graph_json["name"] = "數量";
@@ -487,14 +487,27 @@ function getOrdersReport(ret, t2) {
   //   graph_json["children"].push(tmp);
   // }
   console.log(series_dataset);
-  drawPieChart(series_dataset);
+
+  var countOrSize = 1;    //default: 1(price)
+  d3.select("#p_form").selectAll("input").on("click", function change() {
+    if (this.value == "quantity") {
+      countOrSize = 0;   // 0: quantity
+    }
+    else if (this.value == "price"){
+      countOrSize = 1;     //1: price
+    }
+    // console.log(countOrSize);
+    $('#piechart svg').remove();
+    drawPieChart(series_dataset, countOrSize, 0);
+  });
+  drawPieChart(series_dataset, countOrSize, 0);
 
 }
 //END -- GET THE ORDERS REPORT FROM THE TIME INTERVAL SET IN THE general.php
 
 
 
-function drawPieChart(dataset) {
+function drawPieChart(dataset, set, times) {
   'use strict';
 
   var width = 360;
@@ -520,100 +533,111 @@ function drawPieChart(dataset) {
     .outerRadius(radius);
 
   var pie = d3.layout.pie()
-    .value(function(d) { return d.quantity; })
+    .value(function(d) {
+      if (set == 0) return d.quantity;
+      else return d.price;
+    })
     .sort(null);
 
-  var tooltip = d3.select('#piechart')                               // NEW
-    .append('div')                                                // NEW
-    .attr('class', 'tooltip');                                    // NEW
+  // ADD FLOATING TAG tooltip TO MANIFEST THE DETAILS
+  // var tooltip = d3.select('#piechart')                               // NEW
+  //   .append('div')                                                // NEW
+  //   .attr('class', 'tooltip');                                    // NEW
 
-  tooltip.append('div')                                           // NEW
-    .attr('class', 'label');                                      // NEW
+  // tooltip.append('div')                                           // NEW
+  //   .attr('class', 'label');                                      // NEW
 
-  tooltip.append('div')                                           // NEW
-    .attr('class', 'quantity');                                      // NEW
+  // tooltip.append('div')                                           // NEW
+  //   .attr('class', 'quantity');                                      // NEW
 
-  tooltip.append('div')                                           // NEW
-    .attr('class', 'percent');                                    // NEW
+  // tooltip.append('div')                                           // NEW
+  //   .attr('class', 'percent');                                    // NEW
 
-    var path = svg.selectAll('path')
-      .data(pie(dataset))
-      .enter()
-      .append('path')
-      .attr('d', arc)
-      .attr('fill', function(d, i) {
-        return color(d.data.label);
-      });
+  var path = svg.selectAll('path')
+    .data(pie(dataset))
+    .enter()
+    .append('path')
+    .attr('d', arc)
+    .attr('fill', function(d, i) {
+      return color(d.data.label);
+    });
 
-    path.on('mouseover', function(d) {                            // NEW
-      var total = d3.sum(dataset.map(function(d) {                // NEW
-        return d.quantity;                                           // NEW
-      }));                                                        // NEW
-      var percent = Math.round(1000 * d.data.quantity / total) / 10; // NEW
-      tooltip.select('.label').html(d.data.label);                // NEW
-      tooltip.select('.quantity').html(d.data.quantity);                // NEW
-      tooltip.select('.percent').html(percent + '%');             // NEW
-      tooltip.style('display', 'block');                          // NEW
-    });                                                           // NEW
+  // path.on('mouseover', function(d) {                            // NEW
+  //   if (set == 0) {
+  //     var total = d3.sum(dataset.map(function(d) {                // NEW
+  //       return d.quantity;                                           // NEW
+  //     }));
+  //     var percent = Math.round(1000 * d.data.quantity / total) / 10; // NEW
+  //     tooltip.select('.label').html(d.data.label);                // NEW
+  //     tooltip.select('.quantity').html(d.data.quantity);                // NEW
+  //     tooltip.select('.percent').html(percent + '%');             // NEW
+  //     tooltip.style('display', 'block');                          // NEW
+  //   }
+  //   else {
+  //     var total = d3.sum(dataset.map(function(d) {                // NEW
+  //       return d.price;                                           // NEW
+  //     }));
+  //     var percent = Math.round(1000 * d.data.price / total) / 10; // NEW
+  //     tooltip.select('.label').html(d.data.label);                // NEW
+  //     tooltip.select('.quantity').html(d.data.price);                // NEW
+  //     tooltip.select('.percent').html(percent + '%');             // NEW
+  //     tooltip.style('display', 'block');                          // NEW
+  //   }
+  // });                                                           // NEW
 
-    path.on('mouseout', function() {                              // NEW
-      tooltip.style('display', 'none');                           // NEW
-    });                                                           // NEW
+  // path.on('mouseout', function() {                              // NEW
+  //   tooltip.style('display', 'none');                           // NEW
+  // });                                                           // NEW
 
+  if (times == 0) {
     path.on('click', function(d) {                              // NEW
-      alert("click "+d.data.label+" "+d.data.quantity);
+      console.log("click "+d.data.label+" "+d.data.quantity);
 
       // add ajax to query data
-      /*
-      dataset = [
-            { label: 'isaac', quantity: "40" },
-            { label: 'Betelgeuse', quantity: "20"},
-            { label: 'Cantaloupe', quantity: "30"},
-            { label: 'Dijkstra', quantity: "40" }
-      ];*/
-
-      // dataset[0] = {label:"abc", quantity:"70"};
-      // dataset[1] = {label:"def", quantity:"70"};
       dataset = d.data.details;
-      d3.select('#chart').html("");
       $('#piechart svg').remove();
-      drawPieChart(dataset);
+      drawPieChart(dataset, set, 1);
+    });
+  }
 
-    });                                                           // NEW
+  var legend = svg.selectAll('.legend')
+    .data(color.domain())
+    .enter()
+    .append('g')
+    .attr('class', 'legend')
+    .attr('transform', function(d, i) {
+      var height = legendRectSize + legendSpacing;
+      var offset =  height * color.domain().length / 2;
+      var horz = 13 * legendRectSize;
+      var vert = i * height - offset;
+      return 'translate(' + horz + ',' + vert + ')';
+    });
 
-    // OPTIONAL
-    /*
-    path.on('mousemove', function(d) {                            // NEW
-      tooltip.style('top', (d3.event.pageY + 10) + 'px')          // NEW
-        .style('left', (d3.event.pageX + 10) + 'px');             // NEW
-    });                                                           // NEW
-    */
+  legend.append('rect')
+    .attr('width', legendRectSize)
+    .attr('height', legendRectSize)
+    .style('fill', color)
+    .style('stroke', color);
 
-    var legend = svg.selectAll('.legend')
-      .data(color.domain())
-      .enter()
-      .append('g')
-      .attr('class', 'legend')
-      .attr('transform', function(d, i) {
-        var height = legendRectSize + legendSpacing;
-        var offset =  height * color.domain().length / 2;
-        var horz = 13 * legendRectSize;
-        var vert = i * height - offset;
-        return 'translate(' + horz + ',' + vert + ')';
-      });
-
-    legend.append('rect')
-      .attr('width', legendRectSize)
-      .attr('height', legendRectSize)
-      .style('fill', color)
-      .style('stroke', color);
-
-    legend.append('text')
-      .attr('x', legendRectSize + legendSpacing)
-      .attr('y', legendRectSize - legendSpacing)
-      .text(function(d) { return d; });
-
-
+  legend.append('text')
+    .attr('x', legendRectSize + legendSpacing)
+    .attr('y', legendRectSize - legendSpacing)
+    .text(function(d, i) {
+      var percent = 0;
+      if (set == 0) {
+      var total = d3.sum(dataset.map(function(d) {                // NEW
+        return d.quantity;                                           // NEW
+      }));
+      percent = Math.round(1000 * dataset[i].quantity / total) / 10; // NEW
+    }
+    else {
+      var total = d3.sum(dataset.map(function(d) {                // NEW
+        return d.price;                                           // NEW
+      }));
+      percent = Math.round(1000 * dataset[i].price / total) / 10; // NEW
+    }
+      return d+" "+percent+"%";
+    });
 }
 
 
