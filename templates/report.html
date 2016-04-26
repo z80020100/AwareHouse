@@ -43,7 +43,8 @@
 
     <div data-role="header">
 
-      <header class="w3-container w3-teal">
+      <header class="theme">
+      <!-- <header class="w3-container w3-teal"> -->
         <!-- <span class="w3-opennav w3-xlarge"><a href="#admin_panel" style="text-decoration: none; color:#FFFFFF;">&#9776;</a></span> -->
         <h1><center>早餐店報表</center></h1>
       </header>
@@ -51,11 +52,11 @@
     </div>
 
     <div data-role="content">
-      <div id="a0" class="w3-container">
+      <!-- <div id="a0" class="w3-container">
         <h3><center>即時報表</center></h3>
         <div class="dateRangePicker">
           <input id="datepicker1" name="datepicker1">
-          <input type="submit" id="submitSales" value="送出" data-type="sales">
+          <input type="submit" class="submit" id="submitSales" value="送出" data-type="sales">
         </div>
         <div id="total_sales_report">
           <div id="report1" class="report"></div>
@@ -70,13 +71,13 @@
         </div>
       </div>
 
-      <div>&nbsp;</div>
+      <div>&nbsp;</div> -->
 
       <div id="a0" class="w3-container">
         <h3><center>訂單量</center></h3>
         <div class="dateRangePicker">
           <input id="datepicker2" name="datepicker2">
-          <input type="submit" id="submitOrders" value="送出" data-type="orders">
+          <input type="submit" class="submit" id="submitOrders" value="送出" data-type="orders">
         </div>
         <div id="total_orders_report" style="width: 100%">
           <div id="orders_report" class="orders_report">
@@ -87,7 +88,7 @@
             <form id="p_form">
               <label><input type="radio" name="mode" value="quantity"> 數量</label>
               <label><input type="radio" name="mode" value="price" checked> 價錢</label>
-              <input type="button" name="back" value="回到上一層">
+              <input type="button" class="back" name="back" value="回到上一層">
             </form>
           </div>
         </div>
@@ -99,7 +100,7 @@
         <h3><center>menu總量</center></h3>
         <div class="dateRangePicker">
           <input id="datepicker3" name="datepicker3">
-          <input type="submit" id="submitMenu" value="送出" data-type="menu">
+          <input type="submit" class="submit" id="submitMenu" value="送出" data-type="menu">
         </div>
         <div id="total_menu_report" class="menu_report">
         </div>
@@ -107,7 +108,8 @@
     </div>
     <div>&nbsp;</div>
     <div data-role="footer">
-      <footer class="w3-container w3-teal">
+      <footer>
+      <!-- <footer class="w3-container w3-teal"> -->
         <p> &nbsp; </p>
       </footer>
     </div>

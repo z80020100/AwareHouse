@@ -1,13 +1,18 @@
 body {
-  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-family: "Helvetica Neue", "Helvetica", Arial, sans-serif;
   margin: auto;
   position: relative;
+  background-color: #F1FAFB;
 }
+
+input,button,select,textarea{outline:none}
+ *:focus { outline: none; }
 
 form {
   position: relative;
   top: 5px;
-  left: 50%;
+  left: 48%;
+  width: 250px;
 }
 
 path {
@@ -15,10 +20,18 @@ path {
   fill-rule: evenodd;
 }
 
-#chart svg {
+.theme {
+  background-color: #A0E4F1;
+}
+
+svg {
   position: relative;
+  left:50%;
   margin-top: 20px;
-  margin-left: 100px;
+}
+
+#graph svg {
+  margin-left: -360px;
 }
 
 .dateRangePicker {
@@ -26,6 +39,14 @@ path {
   width: 400px;
   left: 50%;
   margin-left: -200px;
+  color: #3F72AF;
+}
+
+.submit {
+  width: 90px;
+  background-color: #ffffff;
+  border: 1px #3F72AF solid;
+  border-radius: 20px;
 }
 
 .report {
@@ -70,6 +91,17 @@ path {
   text-align: center;
 }
 
+.back {
+  width: 120px;
+  background-color: #ffffff;
+  border: 1px #3F72AF solid;
+  border-radius: 20px;
+}
+
+#piechart svg {
+  margin-left: -300px;
+}
+
 .menu_row {
   position: relative;
   width: 400px;
@@ -85,11 +117,11 @@ path {
   text-align: center;
 }
 
-#piechart {                                                          /* NEW */
-  height: 360px;                                                  /* NEW */
-  position: relative;                                             /* NEW */
-  width: 360px;                                                   /* NEW */
-}                                                                 /* NEW */
+/*#piechart {
+  height: 360px;
+  position: relative;
+  width: 360px;
+}*/
 .tooltip {                                                        /* NEW */
   background: #eee;                                               /* NEW */
   box-shadow: 0 0 5px #999999;                                    /* NEW */

@@ -76,6 +76,11 @@ function getSalesReport(ret, t1) {
   console.log(order_info);
   console.log(all_series);
 
+  if (order_info_size = 0) {
+    alert("查無資料");
+    return 0;
+  }
+
   // CONSTRUCT menu_raw
   for (var i = 0; i < all_series_size; i++) {
     var main_of_series = all_series[i].main, main_of_series_size = all_series[i].main.length;
@@ -182,29 +187,32 @@ function getSalesReport(ret, t1) {
 
   $('.chart').remove();
 
-  var div_data_bind = d3.select("#report1").selectAll("div")
-  .data(best_ten).enter().append("div").attr("class", "chart");
-  div_data_bind.text(function(a,i) {
-    return (i+1) + " / " + a.name;
-  });
-  div_data_bind.style("height", "20px");
-  div_data_bind.style("background", "#ff8bb6");
-  div_data_bind.style("margin", "5px");
-  div_data_bind.style("width", function(d,i) {
-    return (d.quantity / best_ten_total * 500)+"px";
-  });
+  ////////////////////////////////
+  // BEST TEN AND WORST TEM ITEMS
+  ////////////////////////////////
+  // var div_data_bind = d3.select("#report1").selectAll("div")
+  // .data(best_ten).enter().append("div").attr("class", "chart");
+  // div_data_bind.text(function(a,i) {
+  //   return (i+1) + " / " + a.name;
+  // });
+  // div_data_bind.style("height", "20px");
+  // div_data_bind.style("background", "#ff8bb6");
+  // div_data_bind.style("margin", "5px");
+  // div_data_bind.style("width", function(d,i) {
+  //   return (d.quantity / best_ten_total * 500)+"px";
+  // });
 
-  var div_data_bind = d3.select("#report2").selectAll("div")
-  .data(worst_ten).enter().append("div").attr("class", "chart");
-  div_data_bind.text(function(a,i) {
-    return (i+1) + " / " + a.name;
-  });
-  div_data_bind.style("height", "20px");
-  div_data_bind.style("background", "#ff8bb6");
-  div_data_bind.style("margin", "5px");
-  div_data_bind.style("width", function(d,i) {
-    return (d.quantity / worst_ten_total * 500)+"px";
-  });
+  // var div_data_bind = d3.select("#report2").selectAll("div")
+  // .data(worst_ten).enter().append("div").attr("class", "chart");
+  // div_data_bind.text(function(a,i) {
+  //   return (i+1) + " / " + a.name;
+  // });
+  // div_data_bind.style("height", "20px");
+  // div_data_bind.style("background", "#ff8bb6");
+  // div_data_bind.style("margin", "5px");
+  // div_data_bind.style("width", function(d,i) {
+  //   return (d.quantity / worst_ten_total * 500)+"px";
+  // });
 
   // for (var i = 0; i < vacant.length; i++)
   //   $('#report3').append('<span class="vacant">'+vacant[i]+'</span>');
@@ -231,8 +239,8 @@ function getSalesReport(ret, t1) {
 
   function instantChange(set) {
     //alert(set);
-    var width = 960,
-        height = 700,
+    var width = 720,
+        height = 525,
         radius = (Math.min(width, height) / 2) - 10
 
     var x = d3.scale.linear()
@@ -356,18 +364,6 @@ function getSalesReport(ret, t1) {
 }
 //END -- REFRESH REPORT OF THE 10 BEST SALES AND 10 WORST SALES ALSO THE GRAPH OF MENU
 
-  var dataset = [];
-  dataset[0]= {label:"John", quantity:"10" };
-  dataset[1]= {label:"haha", quantity:"120" };
-  dataset[2]= {label:"isaac2", quantity:"90" };
-  dataset[3]= {label:"isaac3", quantity:"90" };
-  dataset[4]= {label:"isaac4", quantity:"90" };
-  dataset[5]= {label:"isaac5", quantity:"90" };
-  dataset[6]= {label:"isaac6", quantity:"90" };
-  dataset[7]= {label:"isaac7", quantity:"90" };
-  dataset[8]= {label:"isaac8", quantity:"90" };
-  dataset[9]= {label:"isaac9", quantity:"90" };
-  dataset[10]= {label:"isaac10", quantity:"90" };
 
 //GET THE ORDERS REPORT FROM THE TIME INTERVAL SET IN THE general.php
 function getOrdersReport(ret, t2) {
@@ -387,26 +383,23 @@ function getOrdersReport(ret, t2) {
   var num = 50*(shift_end-shift_start+1);
   $('.orders_report').css('width', num.toString()+'px');
 
+  //////////////////////////////
+  // ORDERS IN THE TIME INTERVAL
+  //////////////////////////////
+  // d3.select("#orders_report").selectAll("div")
+  // .data(count).enter().append("div").attr("class", "bar")
+  // .style("height", function (a) {
+  //   var h = a * 20;
+  //   return h + "px";
+  // }).text(function (a) {
+  //   if (a != 0) return a;
+  //   else return '';
+  // });
 
-  $('#piechart svg').remove();
-  $('#piechart').css("display", "block");
-
-
-
-  d3.select("#orders_report").selectAll("div")
-  .data(count).enter().append("div").attr("class", "bar")
-  .style("height", function (a) {
-    var h = a * 20;
-    return h + "px";
-  }).text(function (a) {
-    if (a != 0) return a;
-    else return '';
-  });
-
-  for (i = 0; i <= shift_end - shift_start; i++) {
-    var app = "<div class='bar_name'>" + (i+shift_start) + "~" + (i+shift_start+1) + "</div>";
-    $('#orders_timestamp').append(app);
-  }
+  // for (i = 0; i <= shift_end - shift_start; i++) {
+  //   var app = "<div class='bar_name'>" + (i+shift_start) + "~" + (i+shift_start+1) + "</div>";
+  //   $('#orders_timestamp').append(app);
+  // }
 
 
   var menu_raw = {};
@@ -416,6 +409,11 @@ function getOrdersReport(ret, t2) {
 
   console.log(order_info);
   console.log(all_series);
+
+  if (order_info_size == 0) {
+    alert("查無資料");
+    return 0;
+  }
 
   // CONSTRUCT menu_raw
   for (var i = 0; i < all_series_size; i++) {
@@ -487,6 +485,9 @@ function getOrdersReport(ret, t2) {
   //   graph_json["children"].push(tmp);
   // }
   console.log(series_dataset);
+
+  $('#piechart svg').remove();
+  $('#piechart').css("display", "block");
 
   var countOrSize = 1;    //default: 1(price)
   d3.select("#p_form").selectAll("input").on("click", function change() {
@@ -650,6 +651,7 @@ function getMenuReport(ret, t3) {
   var row_num = Math.floor(size / row);
   console.log(size);
   console.log(row_num);
+
   var menu = "";
   for (var i = 0; i < row_num; i++) {
     var tmp_row = "<div class='menu_row'>";
