@@ -82,7 +82,7 @@ ul.w3-ul li:last-child{border-bottom:none}
 .w3-topnav a,.w3-sidenav a,.w3-dropnav a{text-decoration:none !important}
 .w3-topnav a{padding:0 8px;border-bottom:3px solid transparent;-webkit-transition:all 0.3s ease;-moz-transition:all 0.3s ease;-o-transition:all 0.3s ease;transition:all 0.3s ease;}
 .w3-topnav a:hover{border-bottom:3px solid #fff}
-.w3-sidenav{height:100%;width:200px;position:fixed !important;z-index:1;overflow:auto}
+.w3-sidenav{height:100%;width:200px;position:fixed; !important;z-index:1;overflow:auto}
 .w3-opennav,.w3-closenav{color:inherit}
 .w3-opennav:hover,.w3-closenav:hover{cursor:pointer;opacity:0.8}
 .w3-sidenav a{padding:4px 16px}
@@ -117,7 +117,7 @@ ul.w3-ul li:last-child{border-bottom:none}
 .w3-checkbox input[type=radio]:disabled + .w3-checkmark{opacity:0.3;cursor:default}
 /* w3-checkbox and w3-checkmark will be removed in version 1.8 */
 input[type=checkbox].w3-check,input[type=radio].w3-radio{width:24px;height:24px;position:relative;top:6px;}
-input[type=checkbox].w3-check:checked+.w3-validate,input[type=radio].w3-radio:checked+.w3-validate{color:#009688} 
+input[type=checkbox].w3-check:checked+.w3-validate,input[type=radio].w3-radio:checked+.w3-validate{color:#009688}
 input[type=checkbox].w3-check:disabled+.w3-validate,input[type=radio].w3-radio:disabled+.w3-validate{color:#aaa}
 .w3-input:not(:valid)~.w3-validate
 .w3-responsive{overflow-x:auto}
@@ -166,7 +166,7 @@ input[type=checkbox].w3-check:disabled+.w3-validate,input[type=radio].w3-radio:d
 @media (max-width:601px){.w3-modal-content{margin:50px 10px 10px 10px;width:auto !important}}
 @media (max-width:768px){.w3-modal-content{width:500px}}
 @media (min-width:992px){.w3-modal-content{width:900px}}
-@media screen and (max-width:601px){.w3-topnav a{display:block}.w3-topnav a:first-child{padding:0 8px}}	
+@media screen and (max-width:601px){.w3-topnav a{display:block}.w3-topnav a:first-child{padding:0 8px}}
 @media screen and (max-width:600px){.w3-topnav{text-align:center}}
 @media (max-width:600px){.w3-hide-small{display:none !important;}}
 @media (max-width:991px) and (min-width:601px){.w3-hide-medium{display:none !important;}}
@@ -311,7 +311,7 @@ position:relative;-webkit-animation-name:animatebottom;-webkit-animation-duratio
 }
 
 #unDo{
-	background-color:#FFD373;	
+	background-color:#FFD373;
 }
 
 /*
@@ -331,8 +331,8 @@ position:relative;-webkit-animation-name:animatebottom;-webkit-animation-duratio
 .th{
     display: table-cell;
 
-}    
-    
+}
+
 .td{
     display: table-cell;
     }
