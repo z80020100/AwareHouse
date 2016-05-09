@@ -5,13 +5,13 @@
   <title>Report</title>
 
 <link href="./includes/jquery/jquery-ui-1.11.4/jquery-ui.min.css" rel="stylesheet">
-<!-- <link rel="stylesheet" href="./includes/jquery/mobile/jquery.mobile-1.4.5.min.css" /> -->
+<link rel="stylesheet" href="./includes/jquery/mobile/jquery.mobile-1.4.5.min.css" />
 <link href="./templates/jquery.comiseo.daterangepicker.css" rel="stylesheet">
 <link rel="stylesheet" href="./templates/w3.css">
 <link rel="stylesheet" href="./templates/report.css">
 
 
-<!-- <script src="./includes/jquery/mobile/jquery.mobile-1.4.5.min.js"></script> -->
+<script src="./includes/jquery/mobile/jquery.mobile-1.4.5.min.js"></script>
 <script src="./includes/jquery/jquery-1.11.3.min.js"></script>
 <script src="./includes/jquery/jquery-ui-1.11.4/jquery-ui.min.js"></script>
 <script src="./includes/jquery/moment.min.js"></script>
@@ -26,8 +26,8 @@
 <body>
   <div data-role="page"  id="main" >
 
-    <div data-role="panel" id="admin_panel" class="w3-sidenav w3-white w3-card-2" data-position="left" data-display="reveal" data-theme="a" style="display:none">
-      <a onclick="$('#admin_panel').hide()"
+    <div data-role="panel" id="admin_panel" class="w3-sidenav w3-white w3-card-2" data-position="left" data-display="push" data-theme="a" style="display:none">
+      <a onclick="$('#admin_panel').hide(); $('#header').css('margin-left', '0px'); $('#content').css('margin-left', '0px');"
       class="w3-xlarge w3-center">&times;</a>
       <br/>
       <a href="index.php" class="w3-center">即時訂單資訊</a>
@@ -39,16 +39,16 @@
       <a href="login.php" class="w3-center">登出</a>
     </div>
 
-    <div data-role="header">
+    <div data-role="header" id="header">
 
       <header class="theme">
       <!-- <header class="w3-container w3-teal"> -->
-        <div><span onclick="$('#admin_panel').show()" class="w3-xlarge" style="position: fixed; left:16px; top:8px;"><a href="#admin_panel" style="text-decoration: none; color:#FFFFFF;">&#9776;</a></span><center style="font-size: 2.5em;">早餐店報表</center></div>
+        <div><span onclick="$('#admin_panel').show(); $('#header').css('margin-left', '200px'); $('#content').css('margin-left', '200px');" class="w3-xlarge" style="position: fixed; left:16px; top:8px;"><a href="#admin_panel" style="text-decoration: none; color:#FFFFFF;">&#9776;</a></span><center style="font-size: 2.5em;">早餐店報表</center></div>
       </header>
 
     </div>
 
-    <div data-role="content">
+    <div data-role="content" id="content">
       <!-- <div id="a0" class="w3-container">
         <h3><center>即時報表</center></h3>
         <div class="dateRangePicker">
