@@ -26,7 +26,7 @@ header("Content-Type:text/html; charset=utf-8");
 else
 	echo "Stranger";*/
 
-$db = new Db("localhost", "root" , "Mysqlgavidy9", "bfproj");
+$db = new Db("localhost", "root" , "Mysqlgavidy9", "bf");
 
 $shift_start = 0;
 $shift_end = 23;
