@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<title>Breakfast Menu：註冊</title>
+<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=0">
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<link rel="stylesheet" href="./templates/w3.css">
+<link rel="stylesheet" href="http://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.4.0/css/font-awesome.min.css">
+
+<script src="jquery-1.11.3.min.js"></script>
+
+<body class="w3-container">
+
+
+<div id="main">
+
+    <header class="w3-container w3-teal">
+        <h1><center>{{REGISTER_TITLE}} </center></h1>
+    </header>
+
+	<center>
+	<div>{{REGISTER_MESSAGE}}</div>
+	<form action="register.php" method="POST">
+		<p id="uname"> 帳號：<input type="text" name="username"> </p>
+		<p id="uphone"> 手機：<input type="text" name="phone" id="phone"> </p>
+		
+		{% if REGISTER_ADMIN == true %}
+		<p id="upass"> 密碼：<input type="password" name="userpass"> </p>
+		{% else %}
+		<p id="uverification"> 驗證碼：<input type="text" name="verification"> </p>
+		{% endif %}
+
+		<p> <input type="submit" name="submit" value="login"> </p>
+	</form>
+	</center>
+	
+
+        <footer class="w3-container w3-teal"> &nbsp;        </footer>
+	
+	
+</div>
+<script src="templates/login.js"></script>
+	
+</body></html>
