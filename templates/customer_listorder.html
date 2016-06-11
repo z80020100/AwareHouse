@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+
+
+<html>
+
+<head>
+<title>早餐店後台管理系統</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="./templates/w3.css">
+
+<!---- CDN 
+<script src="//code.jquery.com/jquery-1.11.3.min.js"></script>
+<link rel="stylesheet" href="http://code.jquery.com/mobile/1.4.5/jquery.mobile-1.4.5.min.css" />
+<script src="http://code.jquery.com/mobile/1.4.5/jquery.mobile-1.4.5.min.js"></script>
+---->
+
+<script src="./includes/alertify/alertify.js"></script>
+<link rel="stylesheet" href="./includes/alertify/alertify.core.css" />
+<link rel="stylesheet" href="./includes/alertify/alertify.default.css" />
+
+<script src="./includes/jquery/jquery-1.11.3.min.js"></script>
+<script src="jquery.mobile.custom.min.js"></script>
+
+
+<!--- 
+<link rel="stylesheet" href="./includes/jquery/mobile/jquery.mobile-1.4.5.min.css" />
+<script src="./includes/jquery/mobile/jquery.mobile-1.4.5.min.js"></script>
+--->
+
+</head>
+<body class="w3-container">
+    
+    <nav id="nav_bar" class="w3-sidenav w3-white w3-card-2">
+        <a id="nav_cross" href="javascript:void(0)" class="w3-closenav w3-xxlarge w3-center" style="z-index:2">&times;</a>
+		<hr>
+        <br>
+		<a href="index.php" class="w3-center" >點餐</a>
+		<br>
+		<a href="login.php" class="w3-center" >登出</a>
+		<hr>
+    </nav>
+	
+	
+<div data-role="page"  id="main" >
+
+
+
+    <header class="w3-container w3-teal">
+      <span class="w3-opennav w3-xlarge"><a id="nav_open" style="text-decoration: none; color:#FFFFFF;">&#9776;</a></span>
+      <h1><center>早餐店後台管理系統</center></h1>
+    </header>
+
+
+    <div id="a0" class="w3-container">
+        <h3><center>即時訂單資訊</center></h3>
+
+	<div id="unDo">
+		<span id="unDoText"></span><span id="unDoCntDwn"></span>
+	</div>
+	<table class="w3-table w3-bordered w3-striped w3-border w3-hoverable" id="order_list" >
+	<thead id="order_list_header">
+		<tr >
+			<th>狀態</th>
+			<th>點餐時間</th>
+			<th>預計時間</th>
+			<th>桌號</th>
+			<th>人數</th>
+			<th>總價錢</th>
+		</tr>
+	</thead>
+	
+
+	</table>
+
+	<!------ Debug ----->
+	<button id="debug_get_table">Get table html</button>
+	<textarea id="debug_text"> </textarea>
+
+	</div>
+    
+    <div>&nbsp;</div>
+ </div>
+ 
+ <div data-role="footer">
+    <footer class="w3-container w3-teal">
+      <p> &nbsp; </p>
+    </footer>
+
+
+<script src="templates/customer_listorder_orderhandle.js"></script>
+<!---  {{series.main.ai.name}} ---->
+<p> </p>
+</div>
+
+
+
+</body>
+</html>

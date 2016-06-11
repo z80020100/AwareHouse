@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<title>Breakfast Menu：登入</title>
+<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=0">
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<link rel="stylesheet" href="./templates/w3.css">
+<link rel="stylesheet" href="http://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.4.0/css/font-awesome.min.css">
+
+<script src="jquery-1.11.3.min.js"></script>
+
+<body class="w3-container">
+
+
+
+<div id="main">
+
+    <header class="w3-container w3-teal">
+        <h1><center>登入／登出</center></h1>
+    </header>
+
+	<center>
+	<div>{{LOGIN_MESSAGE}}</div>
+	<form action="login.php" method="POST">
+		<p id="uname"> 帳號：<input type="text" name="username"> </p>
+		{% if ADMIN_LOGIN==  'admin' %}
+		<p id="upass"> 密碼：<input type="password" name="password" id="login_key"> </p>
+		{% else %}
+		<p id="uinfo"> 手機：<input type="text" name="phone"> </p>
+		{% endif %}
+		<p> <input type="submit" name="submit" value="login" value="登入"> </p>
+	</form>
+	</center>
+	
+
+        <footer class="w3-container w3-teal"> 
+		{% if ADMIN_LOGIN==  'admin' %}
+			<p> <a href="login.php">一般登入</a> </p>
+		{% else %}
+			<p> <a href="login.php?admin=1">管理員登入</a> </p>
+		{% endif %}
+
+		</footer>
+	
+	
+</div>
+<script src="templates/login.js"></script>
+	
+</body></html>
