@@ -2,7 +2,7 @@
 
 /* include libraries **********************************************/
 
-require_once ("dbclass.php");	
+require_once ("dbclass.php");
 require_once ("general_functions.php");
 
 // Mustache template system
@@ -25,12 +25,12 @@ header("Content-Type:text/html; charset=utf-8");
 	echo $_SESSION['user_name'];
 else
 	echo "Stranger";*/
-	
-$db = new Db("localhost", "root" , "isaac60103", "bfproj");
+
+$db = new Db("localhost", "root" , "", "bfproj");
 
 // 開放訂餐的時間 從 4點 ~ 14點  (13-14是一個時段)
 $shift_start =0;
-$shift_end = 24; 
+$shift_end = 24;
 
 
 
