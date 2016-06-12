@@ -509,7 +509,6 @@ function getOrdersReport(ret, t2) {
 
 
 function drawPieChart(dataset, set, times) {
-  'use strict';
 
   var width = 360;
   var height = 360;
@@ -589,6 +588,13 @@ function drawPieChart(dataset, set, times) {
   // path.on('mouseout', function() {                              // NEW
   //   tooltip.style('display', 'none');                           // NEW
   // });                                                           // NEW
+
+  path.on('mouseover', function(d) {
+    $(this).attr('style', 'opacity: 0.7');
+  });
+  path.on('mouseout', function(d) {
+    $(this).attr('style', 'opacity: 1');
+  });
 
   if (times == 0) {
     path.on('click', function(d) {                              // NEW
