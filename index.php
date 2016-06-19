@@ -80,7 +80,12 @@ while($series_data = $db->fetch_array($result)){
 */
 
 not_login_redirect();
-
+if($_SESSION['u_type'] == 0){
+		header("location:register.php");
+		die('');
+}
+	
+	
 // List Series by order_num
 $sql = "SELECT * FROM `series` ORDER BY `series`.`order_num` ASC ";
 $result = $db->query($sql);
@@ -147,13 +152,8 @@ while($series_data = $db->fetch_array($result)){
 	$all_series[$snum]['main'] = $all_main;
 }
 
-if(is_admin())
-	$admin_logined = 'admin';
-else
-	$admin_logined = '';
-
 echo $template->render(array(
-	'ADMIN_LOGIN' => $admin_logined,
+	'World2' => 'Mars2',
 	'all_series' => $all_series,
 ));
 
