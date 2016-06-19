@@ -14,6 +14,22 @@
 
 <body class="w3-container">
 
+{% if REGISTER_ADMIN == true %}
+    <nav id="nav_bar" class="w3-sidenav w3-white w3-card-2">
+        <a id="nav_cross" href="javascript:void(0)" class="w3-closenav w3-xxlarge w3-center" style="z-index:2">&times;</a>
+			  <a href="listorder.php" class="w3-center">即時訂單資訊</a>		
+			  <br>
+			  <a href="index.php" rel="external" class="w3-center">前台下單</a>		
+			  <br>
+			  <a href="edit_menu.php" rel="external" class="w3-center">菜單更新</a>		
+			  <br>
+			  <a href="report.php" rel="external" class="w3-center">報表產生</a>		
+			  <br>
+			  <a href="register.php" rel="external" class="w3-center">創造帳號</a> 
+			  <br>
+			  <a href="login.php" rel="external" class="w3-center">登出</a>
+    </nav>
+{% endif %}
 
 <div id="main">
 
@@ -30,7 +46,7 @@
 		{% if REGISTER_ADMIN == true %}
 		<p id="upass"> 密碼：<input type="password" name="userpass"> </p>
 		{% else %}
-		<p id="uverification"> 驗證碼：<input type="text" name="verification"> </p>
+		<!-- <p id="uverification"> 驗證碼：<input type="text" name="verification"> </p> -->
 		{% endif %}
 
 		<p> <input type="submit" name="submit" value="login"> </p>
