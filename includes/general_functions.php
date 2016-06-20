@@ -234,13 +234,16 @@ function is_admin(){
 }
 
 function not_admin_redirect(){
-	if(!is_admin())
+	if(!is_admin()){
 		header("location:login.php");
+		die('');
+	}
 }
 
 function not_login_redirect(){
 	if( !isset($_SESSION['u_name'])){
 		header("location:login.php");
+		die('');
 	} 
 }
 
