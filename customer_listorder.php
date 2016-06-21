@@ -20,7 +20,7 @@ $num = $db->numrow($result);
 $all_orders = array();
 */
 
-	$sql = "SELECT * FROM `config` WHERE `name` = 'verification'";
+/*	$sql = "SELECT * FROM `config` WHERE `name` = 'verification'";
 	$Qver = $db->query_select_one($sql);
 
 	$sql = "SELECT * FROM `config` WHERE `name` = 'verification_time'";
@@ -37,9 +37,10 @@ $all_orders = array();
 		
 		$Qver['value'] = $new_hash;
 	}
+*/
 	
 echo $template->render(array(
-	'verification_code' => $Qver['value'],
+	//'verification_code' => $Qver['value'],
 ));
 
 
