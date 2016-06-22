@@ -1,28 +1,32 @@
+﻿---- 20160622 ----
+New Function:
+1. 整合側邊欄
+
 ---- 20160522 ----
 New Function:
-1. �s�W�~���즲�Ƨǥ\��
-2. �s�W�t�C�Ƨǩ�\��
+1. 新增品項拖曳排序功能
+2. 新增系列排序拖功能
 
 Other:
-1. �e���L��
+1. 畫面微調
 
 Known Bugs:
-Bug 05222354 - �s�W/�R���t�C�Ϋ~����L�k�Ƨ�
+Bug 05222354 - 新增/刪除系列或品項後無法排序
 
 ---- 20160521 ----
 Bug Fix:
-1. �״_�s��~���ɡA�s�W/�R���Ӷ����O�y���e�����~�����D
-2. �״_�s�W/�R���Ӷ�����A�w��J���t�C�B�W�١B����|���������D
-3. �R�����ϥΪ�JS, PHP, HTML code
+1. 修復編輯品項時，新增/刪除細項類別造成畫面錯誤的問題
+2. 修復新增/刪除細項類後，已輸入的系列、名稱、價格會消失的問題
+3. 刪除未使用的JS, PHP, HTML code
 
 New Function:
-1. �s�W�~���t�C�w��\��
+1. 新增品項系列預選功能
 
 Other:
-1. �s�W/�s������e���L��
+1. 新增/編輯視窗畫面微調
 
 Known Bugs:
-1. ���D�s���檺URL���ܡA���ݵn�J�]�i�ק���
+1. 知道編輯菜單的URL的話，不需登入也可修改菜單
 
 
 ---- 20160515 ----

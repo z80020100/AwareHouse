@@ -19,6 +19,8 @@
 <link href="//cdnjs.cloudflare.com/ajax/libs/alertify.js/0.3.11/alertify.default.css" rel="stylesheet">  
 <script src="//cdnjs.cloudflare.com/ajax/libs/alertify.js/0.3.11/alertify.min.js"></script>
 
+<script src="includes/Sortable-1.4.0/Sortable.min.js"></script>
+
 <style>
 
 input[id^='es']
@@ -85,7 +87,7 @@ input[id^='ai']
 
 #edit_add_type_name{
 	padding:0px 15px;
-	border:1px gray dotted;
+	border:1px gray solid;
 	cursor:pointer;
 	-webkit-border-radius: 5px;
 	border-radius: 5px;
@@ -99,6 +101,10 @@ input[id^='ai']
 
 img[id^=del_additional_item_]{
 	cursor:pointer;
+}
+
+.sortable-chosen{
+	background-color: #FF0000 !important;
 }
 
 
@@ -122,30 +128,35 @@ img[id^=del_additional_item_]{
 			  <a href="login.php" rel="external" class="w3-center">登出</a>
     </nav>
 
-<div data-role="page"  id="main" >
+<div data-role="page"  id="Main" >
 <header class="w3-container w3-teal">
-       <span class="w3-opennav w3-xlarge"><a id="nav_open" style="text-decoration: none; color:#FFFFFF;">&#9776;</a></span>
-   <h1><center>編輯菜單</center></h1>
+	<span class="w3-opennav w3-xlarge"><a id="nav_open" style="text-decoration: none; color:#FFFFFF;">&#9776;</a></span>
+    <h1><center>編輯菜單</center></h1>
 </header>
 
-<div id="button">
+<div id="button" style="text-align:center;">
 	</br>
     <button id="add_series" class="w3-btn w3-teal w3-round-xlarge">新增系列</button>
+	<button id="edit_additional" class="w3-btn w3-teal w3-round-xlarge">編輯加點項目</button>
 	<button id="add_main" class="w3-btn w3-teal w3-round-xlarge">新增品項</button>
-    <button id="edit_additional" class="w3-btn w3-teal w3-round-xlarge">編輯加點項目</button>
+	<select id="batch_main_series" style="background: #009688  0px 0px; color: #ffffff; font-size: 14px; border: #009688 1px solid; padding: 5px;">
+		<option value="s_0">預先選取新增系列</option>
+	</select>
 </div>
+
 <div id="series_table">
     {% for series in all_series %}
-    <div id="s{{series.s_id}}" class="w3-group w3-row w3-padding-left">
-            <center>
-				<h3>
+    <!--div id="s{{series.s_id}}" class="w3-group w3-row w3-padding-left"-->
+	<div id="s{{series.s_id}}" class="series_div">
+
+				<h3 style="text-align:center;">
 					<input id="es_{{series.s_id}}" type="text" value="{{series.name}}"></br>
 					<a class="icon" id="del_s_{{series.s_id}}" href="#"><img src="icon/del_at_icon.png"></a>
 				</h3>
-			</center>
+
 
         {% for main in series.main %}
-            <button id="m{{main.m_id}}" class="w3-btn w3-teal w3-large w3-margin-2 w3-round" data-at_id={{main.at_id}} value="{{main.price}}"> {{main.name}} </button>
+            <div id="m{{main.m_id}}" class="w3-btn w3-teal w3-large w3-margin-2 w3-round" data-at_id={{main.at_id}} value="{{main.price}}"> {{main.name}} </div>
             <script>
                 
                 $("#m{{main.m_id}}").data({ "ro_at_id" : [ 
@@ -158,8 +169,8 @@ img[id^=del_additional_item_]{
             </script>
         {% endfor %}
     </div>
-
     {% endfor %}
+</div>
 
 <div id="new_main_set" class="w3-modal w3-padding-top" style="z-index:2">
     <div class="w3-modal-content w3-card-4">
@@ -172,14 +183,16 @@ img[id^=del_additional_item_]{
 			<div style="height:10px;"></div>
 			<div>
 				<span style="padding:5px">所屬系列：
-					<select id="new_main_series" style="width: 20%;">
+					<select id="new_main_series" style="width: 100%;">
 						<option value="s_0">請選擇所屬系列</option>
 					</select>
 				</span>
-				<span style="padding:5px">品項名稱：<input id="new_main_name" type="text" value="" placeholder="請輸入品項名稱" style="width: 15%;" /></span>
-				<span style="padding:5px">基底價格：<input id="new_main_price" type="number" value="0" min="0" style="width: 8%;" /></span>
-				<!--span id="add_detail" class="w3-btn"><b>＋</b></span-->
-				<span style="padding:5px">（總價=<span id="warning" style="font-weight: bold; color:red;">基底價格+細項價格</span>）</span>
+				</br>
+				<span style="padding:5px">品項名稱：<input id="new_main_name" type="text" value="" placeholder="請輸入品項名稱" style="width: 100%;" /></span>
+				</br>
+				<span style="padding:5px">基底價格：<input id="new_main_price" type="number" value="0" min="0" style="width: 100%;" /></span>
+				</br>
+				<center><span style="padding:5px">（總價=<span id="warning" style="font-weight: bold; color:red;">基底價格+細項價格</span>）</span></center>
 			</div>
 			<div style="height:10px;"></div>
 		</div>
@@ -218,53 +231,6 @@ img[id^=del_additional_item_]{
         <footer class="w3-container w3-teal">
             <div class="w3-container w3-col s2 w3-right w3-padding-top w3-teal">
                 <button id="add_item_finish" class="w3-btn w3-right w3-round">確定</button>
-            </div>
-        </footer>
-    </div>
-</div>
-
-<div id="edit_item_set" class="w3-modal w3-padding-top" style="z-index:2">
-    <div class="w3-modal-content w3-card-4">
-        <header class="w3-container w3-teal">
-            <span id="edit_close_item" class="w3-closebtn w3-xlarge">&times;</span>
-            <h3>編輯品項</h3>
-        </header>
-		
-		<div id="edit_detail_title" class="w3-row" style="border-style:outset; padding:5px;">
-			<div style="height:20px;"></div>
-			<div>
-				<span><input id="edit_main_name" type="text" value="請輸入品項名稱"/></span>
-				<span>請輸入品項基底價格<input id="edit_main_price" type="number" value="0" min="0" /></span>
-				<span id="edit_add_detail" class="w3-btn"><b>＋</b></span>
-				<span>（總價=<span style="font-weight: bold; color:red;">左方基底價格+下方細項價格</span>）</span>
-			</div>
-			<div style="height:20px;"></div>			
-		</div>
-
-        <footer class="w3-container w3-teal">
-            <div class="w3-container s2 w3-padding-top w3-teal">
-				<button id="del_item" class="w3-btn w3-left w3-round">刪除此品項</button>
-                <button id="edit_item_finish" class="w3-btn w3-right w3-round">確定</button>
-            </div>
-        </footer>
-    </div>
-</div>
-
-<div id="edit_add_set" class="w3-modal w3-padding-top" style="z-index:2">
-    <div class="w3-modal-content w3-card-4">
-        <header class="w3-container w3-teal">
-            <span id="edit_add_close" class="w3-closebtn w3-xlarge">&times;</span>
-            <h3>編輯加點項目</h3>
-        </header>
-		
-		<div id="edit_add_title" class="w3-row" style="border-style:outset; padding:5px;">
-			<div style="height:20px;"></div>
-			<div style="height:20px;"></div>			
-		</div>
-
-        <footer class="w3-container w3-teal">
-            <div class="w3-container s2 w3-padding-top w3-teal">
-                <button id="edit_add_finish" class="w3-btn w3-right w3-round">確定</button>
             </div>
         </footer>
     </div>
