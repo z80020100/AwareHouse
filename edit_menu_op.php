@@ -5,7 +5,7 @@ header("Content-Type:text/html; charset=utf-8");
 
 $action = $_REQUEST["action"]; // 接受傳遞過來的動作
 
- if($action == "add_series")
+if($action == "add_series")
 {
 	$new_series = $_REQUEST["new_series"];
 	//$order_number = $_REQUEST["order_number"];
@@ -20,17 +20,44 @@ else if($action == "edit_series")
 {
 	$series_text = $_REQUEST["series_text"];
 	$s_id = $_REQUEST["s_id"];
+	$main_data_array = array();
+	$order_num_data_array = array();
 	
-	$write_sql = "UPDATE `series` SET `name` = '$series_text' WHERE `series`.`s_id` = $s_id";
+	$read_sql = "SELECT `order_num` FROM `series` WHERE `s_id` = $s_id";
+	$result = $db->query($read_sql);
+	while($data = $db->fetch_array($result)){
+		array_push($order_num_data_array, $data);
+	}
+	$old_order_num = $order_num_data_array[0]['order_num'];
+	
+	$read_sql = "SELECT * FROM `main` WHERE `s_id` = $s_id";
+	$result = $db->query($read_sql);
+	while($data = $db->fetch_array($result)){
+		array_push($main_data_array, $data);
+	}
+	
+	//$write_sql = "UPDATE `series` SET `name` = '$series_text' WHERE `series`.`s_id` = $s_id";
+	$write_sql = "UPDATE `series` SET `activity` = '0' WHERE `series`.`s_id` = $s_id";
 	$result = $db->query($write_sql);
 	
-	echo json_encode($result, JSON_UNESCAPED_UNICODE);
+	$write_sql = "INSERT INTO `series` (`s_id`, `order_num`, `name`) VALUES (NULL, '$old_order_num', '$series_text')";
+	$result = $db->query($write_sql);
+	$new_s_id = $db->mysqli->insert_id;
+	
+	for($i = 0; $i < count($main_data_array); $i++){
+		$m_id = $main_data_array[$i]['m_id'];
+		//$write_sql = "DELETE FROM `main` WHERE `main`.`m_id` = $m_id";
+		$write_sql = "UPDATE `main` SET `s_id` = '$new_s_id' WHERE `main`.`m_id` = $m_id";
+		$result = $db->query($write_sql);
+	}
+	
+	echo json_encode($new_s_id, JSON_UNESCAPED_UNICODE);
 }
 
 else if($action == "get_series")
 {	
 	$series_array = array();
-	$read_sql = "SELECT * FROM `series` ORDER BY `order_num` ASC";
+	$read_sql = "SELECT * FROM `series` WHERE `activity` = '1' ORDER BY `order_num` ASC";
 	$result = $db->query($read_sql);
 	while($data = $db->fetch_array($result)){
 		array_push( $series_array, $data );
@@ -42,7 +69,7 @@ else if($action == "get_series")
 else if($action == "get_add_type")
 {	
 	$add_type_array = array();
-	$read_sql = "SELECT * FROM `additional_type`";
+	$read_sql = "SELECT * FROM `additional_type` WHERE `activity` = '1'";
 	$result = $db->query($read_sql);
 	while($data = $db->fetch_array($result)){
 		array_push( $add_type_array, $data );
@@ -55,7 +82,7 @@ else if($action == "get_add_data")
 {	
 	$at_id = $_REQUEST["at_id"];
 	$add_data_array = array();
-	$read_sql = "SELECT * FROM `additional_item` WHERE `at_id` = $at_id";
+	$read_sql = "SELECT * FROM `additional_item` WHERE `at_id` = $at_id AND `activity` = '1'";
 	$result = $db->query($read_sql);
 	while($data = $db->fetch_array($result)){
 		array_push( $add_data_array, $data );
@@ -132,7 +159,8 @@ else if($action == "add_additional_item"){
 else if($action == "del_additional_item"){
 	$ai_id = $_REQUEST["ai_id"];
 	
-	$write_sql = "DELETE FROM `additional_item` WHERE `additional_item`.`ai_id` = $ai_id";
+	//$write_sql = "DELETE FROM `additional_item` WHERE `additional_item`.`ai_id` = $ai_id";
+	$write_sql = "UPDATE `additional_item` SET `activity` = '0' WHERE `additional_item`.`ai_id` = $ai_id";
 	$result = $db->query($write_sql);
 	
 	echo json_encode($result, JSON_UNESCAPED_UNICODE);
@@ -141,11 +169,13 @@ else if($action == "del_additional_item"){
 else if($action == "del_additional_type"){
 	$at_id = $_REQUEST["at_id"];
 	
-	$write_sql = "DELETE FROM `additional_type` WHERE `additional_type`.`at_id` = $at_id";
-	$result = $db->query($write_sql); // 刪除細項種類
+	//$write_sql = "DELETE FROM `additional_type` WHERE `additional_type`.`at_id` = $at_id"; // 刪除細項種類
+	$write_sql = "UPDATE `additional_type` SET `activity` = '0' WHERE `additional_type`.`at_id` = $at_id";
+	$result = $db->query($write_sql);
 	
-	$write_sql = "DELETE FROM `additional_item` WHERE `additional_item`.`at_id` = $at_id";
-	$result = $db->query($write_sql); // 刪除該細項種類中所有細項
+	//$write_sql = "DELETE FROM `additional_item` WHERE `additional_item`.`at_id` = $at_id"; // 刪除該細項種類中所有細項
+	$write_sql = "UPDATE `additional_item` SET `activity` = '0' WHERE `additional_item`.`at_id` = $at_id";
+	$result = $db->query($write_sql);
 	
 	echo json_encode($result, JSON_UNESCAPED_UNICODE);
 }
@@ -176,16 +206,18 @@ else if($action == "get_ro_for_main"){
 else if($action == "del_item"){
 	$m_id = $_REQUEST["m_id"];
 	
-	$write_sql = "DELETE FROM `main` WHERE `main`.`m_id` = $m_id";
+	//$write_sql = "DELETE FROM `main` WHERE `main`.`m_id` = $m_id";
+	$write_sql = "UPDATE `main` SET `activity` = '0' WHERE `main`.`m_id` = $m_id";
 	$result = $db->query($write_sql);
 	
-	$write_sql = "DELETE FROM `required_option` WHERE `required_option`.`m_id` = $m_id";
+	//$write_sql = "DELETE FROM `required_option` WHERE `required_option`.`m_id` = $m_id";
+	$write_sql = "UPDATE `required_option` SET `activity` = '0' WHERE `required_option`.`m_id` = $m_id";
 	$result = $db->query($write_sql);
 
 	echo json_encode($result, JSON_UNESCAPED_UNICODE);
 }
 
-else if($action == "edit_item")
+else if($action == "edit_item") // 改為disable舊的，並新增一個項目，相關聯資料id要一併修改
 {	
 	$m_id = $_REQUEST["m_id"];
 	$single_at_id = $_REQUEST["single_at_id"];
@@ -193,8 +225,22 @@ else if($action == "edit_item")
 	$new_main_series = $_REQUEST["new_main_series"];
 	$new_main_name = $_REQUEST["new_main_name"];
 	$new_main_price = $_REQUEST["new_main_price"];
+	$order_num_data_array = array();
 	
-	$write_sql = "DELETE FROM `required_option` WHERE `required_option`.`m_id` = $m_id";
+	$read_sql = "SELECT `order_num` FROM `main` WHERE `m_id` = $m_id";
+	$result = $db->query($read_sql);
+	while($data = $db->fetch_array($result)){
+		array_push($order_num_data_array, $data);
+	}
+	$old_order_num = $order_num_data_array[0]['order_num'];
+	
+	//$write_sql = "DELETE FROM `required_option` WHERE `required_option`.`m_id` = $m_id";
+	// disable old required_option
+	$write_sql = "UPDATE `required_option` SET `activity` = '0' WHERE `required_option`.`m_id` = $m_id";
+	$result = $db->query($write_sql);
+	
+	// disable old main item
+	$write_sql = "UPDATE `main` SET `activity` = '0' WHERE `main`.`m_id` = $m_id";
 	$result = $db->query($write_sql);
 		
 	if($single_at_id[0] == "0"){
@@ -205,10 +251,14 @@ else if($action == "edit_item")
 		$has_ro = 1;
 	}
 	
-	$write_sql = "UPDATE `main` SET `name` = '$new_main_name', `price` = '$new_main_price', `s_id` = '$new_main_series', `at_id` = '$mul_at_id', `required_option` = '$has_ro' WHERE `main`.`m_id` = $m_id;";
+	//$write_sql = "UPDATE `main` SET `name` = '$new_main_name', `price` = '$new_main_price', `s_id` = '$new_main_series', `at_id` = '$mul_at_id', `required_option` = '$has_ro' WHERE `main`.`m_id` = $m_id;";
+	// add new main item
+	$write_sql = "INSERT INTO `main` (`m_id`, `name`, `price`, `s_id`, `at_id`, `required_option`, `order_num`) VALUES (
+		NULL, '$new_main_name', '$new_main_price', '$new_main_series', '$mul_at_id', '$has_ro', '$old_order_num'
+	)";
 	$result = $db->query($write_sql);
-	$new_m_id = $m_id;
-	if($has_ro == 1){
+	$new_m_id = $db->mysqli->insert_id;
+	if($has_ro == 1){ // add new required_option
 		for($i = 0; $i < count($single_at_id); $i++){
 			$at_id = $single_at_id[$i];
 			$write_ro_sql = "INSERT INTO `required_option` (`ro_id`, `name`, `m_id`, `at_id`) VALUES (NULL, '', '$new_m_id', '$at_id')";
@@ -232,14 +282,17 @@ else if($action == "del_series"){
 	
 	for($i = 0; $i < count($main_data_array); $i++){
 		$m_id = $main_data_array[$i]['m_id'];
-		$write_sql = "DELETE FROM `main` WHERE `main`.`m_id` = $m_id";
+		//$write_sql = "DELETE FROM `main` WHERE `main`.`m_id` = $m_id";
+		$write_sql = "UPDATE `main` SET `activity` = '0' WHERE `main`.`m_id` = $m_id";
 		$result = $db->query($write_sql);
 	
-		$write_sql = "DELETE FROM `required_option` WHERE `required_option`.`m_id` = $m_id";
+		//$write_sql = "DELETE FROM `required_option` WHERE `required_option`.`m_id` = $m_id";
+		$write_sql = "UPDATE `required_option` SET `activity` = '0' WHERE `required_option`.`m_id` = $m_id";
 		$result = $db->query($write_sql);
 	}
 	
-	$write_sql = "DELETE FROM `series` WHERE `series`.`s_id` = $s_id";
+	//$write_sql = "DELETE FROM `series` WHERE `series`.`s_id` = $s_id";
+	$write_sql = "UPDATE `series` SET `activity` = '0' WHERE `series`.`s_id` = $s_id";
 	$result = $db->query($write_sql);
 
 	echo json_encode(count($main_data_array), JSON_UNESCAPED_UNICODE);

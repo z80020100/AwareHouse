@@ -84,9 +84,12 @@ function edit_series(){
 					data: {"action": "edit_series", "series_text": series_text, "s_id": s_id},
 					async:false
 				})
-				.done(function(msg){
-					//alert(msg);
+				.done(function(new_s_id){
+					//alert(new_s_id);
 					alertify.success("修改「" + old_series + "」為「" + series_text + "」"); 
+					$("#series_table").load("edit_menu.php #series_table > div");
+					series_table_bind();
+					read_series_for_pre();
 				})
 				.fail(function(){
 					alertify.error('修改系列失敗！');
@@ -240,18 +243,18 @@ function add_item(){
 			if(add_type_array[i]['multiple_choice'] == '0') {// 下單時為單選的細項
 				$("#multi_choice").append($("<input>").attr({'type':"checkbox", 'name':"single", 'value':"at_" + add_type_array[i]['at_id'], 'id':"at_" + add_type_array[i]['at_id']}));
 				$("#multi_choice").append($("<label>").attr({'for':"at_" + add_type_array[i]['at_id']})
-					.append($("<a>").attr({"href":"#", "id": "edit_at_" + add_type_array[i]['at_id'], "class":"icon"}).append($("<img>").attr({"src": "icon/edit_at_icon.png"})))
+					.append($("<a>").attr({"href":"javascript:void(0)", "id": "edit_at_" + add_type_array[i]['at_id'], "class":"icon"}).append($("<img>").attr({"src": "icon/edit_at_icon.png"})))
 					.append($("<span>").append(add_type_array[i]['option_name']))
-					.append($("<a>").attr({"href":"#", "id": "del_at_" + add_type_array[i]['at_id'], "class":"icon"}).append($("<img>").attr({"src": "icon/del_at_icon.png"})))
+					.append($("<a>").attr({"href":"javascript:void(0)", "id": "del_at_" + add_type_array[i]['at_id'], "class":"icon"}).append($("<img>").attr({"src": "icon/del_at_icon.png"})))
 				);
 					
 			}
 			else{
 				$("#single_choice").append($("<input>").attr({'type':"radio", 'name':"mul", 'value':"at_" + add_type_array[i]['at_id'], 'id':"at_" + add_type_array[i]['at_id']}));
 				$("#single_choice").append($("<label>").attr({'for':"at_" + add_type_array[i]['at_id']})
-					.append($("<a>").attr({"href":"#", "id": "edit_at_" + add_type_array[i]['at_id'], "class":"icon"}).append($("<img>").attr({"src": "icon/edit_at_icon.png"})))
+					.append($("<a>").attr({"href":"javascript:void(0)", "id": "edit_at_" + add_type_array[i]['at_id'], "class":"icon"}).append($("<img>").attr({"src": "icon/edit_at_icon.png"})))
 					.append($("<span>").append(add_type_array[i]['option_name']))
-					.append($("<a>").attr({"href":"#", "id": "del_at_" + add_type_array[i]['at_id'], "class":"icon"}).append($("<img>").attr({"src": "icon/del_at_icon.png"})))
+					.append($("<a>").attr({"href":"javascript:void(0)", "id": "del_at_" + add_type_array[i]['at_id'], "class":"icon"}).append($("<img>").attr({"src": "icon/del_at_icon.png"})))
 				);
 				
 			}
@@ -1038,8 +1041,6 @@ $(document).ready(function(){
 	});
 	read_series_for_pre();
 	series_table_bind(); // 更新菜單畫面後需重新bind事件
-		
-	series_table_bind();
 	
         $("#nav_cross").click(function(){
 

@@ -1,4 +1,16 @@
-﻿---- 20160622 ----
+﻿---- 20160625 ----
+New Function:
+1. 菜單資料庫結構更動，增加欄位activity
+2. 導入資料庫版本控制軟體: dbv 1.2
+
+Fix Bug:
+1. 刪除菜單資料時，不實際從資料庫中DELETE，而是將欄位activity設為false，避免報表無法取得資料
+
+Known Issue:
+1. 修改菜單流程未完成（修改資料時，所有下層資料都要更動）
+2. dbv doesn't work on Google Chrome but works on IE, Edge, Firefox
+
+---- 20160622 ----
 New Function:
 1. 整合側邊欄
 

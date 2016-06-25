@@ -7,7 +7,7 @@ $template = $twig->loadTemplate('edit_menu.html');
 
 
 // List Series by order_num
-$sql = "SELECT * FROM `series` ORDER BY `series`.`order_num` ASC ";
+$sql = "SELECT * FROM `series` WHERE `activity` = 1 ORDER BY `series`.`order_num` ASC";
 $result = $db->query($sql);
 $num = $db->numrow($result);
 $all_series = array();
@@ -16,7 +16,7 @@ while($series_data = $db->fetch_array($result)){
 	$snum = array_push( $all_series, $series_data )-1;
 	
 	// List the dishes in the series
-	$sql = "SELECT * FROM `main` WHERE `s_id` = ". $series_data['s_id'] ." ORDER BY `main`.`order_num` ASC";
+	$sql = "SELECT * FROM `main` WHERE `s_id` = ". $series_data['s_id'] ." AND `activity` = 1 ORDER BY `main`.`order_num` ASC";
 	$m_result = $db->query($sql);
 	$all_main = array();
 	while($main_data = $db->fetch_array($m_result)){

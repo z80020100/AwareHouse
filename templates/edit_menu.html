@@ -184,7 +184,7 @@ img[id^=del_additional_item_]{
 
 				<h3 style="text-align:center;">
 					<input id="es_{{series.s_id}}" type="text" value="{{series.name}}"></br>
-					<a class="icon" id="del_s_{{series.s_id}}" href="#"><img src="icon/del_at_icon.png"></a>
+					<a class="icon" id="del_s_{{series.s_id}}" href="javascript:void(0)"><img src="icon/del_at_icon.png"></a>
 				</h3>
 
 
@@ -233,7 +233,7 @@ img[id^=del_additional_item_]{
 		<div>
 			<div style="width: 50%; width: 50%; padding:10px; float:left; word-break: break-all; border:0px solid #9bdf70;background:#f0fbeb">
 				主餐細項(多選)
-				<a href='#' id="add_multi_choice"><img src="icon/add_at_icon.png"></a>
+				<a href="javascript:void(0)" id="add_multi_choice"><img src="icon/add_at_icon.png"></a>
 				<div class="multi_choice" id="multi_choice">
 					<input type="checkbox" name="single" value="single_0" id="single_0">
 					<label for="single_0">漢堡種類</label>
@@ -244,19 +244,19 @@ img[id^=del_additional_item_]{
 			</div>
 			<div style="width: 50%; padding:10px; float:right; word-break: break-all; border:0px solid #a9c9e2;background:#e8f5fe">
 				加點細項(單選)
-				<a href='#' id="add_single_choice"><img src="icon/add_at_icon.png"></a>
+				<a href="javascript:void(0)" id="add_single_choice"><img src="icon/add_at_icon.png"></a>
 				<div class="single_choice" id="single_choice">
 					<input type="radio" name="mul" value="mul_0" id="mul_0" checked>
 					<label for="mul_0">
-						<a href='#' id="edit_at_icon_0" onclick="alert('編輯加點細項');"><img src="icon/edit_at_icon.png"></a>
+						<a href="javascript:void(0)" id="edit_at_icon_0" onclick="alert('編輯加點細項');"><img src="icon/edit_at_icon.png"></a>
 						無加點
-						<a href='#' id="del_at_icon_0" onclick="alert('刪除加點類別');"><img src="icon/del_at_icon.png"></a>
+						<a href="javascript:void(0)" id="del_at_icon_0" onclick="alert('刪除加點類別');"><img src="icon/del_at_icon.png"></a>
 						</label>
 				</div>
 			</div>
 			<div style="clear: both;"></div> <!--清除float效果-->
 			<div id="edit_add" style="padding:10px; word-break: break-all; border:0px solid #e3e197;background:#ffffdd">
-				<span>細項編輯<a href="#" id="add_additional_item"><img src="icon/add_at_icon.png"></a></span>
+				<span>細項編輯<a href="javascript:void(0)" id="add_additional_item"><img src="icon/add_at_icon.png"></a></span>
 				<div id="edit_add_detail"></div>
 			</div>
 		</div>
