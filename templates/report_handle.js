@@ -374,8 +374,6 @@ function getOrdersReport(ret, t2) {
   for (var i = 0; i < ret[2].length; i++) {
     count[ret[2][i] - shift_start]++;
   }
-  console.log(typeof shift_start);
-  console.log(typeof shift_end);
   console.log(count);
 
   $('.bar').remove();
@@ -405,6 +403,7 @@ function getOrdersReport(ret, t2) {
   var menu_raw = {};
   var order_info = ret[3], order_info_size = ret[3].length;
   var all_series = ret[4], all_series_size = ret[4].length;
+  var log_info = ret[5], log_info_size = ret[5].size;
   var series_dataset = [];
 
   console.log(order_info);
@@ -429,19 +428,25 @@ function getOrdersReport(ret, t2) {
   }
 
   // CALCULATE THE quantity AND price OF ALL ITEM IN menu_raw
-  for (var i = 0; i < order_info_size; i++) { //LOOP ALL THE ORDERS
-    var item_array = order_info[i]['summary_array'];
-    var item_array_size = item_array.length;
-    for (var j = 0; j < item_array_size; j++) { //LOOP ALL ITEMS IN 1 ORDER
-      var name = item_array[j]['name'];
-      menu_raw[name]["quantity"] += parseInt(item_array[j]["quantity"]);
+  // for (var i = 0; i < order_info_size; i++) { //LOOP ALL THE ORDERS
+  //   var item_array = order_info[i]['summary_array'];
+  //   var item_array_size = item_array.length;
+  //   for (var j = 0; j < item_array_size; j++) { //LOOP ALL ITEMS IN 1 ORDER
+  //     var name = item_array[j]['name'];
+  //     menu_raw[name]["quantity"] += parseInt(item_array[j]["quantity"]);
 
-      menu_raw[name]["price"] += parseInt(item_array[j]["main_price"]);
-      var ro = item_array[j]["RO_array"], ro_size = ro.length;
-      var ai = item_array[j]["AI_array"], ai_size = ai.length;
-      for (var k = 0; k < ro_size; k++) menu_raw[name]["price"] += parseInt(ro[k]["price"]);
-      for (var k = 0; k < ai_size; k++) menu_raw[name]["price"] += parseInt(ai[k]["price"]);
-    }
+  //     menu_raw[name]["price"] += parseInt(item_array[j]["main_price"]);
+  //     var ro = item_array[j]["RO_array"], ro_size = ro.length;
+  //     var ai = item_array[j]["AI_array"], ai_size = ai.length;
+  //     for (var k = 0; k < ro_size; k++) menu_raw[name]["price"] += parseInt(ro[k]["price"]);
+  //     for (var k = 0; k < ai_size; k++) menu_raw[name]["price"] += parseInt(ai[k]["price"]);
+  //   }
+  // }
+
+  // CALCULATE THE quantity AND price OF ALL ITEM IN menu_raw
+  for (var i = 0; i < log_info_size; i++) {
+    menu_raw[log_info[i]["m_text"]]["quantity"] += log_info[i]["quantity"];
+    menu_raw[log_info[i]["m_text"]]["price"] += log_info[i]["price"];
   }
 
   // UPDATE series_dataset

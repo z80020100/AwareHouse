@@ -130,7 +130,7 @@ function getOrderInfo($db, $start_time, $end_time) {
 					$outItem['AI_array']        =   $ai_info;
 
 					array_push($item_info, $outItem);
-					
+
 				}
             }
             $outShare = array();
@@ -225,6 +225,17 @@ function getAllLists($db) {
     return $all_series;
 }
 
+function getLogInfo($db, $start_time, $end_time) {
+    global $shift_start, $shift_end;
+    $sql = "SELECT * FROM `log` WHERE `o_time` >= '".$start_time."' AND `o_time` <= '".$end_time."' AND HOUR(`o_time`) >= ".$shift_start." AND HOUR(`o_time`) < ".($shift_end+1);
+    $result = $db->query($sql);
+    $ret = array();
+    while($order = $db->fetch_array($result)){
+        array_push($ret, $order);
+    }
+    return $ret;
+}
+
 $type = $_REQUEST['request']['type'];
 $start_time = $_REQUEST['request']['time'][0];
 $end_time = $_REQUEST['request']['time'][1];
@@ -251,8 +262,6 @@ switch ($type) {
     array_push($ret, $shift_start);
     array_push($ret, $shift_end);
     $time = array();
-    ////define in the general.php
-    //$shift_start = 4 ; $shift_end = 13
 
     $orders = getOrderInfo($db, $start_time, $end_time);
     $orders_size = count($orders);
@@ -266,6 +275,7 @@ switch ($type) {
     array_push($ret, $time);
     $ret[3] = getOrderInfo($db, $start_time, $end_time);
     $ret[4] = getAllLists($db);
+    $ret[5] = getLogInfo($db, $start_time, $end_time);
     echo json_encode($ret, JSON_UNESCAPED_UNICODE);
     break;
 
