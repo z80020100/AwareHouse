@@ -54,19 +54,43 @@
 
 </head>
 <body class="w3-container">
-    
+
+{% if USER_IDENTITY == 'admin'  %}
+    <nav id="nav_bar" class="w3-sidenav w3-white w3-card-2">
+		<a id="nav_cross" href="javascript:void(0)" class="w3-closenav w3-xxlarge w3-center" style="z-index:2">&times;</a>
+		<hr>
+		<a href="listorder.php" rel="external" class="w3-center">即時訂單資訊</a>		
+		<br>
+		<a href="index.php" rel="external" class="w3-center">前台下單</a>		
+		<br>
+		<a href="edit_menu.php" rel="external" class="w3-center">菜單更新</a>		
+		<br>
+		<a href="report.php" rel="external" class="w3-center">報表產生</a>		
+		<br>
+		<a href="register.php" rel="external" class="w3-center">創造帳號</a> 
+		<br>
+		<a href="login.php" rel="external" class="w3-center">登出</a>
+    </nav>
+{% elseif USER_IDENTITY == 'member' %}
     <nav id="nav_bar" class="w3-sidenav w3-white w3-card-2">
         <a id="nav_cross" href="javascript:void(0)" class="w3-closenav w3-xxlarge w3-center" style="z-index:2">&times;</a>
-			  <a href="#a0" class="w3-center">即時訂單資訊</a>		
-			  <br>
-			  <a href="index.php" rel="external" class="w3-center">前台下單</a>		
-			  <br>
-			  <a href="edit_menu.php" rel="external" class="w3-center">菜單更新</a>		
-			  <br>
-			  <a href="report.php" rel="external" class="w3-center">報表產生</a>		
-			  <br>
-			  <a href="register.php" rel="external" class="w3-center">創造帳號</a> 
-			  <br>
-			  <a href="login.php" rel="external" class="w3-center">登出</a>
+		<hr>
+        <br>
+		<a href="customer_listorder.php" class="w3-center" >出餐進度</a>
+		<br>
+		<a href="login.php" class="w3-center" >登出</a>
+		<hr>
+        {% for series in all_series %}
+        <a href="#s{{series.s_id}}" class="w3-center" >{{series.name}}</a>
+        <br>
+        {% endfor %}
     </nav>
+{% else %}	
 	
+{% endif %}
+	
+<div data-role="page"  id="main" >
+    <header class="w3-container w3-teal">
+      <span class="w3-opennav w3-xlarge"><a id="nav_open" style="text-decoration: none; color:#FFFFFF;">&#9776;</a></span>
+      <h1><center>早餐店後台管理系統</center></h1>
+    </header>
