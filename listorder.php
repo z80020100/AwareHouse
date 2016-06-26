@@ -1,7 +1,10 @@
 <?php
 
-require_once('includes/general.php');
-header("Content-Type:text/html; charset=utf-8");
+//require_once('includes/general.php');
+//header("Content-Type:text/html; charset=utf-8");
+
+$_PAGE_TITLE = '早餐店後台管理系統';
+require_once('includes/header.php');
 
 
 $template = $twig->loadTemplate('listorder.html');
@@ -15,9 +18,11 @@ $all_orders = array();
 
 not_admin_redirect();
 
-echo $template->render(array(
-
+$_HTML .= $template->render(array(
+	
 ));
 
+
+require_once('includes/footer.php');
 
 ?>
