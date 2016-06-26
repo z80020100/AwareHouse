@@ -181,7 +181,7 @@ $('#order_list').on("click", ".button_addtime", function(e){
 		console.log("listorder_process.php:[ " +msg +"]");
 		//if(msg == 'ok')
 		alertify.success("成功修改等待時間", "", 1000);
-		time_refresh();
+		time_refresh(2);
 	})
 	.fail(function(jqXHR, textStatus, errorThrown){
 		console.log(textStatus, errorThrown);
@@ -513,6 +513,7 @@ var order_disptime =  month + '/'  + date + ' '  + hour + ':' + min ;
 			<tr id="order_detail_'+order_info.o_id+'" class="order_detail" >                                                                                                      		\n\
 	';
 
+	console.log('WTF:'+order_info.o_estimate_time);
 	if( order_info.o_estimate_time == 'NULL' ){
 		var order_est_disptime = '---';
 	}
@@ -527,6 +528,8 @@ var order_disptime =  month + '/'  + date + ' '  + hour + ':' + min ;
 			var order_est_disptime = diffMins + '分鐘';//order_info.o_estimate_time;  
 		else
 			var order_est_disptime = '超過' + diffMins + '分鐘';//order_info.o_estimate_time;  
+
+		$('.order_view[order_id|='+order_info.o_id+'] > .order_title > .order_estimate_time').data("est_time", order_esttime);		//將估計完成時間寫入
 		
 	}
 
@@ -534,7 +537,6 @@ var order_disptime =  month + '/'  + date + ' '  + hour + ':' + min ;
 	var t = order_disptime.split(/[- :]/);
 	var ordertime = new Date(t[0], t[1]-1, t[2], t[3], t[4], t[5]);
 
-		$('.order_view[order_id|='+order_info.o_id+'] > .order_title > .order_estimate_time').data("est_time", order_esttime);		//將估計完成時間寫入
 	//	alertify.log(order_esttime);
 	//	alertify.log( $('.order_view[order_id|='+order_info.o_id+'] > .order_title > .order_estimate_time').data("est_time") );
 
@@ -604,11 +606,13 @@ function refresh_order( fresh_page = false ){
 					//alert(msg[i]['status']);
 					$('#order_detail_'+msg[i].o_id).data("status", msg[i]['status']);
 					
-					var t = msg[i].o_estimate_time.split(/[- :]/);
-					var order_esttime = new Date(t[0], t[1]-1, t[2], t[3], t[4], t[5]);
-					//console.log("refresh block: [est time] "+msg[i][')
-					$('.order_view[order_id='+msg[i].o_id+'] > .order_title > .order_estimate_time').data("est_time", order_esttime);
-					time_refresh();
+					if(msg[i].o_estimate_time != 'NULL'){	
+						var t = msg[i].o_estimate_time.split(/[- :]/);
+						var order_esttime = new Date(t[0], t[1]-1, t[2], t[3], t[4], t[5]);
+						//console.log("refresh block: [est time] "+msg[i][')
+						$('.order_view[order_id='+msg[i].o_id+'] > .order_title > .order_estimate_time').data("est_time", order_esttime);
+					}
+					time_refresh(3);
 					refresh_orderstatus(msg[i].o_id, true);
 					console.log("refresh block:"+msg[i].o_id);
 				}
@@ -633,12 +637,14 @@ refresh_order(true);
 setInterval( function(){ refresh_order(false); }, 3000);
 
  
- function time_refresh()
+ function time_refresh( alt )
  {
 	 $('.order_view > .order_title > .order_estimate_time').each(function(index){
 		 
 		//alertify.log($(this).data("est_time"));
 		var order_esttime = $(this).data("est_time"); 
+		console.log('WTF2:('+alt+')'+(typeof order_esttime));
+			
 		if(typeof order_esttime != "undefined"){
 			var timeDiff = order_esttime.getTime() - Date.now();
 			var diffMins = Math.ceil(Math.abs(timeDiff) / (1000 * 60)); 
@@ -654,4 +660,4 @@ setInterval( function(){ refresh_order(false); }, 3000);
  }
 
 
-setInterval('time_refresh()',10000);
+setInterval('time_refresh(1)',10000);
