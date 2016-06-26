@@ -1,19 +1,21 @@
 <?php
 
-require_once('includes/general.php');
-header("Content-Type:text/html; charset=utf-8");
-
+$_PAGE_TITLE = '早餐店後台管理系統';
+require_once('includes/header.php');
 
 
 $page_verify = false;
 $verification_success = false;
 if(isset($_SESSION['u_name'])){
-	if($_SESSION['u_type'] != 0){
+	if($_SESSION['u_type'] == 0) 	// NOT ACTIVATED
+		$page_verify = true;
+	else if(is_admin()){  			// is the user admin?
+		$_page_verify = false;
+	}
+	else{
 		header("location:index.php");
 		die('');
 	}
-	else
-		$page_verify = true;
 }
 
 if($page_verify == true){
@@ -88,7 +90,7 @@ else{
 	$register_admin = false;
 }
 
-echo $template->render(array(
+$_HTML .=  $template->render(array(
 	'USERNAME' => (isset($_SESSION['u_name']))?$_SESSION['u_name']:'',
 	'USERPHONE' => (isset($_SESSION['ui_phone']))?$_SESSION['ui_phone']:'',
 	'REGISTER_TITLE' => $register_title,
@@ -97,4 +99,5 @@ echo $template->render(array(
 	'VERIFICATION_SUCCESS' => $verification_success,
 ));
 
+require_once('includes/footer.php');
 ?>
