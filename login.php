@@ -1,8 +1,8 @@
 <?php
 
 
-require_once('includes/general.php');
-header("Content-Type:text/html; charset=utf-8");
+$_PAGE_TITLE = '早餐店後台管理系統';
+require_once('includes/header.php');
 
 $template = $twig->loadTemplate('login.html');
 $message = "";
@@ -38,17 +38,18 @@ if(isset($_POST['submit'])){
 }
 
 if(isset($_GET['admin'] )){
-	echo $template->render(array(
+	$_HTML .= $template->render(array(
 		'ADMIN_LOGIN' => 'admin',
 		'LOGIN_MESSAGE' => $message,
 	));
 }
 else{
-	echo $template->render(array(
+	$_HTML .= $template->render(array(
 		'LOGIN_MESSAGE' => $message,
 	));
 }
 
+require_once('includes/footer.php');
 /*
 session_start();
 

@@ -1,7 +1,8 @@
 <?php
 
-require_once('includes/general.php');
-header("Content-Type:text/html; charset=utf-8");
+$_PAGE_TITLE = '早餐店後台管理系統';
+require_once('includes/header.php');
+
 
 
 
@@ -39,9 +40,9 @@ $all_orders = array();
 	}
 */
 	
-echo $template->render(array(
+$_HTML .= $template->render(array(
 	//'verification_code' => $Qver['value'],
 ));
 
-
+require_once('includes/footer.php');
 ?>
