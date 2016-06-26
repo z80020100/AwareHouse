@@ -222,6 +222,14 @@ function user_login($username, $password, $phone_info){
 		return false;
 }
 
+function is_login(){
+	if( !isset($_SESSION['u_name'])){
+		return false;
+	} 	
+	else
+		return true;
+}
+
 function is_admin(){
 	if(isset($_SESSION['admin'])){
 		if( $_SESSION['admin'] == true)
