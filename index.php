@@ -4,7 +4,16 @@
 
 require_once('includes/general.php');
 header("Content-Type:text/html; charset=utf-8");
-	
+
+
+$_PAGE_TITLE = '早餐店菜單';
+require_once('includes/header.php');
+
+$login_error = false;
+if(!isset($_SESSION['user_name'])){
+    //  header('location:login.php');
+}
+
 
 //$template = new Mustache_Engine(array());
 $template = $twig->loadTemplate('index.html');
@@ -151,16 +160,23 @@ while($series_data = $db->fetch_array($result)){
 	}	
 	$all_series[$snum]['main'] = $all_main;
 }
-
+/*
 echo $template->render(array(
 	'World2' => 'Mars2',
 	'all_series' => $all_series,
+));*/
+
+$_HTML .= $template->render(array(
+	'World2' => 'Mars2',
+	'all_series' => $all_series,
+    //'verification_code' => $Qver['value'],
 ));
 
 
 
 
-//echo $template->render('Hello, {{planet}}!', array('planet' => 'World'));
+require_once('includes/footer.php');
+
 
 
 ?>
