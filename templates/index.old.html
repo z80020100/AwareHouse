@@ -8,17 +8,55 @@
 <title>Breakfast Menu</title>
 <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=0">
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+
+<!-----------------------------------------------------------------------------------------
+
+	Unified JS & CSS Block 
+
+------------------------------------------------------------------------------------------>
+
+<!--- w3 css template --->
 <link rel="stylesheet" href="./templates/w3.css">
-<link rel="stylesheet" href="http://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.4.0/css/font-awesome.min.css">
 <link rel="stylesheet" href="http://www.w3schools.com/lib/w3-colors-vivid.css">
 
-<link href="//cdnjs.cloudflare.com/ajax/libs/alertify.js/0.3.11/alertify.core.css" rel="stylesheet">  
-<link href="//cdnjs.cloudflare.com/ajax/libs/alertify.js/0.3.11/alertify.default.css" rel="stylesheet">  
-<script src="//cdnjs.cloudflare.com/ajax/libs/alertify.js/0.3.11/alertify.min.js"></script>
-<script src="jquery-1.11.3.min.js"></script>
-<script src="my_jquery.js"></script>
-<script src="jquery.mobile.custom.min.js"></script>
 
+<!--- alertify --->
+<script src="./includes/alertify/alertify.js"></script>
+<link rel="stylesheet" href="./includes/alertify/alertify.core.css" />
+<link rel="stylesheet" href="./includes/alertify/alertify.default.css" />
+
+
+<!--- jQuery --->
+<script src="./includes/jquery/jquery-1.11.3.min.js"></script>
+<script src="jquery.mobile.custom.min.js"></script>
+<link rel="stylesheet" href="http://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.4.0/css/font-awesome.min.css">
+<link href="./includes/jquery/jquery-ui-1.11.4/jquery-ui.min.css" rel="stylesheet">
+<script src="./includes/jquery/jquery-ui-1.11.4/jquery-ui.min.js"></script>
+<script src="./includes/jquery/moment.min.js"></script>
+
+
+	<!--- in report <script src="./includes/jquery/mobile/jquery.mobile-1.4.5.min.js"></script> --->
+
+	<!---- START: Why is this in template?	----->
+<script src="./templates/jquery.comiseo.daterangepicker.js"></script>
+<link href="./templates/jquery.comiseo.daterangepicker.css" rel="stylesheet">
+	<!---- END: Why is this in template?  ----->
+	
+
+<!--- d3 --->
+<script src="./includes/d3/d3.min.js"></script>
+
+<!--- Sortable --->
+<script src="includes/Sortable-1.4.0/Sortable.min.js"></script>
+
+<!-----------------------------------------------------------------------------------------
+
+	Unified JS & CSS Block 
+
+------------------------------------------------------------------------------------------>
+
+
+<script src="my_jquery.js"></script>
 </head>
 
 <body class="w3-container">
@@ -77,7 +115,7 @@
         {% for main in series.main %}
             
             <div id="m{{main.m_id}}_ro_at_id" style="display:none"></div>
-            <button id="m{{main.m_id}}" class="w3-btn w3-large w3-margin-4 w3-round" data-at_id={{main.at_id}} value="{{main.price}}"> {{main.name}} </button>
+            <button id="m{{main.m_id}}" class="w3-btn w3-margin-bottom w3-round" style="height:50px;width:125px;" data-at_id="{{main.at_id}}" value="{{main.price}}">{{main.name}} </button>
             <script>
                 
                 $("#m{{main.m_id}}").data({ "ro_at_id" : [ 

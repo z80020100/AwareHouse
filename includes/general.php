@@ -26,7 +26,7 @@ header("Content-Type:text/html; charset=utf-8");
 else
 	echo "Stranger";*/
 
-$db = new Db("localhost", "root" , "", "bfproj");
+$db = new Db("localhost", "root" , "isaac60103", "bfproj");
 
 // 開放訂餐的時間 從 4點 ~ 14點  (13-14是一個時段)
 $shift_start =0;
