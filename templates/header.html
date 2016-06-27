@@ -95,6 +95,8 @@
 	
 <div data-role="page"  id="main" >
     <header class="w3-container w3-teal">
+	{% if USER_IDENTITY != 'guest'  %}
       <span class="w3-opennav w3-xlarge"><a id="nav_open" style="text-decoration: none; color:#FFFFFF;">&#9776;</a></span>
+	{% endif %}
       <h1><center>早餐店後台管理系統</center></h1>
     </header>
