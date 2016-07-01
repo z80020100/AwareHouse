@@ -8,7 +8,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <!-----------------------------------------------------------------------------------------
 
-	Unified JS & CSS Block 
+	Unified JS & CSS Block
 
 ------------------------------------------------------------------------------------------>
 
@@ -37,7 +37,7 @@
 <script src="./templates/jquery.comiseo.daterangepicker.js"></script>
 <link href="./templates/jquery.comiseo.daterangepicker.css" rel="stylesheet">
 	<!---- END: Why is this in template?  ----->
-	
+
 
 <!--- d3 --->
 <script src="./includes/d3/d3.min.js"></script>
@@ -48,11 +48,12 @@
 
 <!--- our stylesheet & js --->
 <link rel="stylesheet" href="./templates/listorder.css">
+<link rel="stylesheet" href="./templates/report.css">
 <script src="./templates/header.js"></script>
 
 <!-----------------------------------------------------------------------------------------
 
-	Unified JS & CSS Block 
+	Unified JS & CSS Block
 
 ------------------------------------------------------------------------------------------>
 
@@ -63,15 +64,15 @@
     <nav id="nav_bar" class="w3-sidenav w3-white w3-card-2">
 		<a id="nav_cross" href="javascript:void(0)" class="w3-closenav w3-xxlarge w3-center" style="z-index:2">&times;</a>
 		<hr>
-		<a href="listorder.php" rel="external" class="w3-center">即時訂單資訊</a>		
+		<a href="listorder.php" rel="external" class="w3-center">即時訂單資訊</a>
 		<br>
-		<a href="index.php" rel="external" class="w3-center">前台下單</a>		
+		<a href="index.php" rel="external" class="w3-center">前台下單</a>
 		<br>
-		<a href="edit_menu.php" rel="external" class="w3-center">菜單更新</a>		
+		<a href="edit_menu.php" rel="external" class="w3-center">菜單更新</a>
 		<br>
-		<a href="report.php" rel="external" class="w3-center">報表產生</a>		
+		<a href="report.php" rel="external" class="w3-center">報表產生</a>
 		<br>
-		<a href="register.php" rel="external" class="w3-center">創造帳號</a> 
+		<a href="register.php" rel="external" class="w3-center">創造帳號</a>
 		<br>
 		<a href="login.php" rel="external" class="w3-center">登出</a>
     </nav>
@@ -89,10 +90,10 @@
         <br>
         {% endfor %}
     </nav>
-{% else %}	
-	
+{% else %}
+
 {% endif %}
-	
+
 <div data-role="page"  id="main" >
     <header class="w3-container w3-teal">
 	{% if USER_IDENTITY != 'guest'  %}

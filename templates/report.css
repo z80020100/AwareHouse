@@ -2,7 +2,6 @@ body {
   font-family: "Helvetica Neue", "Helvetica", Arial, sans-serif;
   margin: auto;
   position: relative;
-  background-color: #F1FAFB;
 }
 
 input,button,select,textarea{outline:none}
