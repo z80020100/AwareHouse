@@ -240,18 +240,18 @@ function add_item(){
 			if(add_type_array[i]['multiple_choice'] == '0') {// 下單時為單選的細項
 				$("#multi_choice").append($("<input>").attr({'type':"checkbox", 'name':"single", 'value':"at_" + add_type_array[i]['at_id'], 'id':"at_" + add_type_array[i]['at_id']}));
 				$("#multi_choice").append($("<label>").attr({'for':"at_" + add_type_array[i]['at_id']})
-					.append($("<a>").attr({"href":"#", "id": "edit_at_" + add_type_array[i]['at_id'], "class":"icon"}).append($("<img>").attr({"src": "icon/edit_at_icon.png"})))
+					.append($("<a>").attr({"href":"javascript:void(0)", "id": "edit_at_" + add_type_array[i]['at_id'], "class":"icon"}).append($("<img>").attr({"src": "icon/edit_at_icon.png"})))
 					.append($("<span>").append(add_type_array[i]['option_name']))
-					.append($("<a>").attr({"href":"#", "id": "del_at_" + add_type_array[i]['at_id'], "class":"icon"}).append($("<img>").attr({"src": "icon/del_at_icon.png"})))
+					.append($("<a>").attr({"href":"javascript:void(0)", "id": "del_at_" + add_type_array[i]['at_id'], "class":"icon"}).append($("<img>").attr({"src": "icon/del_at_icon.png"})))
 				);
 					
 			}
 			else{
 				$("#single_choice").append($("<input>").attr({'type':"radio", 'name':"mul", 'value':"at_" + add_type_array[i]['at_id'], 'id':"at_" + add_type_array[i]['at_id']}));
 				$("#single_choice").append($("<label>").attr({'for':"at_" + add_type_array[i]['at_id']})
-					.append($("<a>").attr({"href":"#", "id": "edit_at_" + add_type_array[i]['at_id'], "class":"icon"}).append($("<img>").attr({"src": "icon/edit_at_icon.png"})))
+					.append($("<a>").attr({"href":"javascript:void(0)", "id": "edit_at_" + add_type_array[i]['at_id'], "class":"icon"}).append($("<img>").attr({"src": "icon/edit_at_icon.png"})))
 					.append($("<span>").append(add_type_array[i]['option_name']))
-					.append($("<a>").attr({"href":"#", "id": "del_at_" + add_type_array[i]['at_id'], "class":"icon"}).append($("<img>").attr({"src": "icon/del_at_icon.png"})))
+					.append($("<a>").attr({"href":"javascript:void(0)", "id": "del_at_" + add_type_array[i]['at_id'], "class":"icon"}).append($("<img>").attr({"src": "icon/del_at_icon.png"})))
 				);
 				
 			}
@@ -399,7 +399,7 @@ function add_item(){
 						var edit_add_detail_div = $("<div>").css({'border-color':'#ABABAB', 'border-style':'solid', 'border-width':'1px', 'border-radius':'20px'});
 						
 						// 刪除細項按紐實作
-						var del_additional_item_button = $("<a>").attr({"id":"del_additional_item_" + add_data_array[i]["ai_id"], "href":"#"})
+						var del_additional_item_button = $("<a>").attr({"id":"del_additional_item_" + add_data_array[i]["ai_id"], "href":"javascript:void(0)"})
 							.append($("<img>").attr({"src":"icon/del_ai_icon.png"})
 						);
 						del_additional_item_button.bind('click', function(){
@@ -796,7 +796,7 @@ function edit_item(){
 			})
 			.done(function(){
 				$("#close_new_main_win").trigger('click');
-				$("#series_table").load("edit_menu.php #series_table");
+				$("#series_table").load("edit_menu.php #series_table > div");
 				alertify.success("編輯品項成功！");
 				series_table_bind();
 			})
@@ -825,7 +825,7 @@ function edit_item(){
 				})
 				.done(function(){
 					$("#close_new_main_win").trigger('click');
-					$("#series_table").load("edit_menu.php #series_table");
+					$("#series_table").load("edit_menu.php #series_table > div");
 					alertify.success("刪除品項成功！");
 					series_table_bind();
 				})
@@ -883,7 +883,7 @@ function del_series(){
 			})
 			.done(function(main_data_array){
 				console.log(main_data_array);
-				$("#series_table").load("edit_menu.php #series_table");
+				$("#series_table").load("edit_menu.php #series_table > div");
 				alertify.success("刪除系列成功！");
 				series_table_bind();
 				read_series_for_pre();
@@ -1013,7 +1013,7 @@ function series_sortable_destroy(){
 
 function series_table_bind() {
     // 修改
-    $("div[id^='m']").bind('click', edit_item); // 編輯品項
+    $("div[id^='m']").not("#main").not("#multi_choice").bind('click', edit_item); // 編輯品項
 	$("input[id^='es']").bind('click', edit_series); // 編輯系列名稱
 
 	// 刪除
@@ -1022,8 +1022,6 @@ function series_table_bind() {
 	// 拖曳排序
 	series_sortable();
 	main_sortable();
-	
-
 }
 
 $(document).ready(function(){
@@ -1038,8 +1036,6 @@ $(document).ready(function(){
 	});
 	read_series_for_pre();
 	series_table_bind(); // 更新菜單畫面後需重新bind事件
-		
-	series_table_bind();
 	
         $("#nav_cross").click(function(){
 
@@ -1070,5 +1066,3 @@ $(document).ready(function(){
         $("#nav_cross").click(); 	
 	
 });
-
-
