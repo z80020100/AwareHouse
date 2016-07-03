@@ -108,7 +108,7 @@ $(document).ready(function(){
 
          
             
-            $("#add_success").css({"position":"fixed", "width":"100%", "height":"0px"});
+            $("#add_success").css({"position":"fixed", "width":"100%", "height":"0px", "top":"0px", "left":"0px"});
             $("#add_success").css("visibility","visible");
             $("#add_success").animate({height:"30px"});
 
