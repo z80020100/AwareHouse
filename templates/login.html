@@ -1,25 +1,25 @@
 
-
-	<h3><center>登入／登出</center></h3>
-	<center>
-	<div>{{LOGIN_MESSAGE}}</div>
-	<form action="login.php" method="POST">
-		<p id="uname"> 帳號：<input type="text" name="username"> </p>
-		{% if ADMIN_LOGIN==  'admin' %}
-		<p id="upass"> 密碼：<input type="password" name="password" id="login_key"> </p>
-		{% else %}
-		<p id="uinfo"> 手機：<input type="text" name="phone"> </p>
-		{% endif %}
-		<p> <input type="submit" name="submit"  value="登入"> </p>
-		<p> <a href="register.php">註冊帳號</a></p>
-		{% if ADMIN_LOGIN==  'admin' %}
-			<p> <a href="login.php">一般登入</a> </p>
-		{% else %}
-			<p> <a href="login.php?admin=1">管理員登入</a> </p>
-		{% endif %}
-	</form>
-	</center>
-	
+	<div id="a0" class="w3-container">
+		<h3><center>登入／登出</center></h3>
+		<center>
+		<form action="login.php" method="POST">
+			<p>{{LOGIN_MESSAGE}}</p>
+			<p id="uname"> 帳號：<input type="text" name="username"> </p>
+			{% if ADMIN_LOGIN==  'admin' %}
+			<p id="upass"> 密碼：<input type="password" name="password" id="login_key"> </p>
+			{% else %}
+			<p id="uinfo"> 手機：<input type="text" name="phone"> </p>
+			{% endif %}
+			<p> <input type="submit" name="submit"  value="登入"> </p>
+			<p> <a href="register.php">註冊帳號</a></p>
+			{% if ADMIN_LOGIN==  'admin' %}
+				<p> <a href="login.php">一般登入</a> </p>
+			{% else %}
+				<p> <a href="login.php?admin=1">管理員登入</a> </p>
+			{% endif %}
+		</form>
+		</center>
+	</div>
 	<script src="templates/login.js"></script>
 
 	
