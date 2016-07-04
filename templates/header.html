@@ -80,7 +80,6 @@
     <nav id="nav_bar" class="w3-sidenav w3-white w3-card-2">
         <a id="nav_cross" href="javascript:void(0)" class="w3-closenav w3-xxlarge w3-center" style="z-index:2">&times;</a>
 		<hr>
-        <br>
 		<a href="customer_listorder.php" class="w3-center" >出餐進度</a>
 		<br>
 		<a href="login.php" class="w3-center" >登出</a>
@@ -91,13 +90,18 @@
         {% endfor %}
     </nav>
 {% else %}
-
+    <nav id="nav_bar" class="w3-sidenav w3-white w3-card-2">
+        <a id="nav_cross" href="javascript:void(0)" class="w3-closenav w3-xxlarge w3-center" style="z-index:2">&times;</a>
+		<hr>
+		<a href="login.php" class="w3-center" >登入</a>
+		<br>
+		<a href="register.php" class="w3-center" >註冊</a>
+		<hr>
+    </nav>
 {% endif %}
 
 <div data-role="page"  id="main" >
     <header class="w3-container w3-teal">
-	{% if USER_IDENTITY != 'guest'  %}
-      <span class="w3-opennav w3-xlarge"><a id="nav_open" style="text-decoration: none; color:#FFFFFF;">&#9776;</a></span>
-	{% endif %}
-      <h1><center>{{PAGE_TITLE}}</center></h1>
+	  <span class="w3-opennav w3-xlarge"><a id="nav_open" style="text-decoration: none; color:#FFFFFF;">&#9776;</a></span>
+	  <h1><center>{{PAGE_TITLE}}</center></h1>
     </header>
