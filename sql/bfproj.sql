@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- 主機: 127.0.0.1
--- 產生時間： 2016-06-21 04:27:39
+-- 產生時間： 2016-07-04 06:43:39
 -- 伺服器版本: 10.1.13-MariaDB
 -- PHP 版本： 5.6.20
 
@@ -17,7 +17,7 @@ SET time_zone = "+00:00";
 /*!40101 SET NAMES utf8mb4 */;
 
 --
--- 資料庫： `awarehouse`
+-- 資料庫： `bfproj`
 --
 
 -- --------------------------------------------------------
@@ -88,6 +88,22 @@ CREATE TABLE `config` (
 INSERT INTO `config` (`name`, `value`) VALUES
 ('verification', 'ae88'),
 ('verification_time', '1466415434');
+
+-- --------------------------------------------------------
+
+--
+-- 資料表結構 `log`
+--
+
+CREATE TABLE `log` (
+  `log_id` int(11) NOT NULL,
+  `o_id` int(11) NOT NULL,
+  `time` datetime NOT NULL,
+  `s_text` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
+  `m_text` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
+  `quantity` int(11) NOT NULL,
+  `price` int(11) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 -- --------------------------------------------------------
 
@@ -187,8 +203,9 @@ INSERT INTO `orders` (`o_id`, `o_time`, `o_utime`, `o_estimate_time`, `table_num
 (71, '2016-05-15 19:00:44', '0000-00-00 00:00:00', '2016-05-15 19:07:14', 16, 2, 'ARCHIVE'),
 (72, '2016-05-16 22:24:37', '0000-00-00 00:00:00', NULL, 16, 2, 'WAIT'),
 (73, '2016-06-20 14:21:43', '0000-00-00 00:00:00', NULL, 23, 1, 'WAIT'),
-(74, '2016-06-20 14:23:04', '2016-06-20 22:30:48', '2016-06-21 06:49:14', 23, 1, 'DONE'),
-(75, '2016-06-20 17:34:02', '2016-06-20 22:30:38', '2016-06-21 06:45:55', 123, 1, 'DONE');
+(74, '2016-06-20 14:23:04', '2016-06-21 02:40:55', '2016-06-21 06:49:14', 23, 1, 'ARCHIVE'),
+(75, '2016-06-20 17:34:02', '2016-07-04 02:56:50', '2016-06-21 16:02:55', 123, 1, 'DONE'),
+(76, '2016-06-23 10:46:34', '2016-07-04 02:56:28', '2016-06-27 11:40:04', 5, 1, 'DONE');
 
 -- --------------------------------------------------------
 
@@ -399,7 +416,8 @@ INSERT INTO `sh-i_ai` (`sh-i_ai_id`, `sh-i_id`, `ai_id`, `is_ro`) VALUES
 (167, 107, 1, 0),
 (168, 107, 2, 0),
 (169, 109, 1, 0),
-(170, 109, 2, 0);
+(170, 109, 2, 0),
+(171, 111, 2, 0);
 
 -- --------------------------------------------------------
 
@@ -472,7 +490,8 @@ INSERT INTO `share` (`sh_id`, `o_id`, `total`) VALUES
 (62, 72, 0),
 (63, 73, 0),
 (64, 74, 0),
-(65, 75, 0);
+(65, 75, 0),
+(66, 76, 0);
 
 -- --------------------------------------------------------
 
@@ -594,7 +613,9 @@ INSERT INTO `share_item` (`sh-i_id`, `sh_id`, `m_id`, `quantity`, `comment`) VAL
 (106, 62, 27, 1, ''),
 (107, 63, 27, 1, ''),
 (108, 64, 28, 10, ''),
-(109, 65, 27, 1, '');
+(109, 65, 27, 1, ''),
+(110, 66, 28, 5, ''),
+(111, 66, 27, 1, '');
 
 -- --------------------------------------------------------
 
@@ -706,6 +727,12 @@ ALTER TABLE `config`
   ADD UNIQUE KEY `name` (`name`);
 
 --
+-- 資料表索引 `log`
+--
+ALTER TABLE `log`
+  ADD PRIMARY KEY (`log_id`);
+
+--
 -- 資料表索引 `main`
 --
 ALTER TABLE `main`
@@ -780,6 +807,11 @@ ALTER TABLE `additional_item`
 ALTER TABLE `additional_type`
   MODIFY `at_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
 --
+-- 使用資料表 AUTO_INCREMENT `log`
+--
+ALTER TABLE `log`
+  MODIFY `log_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
+--
 -- 使用資料表 AUTO_INCREMENT `main`
 --
 ALTER TABLE `main`
@@ -788,7 +820,7 @@ ALTER TABLE `main`
 -- 使用資料表 AUTO_INCREMENT `orders`
 --
 ALTER TABLE `orders`
-  MODIFY `o_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=76;
+  MODIFY `o_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=77;
 --
 -- 使用資料表 AUTO_INCREMENT `required_option`
 --
@@ -803,17 +835,17 @@ ALTER TABLE `series`
 -- 使用資料表 AUTO_INCREMENT `sh-i_ai`
 --
 ALTER TABLE `sh-i_ai`
-  MODIFY `sh-i_ai_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=171;
+  MODIFY `sh-i_ai_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=172;
 --
 -- 使用資料表 AUTO_INCREMENT `share`
 --
 ALTER TABLE `share`
-  MODIFY `sh_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=66;
+  MODIFY `sh_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=67;
 --
 -- 使用資料表 AUTO_INCREMENT `share_item`
 --
 ALTER TABLE `share_item`
-  MODIFY `sh-i_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=110;
+  MODIFY `sh-i_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=112;
 --
 -- 使用資料表 AUTO_INCREMENT `user`
 --
