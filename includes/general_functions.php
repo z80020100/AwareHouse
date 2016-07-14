@@ -18,7 +18,7 @@ ARCHIVE	:	已封存
 */
 
 $GLOBALS['STATUS'] = array(
-	'CANCEL',  // cannot be deleted 
+	'CANCEL',  // cannot be deleted
 	'WAIT',		// Default
 	'MAKING',
 	'DONE',
@@ -42,12 +42,12 @@ function statusDown( $cStatus){
 
 /*
 	User Login & Admin Login functions
-	
+
 	For security reasons, the login process is designed as follow:
-	
+
 	(1) Must be under SSL
-	
-	(2) 
+
+	(2)
 	Client side:  send plaintext password to server
 	Server side: sha256(password)
 
@@ -56,18 +56,18 @@ function statusDown( $cStatus){
 function user_create($username, $userpass, $phone_info){
 	global $db;
 
-	if(!is_admin()){		
+	if(!is_admin()){
 		/*$sql = "SELECT * FROM `config` WHERE `name` = 'verification'";
 		$Qver = $db->query_select_one($sql);
-		
+
 		if($verification != $Qver['value']){
 			return false;
 		}*/
-		
+
 		//$sql = "SELECT * FROM `user_register` WHERE `u_id` = 'code'"
-		
+
 	}
-	
+
 	$sql = "SELECT * FROM `user` WHERE `u_name` = '".$username."' ";
 	$Quser = $db->query_select_one($sql);
 	if( $Quser ){
@@ -77,17 +77,17 @@ function user_create($username, $userpass, $phone_info){
 	// hash("sha256", "test1234");
 	$sql = "INSERT INTO `user` (`u_id`, `u_name`, `u_pass`, `u_type`) VALUES (NULL, '".$username."', '".hash("sha256",$userpass)."', '0');";
 	if( !$result = $db->query($sql) ){
-		
+
 		die('error gf_uc_1<br>');
 	}
-	
+
 	$sql = "INSERT INTO `user_info` (`ui_id`, `u_id`, `ui_advsecurity`, `ui_phone`) VALUES (NULL, '".$db->mysqli->insert_id."', '0', '".$phone_info."')";
 	if( !$result = $db->query($sql) ){
 		//die($sql);
 		die('error gf_uc_2');
-	}	
+	}
 	return 1;
-	
+
 }
 
 function user_vercode( $updateAnyway = false){
@@ -99,36 +99,36 @@ function user_vercode( $updateAnyway = false){
 
 	$sql = "SELECT * FROM `config` WHERE `name` = 'verification_time'";
 	$Qver_t = $db->query_select_one($sql);
-	
+
 	if( $Qver_t['value']  < time() ){
 		$sql = "UPDATE `config` SET `value` = '".(time()+30)."' WHERE `config`.`name` = 'verification_time'";
 		$db->query($sql);
-		
+
 		$new_hash = substr( hash("sha256", $Qver['value']) , 0, 4);
-		
+
 		$sql = "UPDATE `config` SET `value` = '".$new_hash."' WHERE `config`.`name` = 'verification' ";
 		$db->query($sql);
-		
+
 		$Qver['value'] = $new_hash;
 	}*/
 
-	$hashme = $_SESSION['u_name'].' '.$_SESSION['u_id'].' '.time().' '.rand(); 
+	$hashme = $_SESSION['u_name'].' '.$_SESSION['u_id'].' '.time().' '.rand();
 	$new_hash = substr( hash("sha256", $hashme) , 0, 4);
-	
+
 	$sql = "SELECT * FROM `user_register` WHERE `u_id` = '".$_SESSION['u_id']."'";
 	$Quver = $db->query_select_one($sql);
-	
+
 	$returnme = array(
 		'hash' => '',
 		'updated' => $updateAnyway
 	);
-	
+
 	if( !$Quver ){
 		$sql = "INSERT INTO `user_register` (`u_id`, `code`, `expiration`) VALUES ('".$_SESSION['u_id']."', '".$new_hash."', '".(time()+60)."')";
 		$db->query($sql);
-		
+
 		$returnme['hash'] = $new_hash;
-		$returnme['updated'] = true;		
+		$returnme['updated'] = true;
 		return $returnme;
 	}
 	else{
@@ -137,12 +137,12 @@ function user_vercode( $updateAnyway = false){
 			$sql = "UPDATE `user_register` SET `code` = '".$new_hash."', `expiration` = '".(time()+60)."' WHERE `user_register`.`u_id` = '".$_SESSION['u_id']."'";
 			$db->query($sql);
 			$returnme['hash'] = $new_hash;
-			$returnme['updated'] = true;		
+			$returnme['updated'] = true;
 			return $returnme;
 		}
 		else{
 			$returnme['hash'] = $Quver['code'];
-			$returnme['updated'] = false;		
+			$returnme['updated'] = false;
 			return $returnme;
 		}
 	}
@@ -169,21 +169,21 @@ function send_sms($dst, $msg){
 
 	curl_setopt_array($ch, $opt);
 	curl_exec($ch);
-	curl_close($ch);	
-	
+	curl_close($ch);
+
 }
 
 function user_login($username, $password, $phone_info){
 	global $db;
-	
+
 	$sql = "SELECT * FROM `user` WHERE `u_name` = '".$username."' ";
 	$Quser = $db->query_select_one($sql);
 
 	if( $Quser ){
 		$sql = "SELECT * FROM `user_info` WHERE `u_id` = ".$Quser['u_id'].";";
 		$Quser_info = $db->query_select_one($sql);
-		
-		if($Quser_info['ui_advsecurity'] == 1){ 
+
+		if($Quser_info['ui_advsecurity'] == 1){
 			// if user enabled advanced security --> check password hash
 			if($Quser['u_pass'] == hash("sha256", $password) ){
 
@@ -191,7 +191,7 @@ function user_login($username, $password, $phone_info){
 				$_SESSION['u_id'] = $Quser['u_id'];
 				$_SESSION['admin'] = ($Quser['u_type'] == 2);
 				$_SESSION['u_type'] = $Quser['u_type'];
-				
+
 				$_SESSION['ui_phone'] = $Quser_info['ui_phone'];
 				return true;
 			}
@@ -225,7 +225,7 @@ function user_login($username, $password, $phone_info){
 function is_login(){
 	if( !isset($_SESSION['u_name'])){
 		return false;
-	} 	
+	}
 	else
 		return true;
 }
@@ -235,7 +235,7 @@ function is_admin(){
 		if( $_SESSION['admin'] == true)
 			return true;
 		else
-			return false;		
+			return false;
 	}
 	else
 		return false;
@@ -252,39 +252,35 @@ function not_login_redirect(){
 	if( !isset($_SESSION['u_name'])){
 		header("location:login.php");
 		die('');
-	} 
+	}
 }
 
 function itemCompare($a,$b){
-	if($a['s_id'] > $b['s_id'])
-		return 1;
-	elseif ($a['s_id'] < $b['s_id'])
-		return -1;
-	else{
-		if($a['m_id'] > $b['m_id'])
-			return 1;
-		elseif($a['m_id'] < $b['m_id'])
-			return -1;
-		else{
-			sort($a['RO_array']);
-			sort($b['RO_array']);
-			if($a['RO_array'] > $b['RO_array'])
-				return 1;
-			elseif($a['RO_array'] < $b['RO_array'])
-				return -1;
-			else{
-				sort($a['AI_array']);
-				sort($b['AI_array']);
-				if($a['AI_array'] > $b['AI_array'])
-					return 1;
-				elseif($a['AI_array'] < $b['AI_array'])
-					return -1;
-				else{
-					return 0;
-				}
-			}
-		}
-	}
+    if ($a['s_id'] > $b['s_id'])
+        return 1;
+    else if ($a['s_id'] < $b['s_id'])
+        return -1;
+
+    if ($a['m_id'] > $b['m_id'])
+        return 1;
+    else if ($a['m_id'] < $b['m_id'])
+        return -1;
+
+    sort($a['RO_array']);
+    sort($b['RO_array']);
+    if ($a['RO_array'] > $b['RO_array'])
+        return 1;
+    else if ($a['RO_array'] < $b['RO_array'])
+        return -1;
+
+    sort($a['AI_array']);
+    sort($b['AI_array']);
+    if ($a['AI_array'] > $b['AI_array'])
+        return 1;
+    else if ($a['AI_array'] < $b['AI_array'])
+        return -1;
+
+    return 0;
 }
 
 function makeSummary($share_array){
@@ -315,7 +311,6 @@ function makeSummary($share_array){
 	return $sum_array;
 
 }
-
 
 
 function order_detail($o_id){
@@ -394,8 +389,8 @@ function order_detail($o_id){
 		}
 		$outOrder['share_array'] = $share_info;
 		$outOrder['summary_array'] = makeSummary($share_info);
-		$outOrder['total'] = $order_total ;	
-	
+		$outOrder['total'] = $order_total ;
+
 	return $outOrder;
 }
 
@@ -405,8 +400,8 @@ function log_order($o_id){
 		if(! $o_result = $db->query($sql))
 			die('order sql failure');
 		$order = $db->fetch_array($o_result);
-	
-		
+
+
 		$sql = "SELECT * FROM `share` WHERE `o_id` = ".$o_id ;
 		//echo $sql . "\nyoooo\n";
 		$s_result = $db->query($sql);
@@ -428,7 +423,7 @@ function log_order($o_id){
 				$sql = "SELECT * FROM `series` WHERE `s_id` = ".$main['s_id'];
 				$se_result = $db->query($sql);
 				$series = $db->fetch_array($se_result);
-				
+
 				// Requirement Option
 				$sql = "SELECT * FROM `sh-i_ai` WHERE `sh-i_id` = ".$item['sh-i_id']." AND `is_ro` = 1 ";
 				$sh_i_ai_result = $db->query($sql);
@@ -465,7 +460,7 @@ function log_order($o_id){
 					array_push($ai_info, $outAi);
 				}
 				$counting_total += $main['price'];
-				
+
 				$counting_total = $counting_total * $item['quantity'];
 
 				$outItem = array();
@@ -475,20 +470,20 @@ function log_order($o_id){
 				//$outItem['main_price'] 	= 	$main['price'];
 				//$outItem['m_id'] 		= 	$main['m_id'];
 				//$outItem['s_id'] 		= 	$main['s_id'];
-				
+
 				$outItem['quantity'] 		= 	$item['quantity'];
 				$outItem['comment'] 		= 	$item['comment'];
 				$outItem['RO_array'] 	= 	$ro_info;
 				$outItem['AI_array'] 		= 	$ai_info;
 
-				
-				// Writing into log without merging with makeSummary 
-				
+
+				// Writing into log without merging with makeSummary
+
 				$sql = "INSERT INTO `log` (`log_id`, `o_id`, `time`, `s_text`, `m_text`, `quantity`, `price`)"
 						."VALUES (NULL, '".$o_id."', '".$order['o_time']."', '".$outItem['s_text']."', '".$outItem['m_text']."', '".$outItem['quantity']."', '".$outItem['item_price']."');";
 
 				$db->query($sql);
-				
+
 				//array_push($item_info, $outItem);
 			}
 			//$outShare = array();
@@ -499,9 +494,9 @@ function log_order($o_id){
 		}
 		//$outOrder['share_array'] = $share_info;
 		//$outOrder['summary_array'] = makeSummary($share_info);
-		//$outOrder['total'] = $order_total ;	
-	
-	//return $outOrder;		
+		//$outOrder['total'] = $order_total ;
+
+	//return $outOrder;
 }
 
 function unlog_order($o_id){
