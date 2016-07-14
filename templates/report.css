@@ -7,7 +7,7 @@ body {
 input,button,select,textarea{outline:none}
  *:focus { outline: none; }
 
-#p_form form {
+#p_form {
   position: relative;
   top: 5px;
   left: 48%;
