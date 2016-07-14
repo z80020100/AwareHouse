@@ -58,6 +58,9 @@ $('#submitMenu').on("click", getData);
 $('#graph').css("display", "none"); // sunburst graph
 $('#piechart').css("display", "none"); // piechart graph
 
+var tier = 0;
+var labelName = "";
+
 function parse() {
   var ret = JSON.parse($('#datepicker1').val());
   alert(ret.start);
@@ -503,18 +506,20 @@ function getOrdersReport(ret, t2) {
     else if (this.value == "price"){
       countOrSize = 1;     //1: price
     }
-    // console.log(countOrSize);
+    else {
+      tier = 0;
+    }
     $('#piechart svg').remove();
-    drawPieChart(series_dataset, countOrSize, 0);
+    drawPieChart(series_dataset, countOrSize);
   });
-  drawPieChart(series_dataset, countOrSize, 0);
+  drawPieChart(series_dataset, countOrSize);
 
 }
 //END -- GET THE ORDERS REPORT FROM THE TIME INTERVAL SET IN THE general.php
 
 
 
-function drawPieChart(dataset, set, times) {
+function drawPieChart(dataset, set) {
 
   var width = 360;
   var height = 360;
@@ -523,6 +528,9 @@ function drawPieChart(dataset, set, times) {
   var legendRectSize = 18;
   var legendSpacing = 4;
 
+  console.log(dataset);
+  console.log("tier", tier);
+  console.log("labelName", labelName);
 
   var color = d3.scale.category20();
 
@@ -596,21 +604,33 @@ function drawPieChart(dataset, set, times) {
   // });                                                           // NEW
 
   path.on('mouseover', function(d) {
-    $(this).attr('style', 'opacity: 0.7');
+    if (tier == 0) $(this).attr('style', 'opacity: 0.7');
   });
   path.on('mouseout', function(d) {
-    $(this).attr('style', 'opacity: 1');
+    if (tier == 0) $(this).attr('style', 'opacity: 1');
   });
 
-  if (times == 0) {
-    path.on('click', function(d) {                              // NEW
+  if (tier == 0) {
+    path.on('click', function(d) {
       console.log("click "+d.data.label+" "+d.data.quantity);
 
       // add ajax to query data
       dataset = d.data.details;
       $('#piechart svg').remove();
-      drawPieChart(dataset, set, 1);
+      tier = 1;
+      labelName = d.data.label;
+      drawPieChart(dataset, set);
     });
+  }
+  else if (tier == 1) {
+    // Only enter this for when the dataset is from series
+    for (var i = 0; i < dataset.length; i++) {
+      if (dataset[i]["label"] != labelName) continue;
+
+      $('#piechart svg').remove();
+      dataset = dataset[i]["details"];
+      drawPieChart(dataset, set);
+    }
   }
 
   var legend = svg.selectAll('.legend')
