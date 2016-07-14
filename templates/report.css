@@ -106,12 +106,14 @@ svg {
   width: 600px;
   height: 30px;
   margin: 0px auto;
+  text-align: center;
 }
 
 .menu_item {
   position: relative;
   width: 150px;
   display: inline-block;
+  margin: 8px auto 0px;
   vertical-align: middle;
   text-align: center;
 }

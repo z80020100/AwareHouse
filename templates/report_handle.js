@@ -673,20 +673,30 @@ function drawPieChart(dataset, set) {
     });
 }
 
+function showRevenue (log) {
+
+}
 
 //GET ALL THE DETAILS OF ALL MENU
 function getMenuReport(ret, t3) {
   $('#total_menu_report > div').remove();
-  console.log(ret);
-  var size = ret.length;
+  var size = ret.length - 1;  //becasue the ret[0] is total revenue
   var row = 4;
   var row_num = Math.floor(size / row);
+  console.log(ret);
   console.log(size);
   console.log(row_num);
 
+  var total = ret[0];
+  ret.remove(0);
+
   var menu = "";
+  var tmp_row = "<div class='menu_row'><div class='menu_item'>銷售金額：" + total + "</div></div>";
+  menu += tmp_row;
+
+  // Start to handle all the quantity
   for (var i = 0; i < row_num; i++) {
-    var tmp_row = "<div class='menu_row'>";
+    tmp_row = "<div class='menu_row'>";
     for (var j = 0; j < row; j++) {
       var tmp = "<div class='menu_item'>";
       tmp += ret[i*row+j].name + ' ' + ret[i*row+j].quantity + "</div>";
@@ -695,7 +705,8 @@ function getMenuReport(ret, t3) {
     tmp_row += "</div>";
     menu += tmp_row;
   }
-  var tmp_row = "<div class='menu_row'>";
+  // The last row, nee to be handled additionally
+  tmp_row = "<div class='menu_row'>";
   for (var i = row*row_num; i < size; i++) {
     var tmp = "<div class='menu_item'>";
     tmp += ret[i].name + ' ' + ret[i].quantity + "</div>";

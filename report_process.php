@@ -225,17 +225,16 @@ switch ($type) {
 
   case "menu":
     $menu = getMenu($db);
-    $orders = getOrderInfo($db, $start_time, $end_time);
-    $orders_size = count($orders);
-    for ($i = 0; $i < $orders_size; $i++) {
-        $item_array = $orders[$i]['summary_array'];
-        $item_array_size = count($item_array);
-        for ($j = 0; $j < $item_array_size; $j++) {
-            $menu[$item_array[$j]['name']]++;
-        }
+    $log = getLogInfo($db, $start_time, $end_time);
+    $log_size = count($log);
+    $total = 0;
+    for ($i = 0; $i < $log_size; $i++) {
+        $menu[$log[$i]['m_text']] += $log[$i]['quantity'];
+        $total += $log[$i]['price'];
     }
 
     $ret = array();
+    array_push($ret, $total);
     foreach ($menu as $key => $value) {
         $tmp = array('name' => $key, 'quantity' => $value);
         array_push($ret, $tmp);
