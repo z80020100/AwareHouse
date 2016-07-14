@@ -1,62 +1,6 @@
 <?php
 require_once('includes/general.php');
 
-function itemCompare($a,$b){
-    if ($a['s_id'] > $b['s_id'])
-        return 1;
-    else if ($a['s_id'] < $b['s_id'])
-        return -1;
-
-    if ($a['m_id'] > $b['m_id'])
-        return 1;
-    else if ($a['m_id'] < $b['m_id'])
-        return -1;
-
-    sort($a['RO_array']);
-    sort($b['RO_array']);
-    if ($a['RO_array'] > $b['RO_array'])
-        return 1;
-    else if ($a['RO_array'] < $b['RO_array'])
-        return -1;
-
-    sort($a['AI_array']);
-    sort($b['AI_array']);
-    if ($a['AI_array'] > $b['AI_array'])
-        return 1;
-    else if ($a['AI_array'] < $b['AI_array'])
-        return -1;
-
-    return 0;
-}
-
-function makeSummary($share_array){
-    $all_items = array();
-    foreach ($share_array as $share){
-        $all_items = array_merge($all_items, $share['items_array']);
-    }
-    usort($all_items, "itemCompare");
-
-    $i = -1;
-    $sum_array = array();
-    foreach($all_items as $item){
-        if($i == -1){
-            array_push($sum_array, $item);
-            $i++;
-        }
-        else{
-            if( itemCompare($sum_array[$i], $item) == 0){
-                $sum_array[$i]['quantity'] += $item['quantity'];
-            }
-            else{
-                array_push($sum_array, $item);
-                $i++;
-            }
-        }
-    }
-
-    return $sum_array;
-
-}
 function getOrderInfo($db, $start_time, $end_time) {
     global $shift_start, $shift_end;
     $sql = "SELECT * FROM `orders` WHERE `o_time` >= '".$start_time."' AND `o_time` <= '".$end_time."' AND HOUR(`o_time`) >= ".$shift_start." AND HOUR(`o_time`) < ".($shift_end+1)." AND `status` != '".$GLOBALS['STATUS'][0]."' ";
@@ -227,7 +171,7 @@ function getAllLists($db) {
 
 function getLogInfo($db, $start_time, $end_time) {
     global $shift_start, $shift_end;
-    $sql = "SELECT * FROM `log` WHERE `o_time` >= '".$start_time."' AND `o_time` <= '".$end_time."' AND HOUR(`o_time`) >= ".$shift_start." AND HOUR(`o_time`) < ".($shift_end+1);
+    $sql = "SELECT * FROM `log` WHERE `time` >= '".$start_time."' AND `time` <= '".$end_time."' AND HOUR(`time`) >= ".$shift_start." AND HOUR(`time`) < ".($shift_end+1);
     $result = $db->query($sql);
     $ret = array();
     while($order = $db->fetch_array($result)){

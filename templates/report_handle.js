@@ -403,11 +403,8 @@ function getOrdersReport(ret, t2) {
   var menu_raw = {};
   var order_info = ret[3], order_info_size = ret[3].length;
   var all_series = ret[4], all_series_size = ret[4].length;
-  var log_info = ret[5], log_info_size = ret[5].size;
+  var log_info = ret[5], log_info_size = ret[5].length;
   var series_dataset = [];
-
-  console.log(order_info);
-  console.log(all_series);
 
   if (order_info_size == 0) {
     alert("查無資料");
@@ -443,6 +440,10 @@ function getOrdersReport(ret, t2) {
   //   }
   // }
 
+  if (log_info_size == 0) {
+    alert("查無資料");
+    return 0;
+  }
   // CALCULATE THE quantity AND price OF ALL ITEM IN menu_raw
   for (var i = 0; i < log_info_size; i++) {
     menu_raw[log_info[i]["m_text"]]["quantity"] += log_info[i]["quantity"];
@@ -758,7 +759,7 @@ function getData() {
   $.ajax({
     url: "report_process.php",
     method: "POST",
-    dataType:"JSON",
+    dataType:"json",
     data:{request:req}
   }).done(function(ret){
     // for (i = 0; i < ret.length; i++)
