@@ -230,7 +230,7 @@ switch ($type) {
     $total = 0;
     for ($i = 0; $i < $log_size; $i++) {
         $menu[$log[$i]['m_text']] += $log[$i]['quantity'];
-        $total += $log[$i]['price'];
+        $total += ($log[$i]['quantity'] * $log[$i]['price']);
     }
 
     $ret = array();
