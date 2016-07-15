@@ -61,6 +61,13 @@ $('#piechart').css("display", "none"); // piechart graph
 var tier = 0;
 var labelName = "";
 
+//extension of jQuery, which can remove the element in array
+Array.prototype.remove = function(from, to) {
+  var rest = this.slice((to || from) + 1 || this.length);
+  this.length = from < 0 ? this.length + from : from;
+  return this.push.apply(this, rest);
+};
+
 function parse() {
   var ret = JSON.parse($('#datepicker1').val());
   alert(ret.start);
