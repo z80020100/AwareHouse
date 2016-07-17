@@ -22,37 +22,7 @@ refresh_order
 
 $(document).ready(function(){
 
-        alertify.log("在單子上左滑右滑會改變他的狀態哦!", "", 4000);
 
-		// ------- START navbar setting ------------------------------------------------------
-        $("#nav_cross").click(function(){
-
-            $(".w3-sidenav").toggle();
-            $("#main").css({"marginLeft":"0%"});
-            $(".w3-sidenav").css({"display":"none"});
-            $(".w3-opennav").css({"display":"inline-block"});
-
-        });
-
-        $("#nav_open").click(function(){
-                            
-            $(".w3-sidenav").toggle();
-            $("#main").css({"marginLeft":"20%"});
-            $(".w3-sidenav").css({"display":"block", "width":"20%"});
-            $(".w3-opennav").css({"display":"none"});
-
-        });
-
-
-        $("#nav_open").css({"position":"fixed"});
-        /////
-        $("#open_cart").css({"position":"fixed", "right":"7%", "bottom":"7%", "z-index":"2"});
-        $("#open_cart2").css({"position":"fixed", "right":"15%", "bottom":"7%", "z-index":"2"});
-        $("#open_cart3").css({"position":"fixed", "right":"23%", "bottom":"7%", "z-index":"2"});
-        $("#open_cart4").css({"position":"fixed", "right":"31%", "bottom":"7%", "z-index":"2"});
-        //////
-        $("#nav_cross").click(); 
-		// ------- END navbar setting ------------------------------------------------------
 		
 });
 
@@ -63,7 +33,27 @@ $('#order_list').on("click", ".order_title", function(e){
 	$(this).next('.order_detail').toggle();
 });
 
+$('#order_list').on("click", ".button_calshare", function(e){
+	$(this).parents('.order_title').next('.order_detail').children('.viewsummary').hide();
+	$(this).parents('.order_title').next('.order_detail').children('.viewshare').show();
+	$(this).removeClass("ui_button");
+	$(this).addClass("ui_button_active");
+	$(this).parent().children('.button_viewsum').removeClass("ui_button_active");
+	$(this).parent().children('.button_viewsum').addClass("ui_button");
+	 e.stopImmediatePropagation();
+	 return false;
+});
 
+$('#order_list').on("click", ".button_viewsum", function(e){	
+	$(this).parents('.order_title').next('.order_detail').children('.viewsummary').show();
+	$(this).parents('.order_title').next('.order_detail').children('.viewshare').hide();
+	$(this).removeClass("ui_button");
+	$(this).addClass("ui_button_active");
+	$(this).parent().children('.button_calshare').removeClass("ui_button_active");
+	$(this).parent().children('.button_calshare').addClass("ui_button");
+	 e.stopImmediatePropagation();
+	 return false;
+});
 // ------- END display setting on order list ---------------------------------------------
 
 // debug text
@@ -73,6 +63,64 @@ $("#debug_get_table").on("click", function(e){
 });
 */
 
+// ------- START order adding time -------------------------------------------------------
+
+$('#order_list').on("click", ".button_addtime", function(e){	
+	
+	// getting target id
+	oid = $(this).attr('order_id');
+	order_detail = "#order_detail_" + oid;
+	
+	// configure request
+	var req = new Object();
+	req["type"] = 'updateOrderEstimate';
+	req["addMIN"] = $(this).attr('atime');
+	req["oid"] = oid;
+	
+	//  ------ START Setting local display of estimate time ------------------------------
+	//		Step1: 	getting previous estimate time:
+	//		Step2: 	if it is not set, then add target time to current time. 
+	//				Otherwise, add target time on top of previous estimate time
+	//
+	// 	* May be omitted due to global update.
+	var old_order_esttime = $('.order_view[order_id|='+oid+'] > .order_title > .order_estimate_time').data("est_time");
+	
+	if(typeof old_order_esttime == "undefined"){
+		var order_esttime = new Date(Date.now() + $(this).attr('atime')*60000);
+		$('.order_view[order_id|='+oid+'] > .order_title > .order_estimate_time').data("est_time", order_esttime);	
+	}
+	else{
+		var order_esttime = new Date(old_order_esttime.getTime() + $(this).attr('atime')*60000);
+		$('.order_view[order_id|='+oid+'] > .order_title > .order_estimate_time').data("est_time", order_esttime);	
+	}
+	//  ------ END Setting local display of estimate time ------------------------------
+	
+	//  ------ START sending updateOrderEstimate request to server
+	$.ajax( {
+		url:"listorder_process.php",
+		method: "POST",
+		dataType:"text",
+		data:{request:req}
+	} )
+	.done(function(msg){
+		console.log("listorder_process.php:[ " +msg +"]");
+		//if(msg == 'ok')
+		alertify.success("成功修改等待時間", "", 1000);
+		time_refresh(2);
+	})
+	.fail(function(jqXHR, textStatus, errorThrown){
+		console.log(textStatus, errorThrown);
+	})
+	.always(function(){
+		//$("#debug_text").val( window.page_ordertime + "...done" );
+	})
+	;	
+	//  ------ END sending updateOrderEstimate request to server
+	 e.stopImmediatePropagation();  // This is not to trigger click on order_title
+	 
+	 return false;
+});
+// ------- END order adding time ---------------------------------------------------------
 
 
 
@@ -80,41 +128,12 @@ $("#debug_get_table").on("click", function(e){
 function orderSummary_block( items_array ){
 
 	var orderSum_start = '\n\
-				<td colspan=7 class="viewsummary">                                                                                                                                                                          \n\
 					<table>                                                                                                                                                                                                             \n\
 	';
 
 	var orderSum_end = '                                                                                                                                                                                                                        \n\
 					</table>                                                                                                                                                                                                           \n\
-				</td>                                                                                                                                                                                                                       \n\
 	';
-
-	// items_array -->  item( name, main_price , RO_array, AI_array, quantity )
-	// RO_array [ ro1 , ro2 , .... ]
-	// roItem1[name, price]   
-	//
-	//						    	----- name
-	//						    	|									
-	//				---- item1 ----------- main_price			------- roItem1 ----------- name
-	//				|		    	|					|				|
-	//	items_array  --  --- item2  	----- RO_array	-------------------- roItem2			---- price
-	//				|		    	|					|				
-	//				---  item3  	----- AI_array			------- roItem3		
-	//						    	|						
-	//						    	----- quantity
-	//						 
-	//
-	//						    	----- 珍珠奶茶
-	//						    	|									
-	//				---- item1 ----------- 30				------- roItem1 ----------- 少冰
-	//				|		    	|					|				|
-	//	items_array  --  --- item2  	----- RO_array	--------------					---- 0
-	//				|		    	|					|				
-	//				---  item3  	----- AI_array			------- roItem2 ----------- 無糖		
-	//						    	|									|
-	//						    	----- 2								---- 0
-	//						 
-
 
 	Items_html = '';
 	
@@ -137,107 +156,19 @@ function orderSummary_block( items_array ){
 		}
 		itemcost = Number(item.main_price) + Number(allROcost) + Number(allAIcost);
 		
+		if(item.comment != ''){
+			item.comment = '['+item.comment+']';
+			
+		}
 		
 		Items_html =  Items_html + 
 			' 					<tr>                                                                                                                                                                                                       \n\
-									<td>'+ item.name +'</td><td>'+ RO_html + ' / '+AI_html+'/'+item.comment+' </td><td>'+itemcost+'</td><td>'+item.quantity+'</td>                                  \n\
+									<td>'+ item.name +''+ RO_html + AI_html+item.comment+' x'+item.quantity+'</td>                                  \n\
 								</tr>';		
 	}
 	
 		
 	return orderSum_start + Items_html + orderSum_end;
-}
-
-
-
-function orderShare_block( share_array ){		// share total is calculated here
-
-	orderShare_start = 
-	'                                                                                                                                                                                                               				\n\
-			<td colspan=7 class="viewshare" style="display:none;">                                                                                                                                                                        	\n\
-				<table>                                                                                                                                                                                                          	\n\
-	';
-
-	//
-	//							-----	total			            		----- name
-	//							|				            		|				
-	//				-----	share1---------  item_array --------  item1--------------- main_price	------- roItem1 ----------- name
-	//				|							|            		|                        	|				| 
-	//	share_array ------							---- item2		---- RO_array   ------------- roItem2		---- price
-	//				|               					            		|                        	|				 
-	//				----	share2					     	    		---- AI_array    	------- roItem3		
-	//														|
-	//														---- quantity
-	//
-	//
-	//							-----	70			            		----- 牛肉漢堡
-	//							|				            		|				
-	//				-----	share1---------  item_array --------  item1--------------- 50		
-	//				|							|            		|                       
-	//	share_array ------							---- item2		---- RO_array   	------- aiItem1 ----------- 加蛋
-	//				|               					            		|                         	|				| 
-	//				----	share2					     	    		---- AI_array     ------------- aiItem2		---- 10 
-	//														|                         	|				 
-	//														---- quantity      	------- aiItem3		
-	
-	
-	share_html = '';
-	for ( share_i in share_array ){
-		share = share_array[share_i];
-		share_html = share_html + '\n\
-				<tr><td>' + share.total + '</td>                                                                                                                                                                                          \n\
-					<td>                                                                                                                                                                                                      \n\
-					<table>                                                                                                                                                                                                  \n\
-		';
-	
-		Items_html = '';
-		share_total = 0;
-		for( var item_i in share.items_array ){
-			item = share.items_array[item_i];
-			RO_html = '';
-			allROcost = 0;
-			for( var ro_i in item.RO_array ){
-				ro = item.RO_array[ro_i];
-				RO_html = RO_html + ',' + ro.name;
-				allROcost = allROcost + Number(ro.price);
-			}
-			
-			AI_html = '';
-			allAIcost = 0;
-			for( var ai_i in item.AI_array ){
-				ai = item.AI_array[ai_i];
-				AI_html = AI_html + ',' + ai.name;
-				allAIcost = allAIcost + Number(ai.price);
-			}
-
-			itemcost = Number(item.main_price) + Number(allROcost) + Number(allAIcost);
-			share_total = Number(share_total) + Number(itemcost) * Number(item.quantity);
-			//$("#debug_text").val(share_total);
-			Items_html =  Items_html + 
-				' 					<tr>                                                                                                                                                                                                       \n\
-										<td>'+ item.name +'</td><td>'+ RO_html + ' / '+AI_html+' </td><td>'+itemcost+'</td><td>'+item.quantity+'</td>                                  \n\
-									</tr>';		
-		}
-	
-		if(share_total != share.total){
-			//alert('Alert #Share total does not match in database, js:'+share_total+',db:'+share.total);
-		}
-	
-		share_html = share_html + Items_html;
-		
-		share_html = share_html + '\n\
-			</table>                                                                                                                                                                                                                \n\
-			</td>                                                                                                                                                                                                                     \n\
-		</tr>                                                                                                                                                                                                                             \n\
-		';
-	}
-	
-	orderShare_end = '\n\
-				</table>                                                                                                                                                                                                         \n\
-			</td>                                                                                                                                                                                                                     \n\
-	';
-	
-	return orderShare_start + share_html + orderShare_end;
 }
 
 
@@ -334,51 +265,21 @@ function refresh_orderstatus( oid , remote_update = false){
 }
 
 function order_block( order_info ){
-//
-//
-//		
-//
-//		order_info ---------- 	o_id     
-//						o_time
-//						table_num
-//						people_num
-//						status
-//						total		    ---------> calculated from share or summary
-//						share_array    -------->  [specified in other graph]
-//						summary_array -------> [specified in other graph]
-//
-//
 
-
-
-
-//var dateFormat = require('dateformat');var a = new Date(UNIX_timestamp * 1000);
-/*var order_date = new Date(order_info.o_time * 1000);
-var months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
-var year = order_date.getFullYear();
-var month =  order_date.getMonth() + 1;//months[order_date.getMonth()];
-var date = order_date.getDate();
-var hour = order_date.getHours();
-var min = order_date.getMinutes();
-var sec = order_date.getSeconds();
-var order_disptime =  month + '/'  + date + ' '  + hour + ':' + min ;
-*/
 	var order_disptime = order_info.o_time;
-	//<tbody class="order_view" order_id="1">alert('test');
 
 	var orderblock_start = '<tbody class="order_view" order_id="'+order_info.o_id+'">                                                                                                                                        \n\
-			<tr class="order_title">                                                                                                                                                                                           			\n\
-				<th class="order_status"></th>                                                                                                                                                                                            \n\
-				<th class="order_time"></th>																								\n\
-				<th class="order_estimate_time"></th>																								\n\
+			<tr class="order_title" id="order_detail_'+order_info.o_id+'">                                                                                                                                                                                           			\n\
 				<th>#'+order_info.table_num+'</th>                                                                                                                                                                                    \n\
-				<th>'+order_info.people_num+'</th>                                                                                                                                                                                   \n\
-				<th>$'+order_info.total+'</th>                                                                                                                                                                                            \n\	                                                                                                                                                                                                        \n\
+				<th class="order_status"></th>                                                                                                                                                                                            \n\
+				<th>'+orderSummary_block(order_info.summary_array)+'</th>                                                                                                                                                                                   \n\
+				<th>$'+order_info.total+'</th>                                                                                                                                                                                            \n\
 			</tr>                                                                                                                                                                                                                                         \n\
 																																			\n\
-			<tr id="order_detail_'+order_info.o_id+'" class="order_detail" >                                                                                                      		\n\
+			<tr  class="order_detail" >                                                                                                      		\n\
 	';
 
+	console.log('WTF:'+order_info.o_estimate_time);
 	if( order_info.o_estimate_time == 'NULL' ){
 		var order_est_disptime = '---';
 	}
@@ -393,22 +294,20 @@ var order_disptime =  month + '/'  + date + ' '  + hour + ':' + min ;
 			var order_est_disptime = diffMins + '分鐘';//order_info.o_estimate_time;  
 		else
 			var order_est_disptime = '超過' + diffMins + '分鐘';//order_info.o_estimate_time;  
+
+		$('.order_view[order_id|='+order_info.o_id+'] > .order_title > .order_estimate_time').data("est_time", order_esttime);		//將估計完成時間寫入
 		
 	}
 
-	$("#order_list_header").after( orderblock_start +'<tr><td colspan="7" class="separator"></td></tr></tbody>');  // -- 寫入html
+	$("#order_list_header").after( orderblock_start + '<tr><td colspan="7" class="separator"></td></tr></tbody>');  // -- 寫入html
 	var t = order_disptime.split(/[- :]/);
 	var ordertime = new Date(t[0], t[1]-1, t[2], t[3], t[4], t[5]);
 
-		$('.order_view[order_id|='+order_info.o_id+'] > .order_title > .order_estimate_time').data("est_time", order_esttime);		//將估計完成時間寫入
-	//	alertify.log(order_esttime);
-	//	alertify.log( $('.order_view[order_id|='+order_info.o_id+'] > .order_title > .order_estimate_time').data("est_time") );
 
-
-		$('.order_view[order_id|='+order_info.o_id+'] > .order_title > .order_time').data("time", ordertime);		//將點單時間寫入，未來可能用上
-		$('.order_view[order_id|='+order_info.o_id+'] > .order_title > .order_time').html( order_disptime ); 		//顯示時間
+		//$('.order_view[order_id|='+order_info.o_id+'] > .order_title > .order_time').data("time", ordertime);		//將點單時間寫入，未來可能用上
+		//$('.order_view[order_id|='+order_info.o_id+'] > .order_title > .order_time').html( order_disptime ); 		//顯示時間
 		$('#order_detail_'+order_info.o_id).data("status",  order_info.status);						//將資料庫的status寫入order中
-		$('.order_view[order_id|='+order_info.o_id+'] > .order_title > .order_estimate_time').html( order_est_disptime ); 		//顯示預計時間
+		//$('.order_view[order_id|='+order_info.o_id+'] > .order_title > .order_estimate_time').html( order_est_disptime ); 		//顯示預計時間
 		
 	//var r = status_getText(order_info.status);
 	//status_text = r.status_text;
@@ -461,23 +360,35 @@ function refresh_order( fresh_page = false ){
 				if(window.page_ordertime < msg[i]['o_utime'])
 					window.page_ordertime = msg[i]['o_utime'];
 				
-				if($('#order_detail_'+msg[i].o_id).length == 0){
-					order_block(msg[i]);
-					console.log("new block:"+msg[i].o_id);
+				if($('#order_detail_'+msg[i].o_id).length == 0){  // 檢查伺服器送來的單在本地端是否存在
+					//alert(msg[i].status);
+					if(msg[i].status != 'ARCHIVE' && msg[i].status != 'CANCEL'){  
+						// 如果從伺服器送來的單在這邊不存在，也不需要被顯示出來，那就不產生 block
+						order_block(msg[i]);
+						console.log("new block:"+msg[i].o_id);
+					}
+					else{
+						console.log("new block no show:"+msg[i].o_id);						
+					}
 					
 				}
 				else{
+					// 在本地端存在的話就刷新本地端的單子資訊
+					
 					//alert(msg[i]['status']);
 					$('#order_detail_'+msg[i].o_id).data("status", msg[i]['status']);
 					
-					var t = msg[i].o_estimate_time.split(/[- :]/);
-					var order_esttime = new Date(t[0], t[1]-1, t[2], t[3], t[4], t[5]);
-					//console.log("refresh block: [est time] "+msg[i][')
-					$('.order_view[order_id='+msg[i].o_id+'] > .order_title > .order_estimate_time').data("est_time", order_esttime);
-					time_refresh();
+					if(msg[i].o_estimate_time != 'NULL'){	
+						var t = msg[i].o_estimate_time.split(/[- :]/);
+						var order_esttime = new Date(t[0], t[1]-1, t[2], t[3], t[4], t[5]);
+						//console.log("refresh block: [est time] "+msg[i][')
+						$('.order_view[order_id='+msg[i].o_id+'] > .order_title > .order_estimate_time').data("est_time", order_esttime);
+					}
+					time_refresh(3);
 					refresh_orderstatus(msg[i].o_id, true);
 					console.log("refresh block:"+msg[i].o_id);
 				}
+								
 			}
 			
 			$('#order_list').enhanceWithin();
@@ -499,12 +410,14 @@ refresh_order(true);
 setInterval( function(){ refresh_order(false); }, 3000);
 
  
- function time_refresh()
+ function time_refresh( alt )
  {
 	 $('.order_view > .order_title > .order_estimate_time').each(function(index){
 		 
 		//alertify.log($(this).data("est_time"));
 		var order_esttime = $(this).data("est_time"); 
+		console.log('WTF2:('+alt+')'+(typeof order_esttime));
+			
 		if(typeof order_esttime != "undefined"){
 			var timeDiff = order_esttime.getTime() - Date.now();
 			var diffMins = Math.ceil(Math.abs(timeDiff) / (1000 * 60)); 
@@ -520,4 +433,4 @@ setInterval( function(){ refresh_order(false); }, 3000);
  }
 
 
-setInterval('time_refresh()',10000);
+setInterval('time_refresh(1)',10000);

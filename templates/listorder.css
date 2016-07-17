@@ -1,12 +1,12 @@
-.order_waiting td{
+.order_waiting th{
 	background-color:#FF9D73;
 }
 
-.order_done td{
+.order_done th{
 	background-color:#AEF26D;
 }
 
-.order_making td{
+.order_making th{
 	background-color:#FFD373;
 }
 
