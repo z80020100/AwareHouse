@@ -367,6 +367,9 @@ function order_block( order_info ){
 
 window.page_ordertime = '1900-01-01 00:00:00';
 
+var bellring = new Audio("templates/Bell-ding.mp3");
+
+
 function refresh_order( fresh_page = false ){
 	
 	var req = new Object();
@@ -403,6 +406,7 @@ function refresh_order( fresh_page = false ){
 			//alert(msg.length);
 			
 			// Generate block!
+			var block_generated = false;
 			for( i = 0 ; i < msg.length ; i++){
 				if(window.page_ordertime < msg[i]['o_utime'])
 					window.page_ordertime = msg[i]['o_utime'];
@@ -410,11 +414,13 @@ function refresh_order( fresh_page = false ){
 				if($('#order_detail_'+msg[i].o_id).length == 0){  // 檢查伺服器送來的單在本地端是否存在
 					//alert(msg[i].status);
 					if(msg[i].status != 'ARCHIVE' && msg[i].status != 'CANCEL'){  
-						// 如果從伺服器送來的單在這邊不存在，也不需要被顯示出來，那就不產生 block
+						// 若伺服器送來的單這邊不存在，而且需要被顯示出來，就產生block
 						order_block(msg[i]);
 						console.log("new block:"+msg[i].o_id);
+						block_generated = true;
 					}
 					else{
+						// 如果從伺服器送來的單在這邊不存在，也不需要被顯示出來，那就不產生 block
 						console.log("new block no show:"+msg[i].o_id);						
 					}
 					
@@ -437,7 +443,10 @@ function refresh_order( fresh_page = false ){
 				}
 								
 			}
-			
+			if(block_generated == true){
+				console.log("play bell!");
+				bellring.play();
+			}
 			$('#order_list').enhanceWithin();
 		}
 	})
