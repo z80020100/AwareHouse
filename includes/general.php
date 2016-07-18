@@ -32,5 +32,4 @@ $twig = new Twig_Environment($loader, array(
 			$shift_end = 24;
 
 
-
 ?>

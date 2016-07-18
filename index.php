@@ -16,7 +16,7 @@ if(!isset($_SESSION['user_name'])){
 
 
 //$template = new Mustache_Engine(array());
-$template = $twig->loadTemplate('index.html');
+$template = $twig->loadTemplate('customer_menu.html');
 
 /******************************************************************************************************
 // test for listing related series, main, additional item
