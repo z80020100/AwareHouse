@@ -16,7 +16,13 @@ if(!isset($_SESSION['user_name'])){
 
 
 //$template = new Mustache_Engine(array());
-$template = $twig->loadTemplate('customer_menu.html');
+
+if($_AWMode == "ACCOUNTING")
+    $template = $twig->loadTemplate('customer_menu_accounting.html');
+
+else if($_AWMode == "BUSINESS")
+    $template = $twig->loadTemplate('customer_menu_business.html');
+
 
 /******************************************************************************************************
 // test for listing related series, main, additional item
