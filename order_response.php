@@ -37,7 +37,11 @@ $request = $_REQUEST['req'];
 
 if( $request == "confirm_sum" ){
 
-	$sql = "INSERT INTO `orders` (`o_id`, `o_time`, `o_estimate_time`, `table_num`, `people_num`, `status`) VALUES (NULL, NOW(), NULL, '".$order_info['table_num']."', '".$order_info['people_num']."', 'WAIT');";
+	if($_AWMode == "ACCOUNTING")
+		$sql = "INSERT INTO `orders` (`o_id`, `o_time`, `o_estimate_time`, `table_num`, `people_num`, `status`) VALUES (NULL, NOW(), NULL, '".$order_info['table_num']."', '".$order_info['people_num']."', '".$GLOBALS['STATUS'][sizeof($GLOBALS['STATUS'])-1]."');";
+	else if($_AWMode == "BUSINESS")
+		$sql = "INSERT INTO `orders` (`o_id`, `o_time`, `o_estimate_time`, `table_num`, `people_num`, `status`) VALUES (NULL, NOW(), NULL, '".$order_info['table_num']."', '".$order_info['people_num']."', '".$GLOBALS['STATUS'][1]."');";
+	
 	$db->query($sql);
 	$o_id = $db->insert_id();
 
@@ -77,6 +81,10 @@ if( $request == "confirm_sum" ){
 		}	
 
 	}
+	
+	
+	if($_AWMode == "ACCOUNTING")
+		log_order($o_id);
 }
 elseif( $request == "return_sum")
 {

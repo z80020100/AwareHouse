@@ -32,6 +32,6 @@ $db = new Db("localhost", "root" , "", "bfproj");
 $shift_start =0;
 $shift_end = 24;
 
-
+$_AWMode = "BUSINESS" // ACCOUNTING, BUSINESS
 
 ?>
