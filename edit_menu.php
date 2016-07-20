@@ -6,6 +6,8 @@ header("Content-Type:text/html; charset=utf-8");
 $_PAGE_TITLE = '編輯菜單';
 require_once('includes/header.php');
 
+not_admin_redirect();
+
 $template = $twig->loadTemplate('edit_menu.html');
 
 // List Series by order_num
@@ -73,8 +75,6 @@ while($series_data = $db->fetch_array($result)){
 	}	
 	$all_series[$snum]['main'] = $all_main;
 }
-
-not_admin_redirect();
 
 $_HTML .= $template->render(array(
 	'all_series' => $all_series,

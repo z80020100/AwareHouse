@@ -963,10 +963,11 @@ function series_sortable(){
 		onStart: function (/**Event*/evt) {
 			console.log("Series Sort Start");
 			main_sortable_destroy();
+			$("input[id^='es']").unbind('click');
 		},
 		onEnd: function (/**Event*/evt) {
 			console.log("Series Sort End");
-			
+			series_table_bind();
 		},
 		onUpdate: function (evt) {
 			console.log('系列排序更新！');
@@ -1000,7 +1001,6 @@ function series_sortable(){
 				alertify.error("系列排序更新失敗...！！");
 			else
 				alertify.success("系列排序已更新！");
-			series_table_bind();
 		},
 	});
 }

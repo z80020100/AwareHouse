@@ -79,5 +79,16 @@ img[id^=del_additional_item_]{
 }
 
 .sortable-chosen{
-	background-color: #FF0000 !important;
+	background-color: gray !important;
+}
+
+div[id^='m']:not(#main):not(#multi_choice)
+{
+    background-color:#ffc952;
+    color:#ff7473;
+    height:50px;
+    width:125px;
+	line-height:50px;
+	text-align:center;
+	padding: 0px;
 }

@@ -1,35 +1,12 @@
-<!--- w3 css template --->
-<link rel="stylesheet" href="./templates/w3.css">
-
-
-<!--- alertify --->
-<script src="./includes/alertify/alertify.js"></script>
-<link rel="stylesheet" href="./includes/alertify/alertify.core.css" />
-<link rel="stylesheet" href="./includes/alertify/alertify.default.css" />
-
-
-<!--- jQuery --->
-<script src="./includes/jquery/jquery-1.11.3.min.js"></script>
-
-
-<!--- Sortable --->
-<script src="./includes/Sortable-1.4.0/Sortable.min.js"></script>
-
-
-<!-----------------------------------------------------------------------------------------
-
-	Unified JS & CSS Block 
-
------------------------------------------------------------------------------------------->
 <script type="text/javascript" src="templates/edit_menu.js"></script>
 <link rel="stylesheet" href="./templates/edit_menu.css">
 
 <div id="button" style="text-align:center;">
 	</br>
-    <button id="add_series" class="w3-btn w3-teal w3-round-xlarge">新增系列</button>
-	<button id="edit_additional" class="w3-btn w3-teal w3-round-xlarge">編輯加點項目</button>
-	<button id="add_main" class="w3-btn w3-teal w3-round-xlarge">新增品項</button>
-	<select id="batch_main_series" style="background: #009688  0px 0px; color: #ffffff; font-size: 14px; border: #009688 1px solid; padding: 5px;">
+    <button id="add_series" class="w3-btn w3-round-xlarge" style="background: #ffc952; color: #ff7473;">新增系列</button>
+	<button id="edit_additional" class="w3-btn w3-round-xlarge" style="background: #ffc952; color: #ff7473;">編輯加點項目</button>
+	<button id="add_main" class="w3-btn w3-round-xlarge" style="background: #ffc952; color: #ff7473;">新增品項</button>
+	<select id="batch_main_series" style="background: #ffc952  0px 0px; color: #ff7473; font-size: 14px; border: #009688 1px solid; padding: 5px;">
 		<option value="s_0">預先選取新增系列</option>
 	</select>
 </div>
@@ -37,7 +14,7 @@
 <div id="series_table">
     {% for series in all_series %}
     <!--div id="s{{series.s_id}}" class="w3-group w3-row w3-padding-left"-->
-	<div id="s{{series.s_id}}" class="series_div">
+	<div id="s{{series.s_id}}" class="series_div w3-group w3-row w3-padding-left w3-card-4">
 
 				<h3 style="text-align:center;">
 					<input id="es_{{series.s_id}}" type="text" value="{{series.name}}"></br>
@@ -46,7 +23,7 @@
 
 
         {% for main in series.main %}
-            <div id="m{{main.m_id}}" class="w3-btn w3-teal w3-large w3-margin-2 w3-round" data-at_id={{main.at_id}} value="{{main.price}}"> {{main.name}} </div>
+            <div id="m{{main.m_id}}" class="w3-btn w3-margin-bottom w3-round" data-at_id={{main.at_id}} value="{{main.price}}"> {{main.name}} </div>
             <script>
                 
                 $("#m{{main.m_id}}").data({ "ro_at_id" : [ 
