@@ -456,8 +456,8 @@ function getOrdersReport(ret, t2) {
   }
   // CALCULATE THE quantity AND price OF ALL ITEM IN menu_raw
   for (var i = 0; i < log_info_size; i++) {
-    menu_raw[log_info[i]["m_text"]]["quantity"] += log_info[i]["quantity"];
-    menu_raw[log_info[i]["m_text"]]["price"] += log_info[i]["price"];
+    menu_raw[log_info[i]["m_text"]]["quantity"] += parseInt(log_info[i]["quantity"]);
+    menu_raw[log_info[i]["m_text"]]["price"] += parseInt(log_info[i]["price"]);
   }
 
   // UPDATE series_dataset
@@ -622,11 +622,10 @@ function drawPieChart(dataset, set) {
       console.log("click "+d.data.label+" "+d.data.quantity);
 
       // add ajax to query data
-      dataset = d.data.details;
       $('#piechart svg').remove();
       tier = 1;
       labelName = d.data.label;
-      drawPieChart(dataset, set);
+      drawPieChart(d.data.details, set);
     });
   }
   else if (tier == 1) {
@@ -664,24 +663,23 @@ function drawPieChart(dataset, set) {
     .attr('y', legendRectSize - legendSpacing)
     .text(function(d, i) {
       var percent = 0;
+      var value = 0;
       if (set == 0) {
-      var total = d3.sum(dataset.map(function(d) {                // NEW
-        return d.quantity;                                           // NEW
-      }));
-      percent = Math.round(1000 * dataset[i].quantity / total) / 10; // NEW
-    }
-    else {
-      var total = d3.sum(dataset.map(function(d) {                // NEW
-        return d.price;                                           // NEW
-      }));
-      percent = Math.round(1000 * dataset[i].price / total) / 10; // NEW
-    }
-      return d+" "+percent+"%";
+        var total = d3.sum(dataset.map(function(d) {
+          return d.quantity;
+        }));
+        percent = Math.round(1000 * dataset[i].quantity / total) / 10;
+        value = dataset[i].quantity + "個";
+      }
+      else {
+        var total = d3.sum(dataset.map(function(d) {
+          return d.price;
+        }));
+        percent = Math.round(1000 * dataset[i].price / total) / 10;
+        value = dataset[i].price + "元";
+      }
+      return d+" "+percent+"% ( " + value + " )";
     });
-}
-
-function showRevenue (log) {
-
 }
 
 //GET ALL THE DETAILS OF ALL MENU
