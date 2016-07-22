@@ -332,7 +332,7 @@ function order_detail($o_id){
 				$m_result = $db->query($sql);
 				$main = $db->fetch_array($m_result);
 
-
+				$item_total = 0;
 				// Requirement Option
 				$sql = "SELECT * FROM `sh-i_ai` WHERE `sh-i_id` = ".$item['sh-i_id']." AND `is_ro` = 1 ";
 				$sh_i_ai_result = $db->query($sql);
@@ -347,7 +347,7 @@ function order_detail($o_id){
 					$outRo['price'] = $ro['price'];
 
 					// Counting price
-					$counting_total += $ro['price'];
+					$item_total += $ro['price'];
 					array_push($ro_info, $outRo);
 				}
 				// Additional Option
@@ -363,12 +363,14 @@ function order_detail($o_id){
 					$outAi['name'] = $ai['name'];
 					$outAi['price'] = $ai['price'];
 					// Counting price
-					$counting_total += $ai['price'];
+					$item_total += $ai['price'];
 					array_push($ai_info, $outAi);
 				}
-				$counting_total += $main['price'];
-				$counting_total = $counting_total * $item['quantity'];
+				$item_total += $main['price'];
+				$item_total = $item_total * $item['quantity'];
 
+				$counting_total += $item_total;
+				
 				$outItem = array();
 				$outItem['name'] 		= 	$main['name'];
 				$outItem['main_price'] 	= 	$main['price'];
