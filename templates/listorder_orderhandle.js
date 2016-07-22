@@ -256,8 +256,9 @@ function unDoFade(){
 }
 
 
-function refresh_orderstatus( oid , remote_update = false){
-	
+function refresh_orderstatus( oid , remote_update){
+	remote_update = (typeof remote_update !== 'undefined') ? remote_update : false;
+  
 	//alert('test');
 	var dStatus = $('#order_detail_'+oid).data("status");
 	
@@ -370,8 +371,9 @@ window.page_ordertime = '1900-01-01 00:00:00';
 var bellring = new Audio("templates/Bell-ding.mp3");
 
 
-function refresh_order( fresh_page = false ){
-	
+function refresh_order( fresh_page  ){
+	fresh_page = (typeof fresh_page !== 'undefined') ? fresh_page : false;
+
 	var req = new Object();
 	req["type"] = 'refresh';
 	req["time"] = window.page_ordertime;
