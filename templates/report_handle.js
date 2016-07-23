@@ -434,23 +434,6 @@ function getOrdersReport(ret, t2) {
     }
   }
 
-  // CALCULATE THE quantity AND price OF ALL ITEM IN menu_raw
-  // for (var i = 0; i < order_info_size; i++) { //LOOP ALL THE ORDERS
-  //   var item_array = order_info[i]['summary_array'];
-  //   var item_array_size = item_array.length;
-  //   for (var j = 0; j < item_array_size; j++) { //LOOP ALL ITEMS IN 1 ORDER
-  //     var name = item_array[j]['name'];
-  //     menu_raw[name]["quantity"] += parseInt(item_array[j]["quantity"]);
-
-  //     menu_raw[name]["price"] += parseInt(item_array[j]["main_price"]);
-  //     var ro = item_array[j]["RO_array"], ro_size = ro.length;
-  //     var ai = item_array[j]["AI_array"], ai_size = ai.length;
-  //     for (var k = 0; k < ro_size; k++) menu_raw[name]["price"] += parseInt(ro[k]["price"]);
-  //     for (var k = 0; k < ai_size; k++) menu_raw[name]["price"] += parseInt(ai[k]["price"]);
-  //   }
-  // }
-
-  console.log(log_info);
   if (log_info_size == 0) {
     alert("查無資料");
     return 0;
@@ -501,7 +484,6 @@ function getOrdersReport(ret, t2) {
 
   //   graph_json["children"].push(tmp);
   // }
-  console.log(series_dataset);
 
   $('#piechart svg').remove();
   $('#piechart').css("display", "block");
