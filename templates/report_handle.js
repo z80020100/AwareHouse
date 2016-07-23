@@ -450,6 +450,7 @@ function getOrdersReport(ret, t2) {
   //   }
   // }
 
+  console.log(log_info);
   if (log_info_size == 0) {
     alert("查無資料");
     return 0;
@@ -457,7 +458,7 @@ function getOrdersReport(ret, t2) {
   // CALCULATE THE quantity AND price OF ALL ITEM IN menu_raw
   for (var i = 0; i < log_info_size; i++) {
     menu_raw[log_info[i]["m_text"]]["quantity"] += parseInt(log_info[i]["quantity"]);
-    menu_raw[log_info[i]["m_text"]]["price"] += parseInt(log_info[i]["price"]);
+    menu_raw[log_info[i]["m_text"]]["price"] += parseInt(log_info[i]["price"]) * parseInt(log_info[i]["quantity"]);
   }
 
   // UPDATE series_dataset
