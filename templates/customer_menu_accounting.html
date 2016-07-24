@@ -11,7 +11,7 @@
 
         {% for series in all_series %}
         <div id="s{{series.s_id}}" class="w3-group w3-row w3-padding-left w3-card-4 w3-half" style="z-index:20">
-                <h3><center id="series_name_class" class="w3-padding"> {{series.name}} </center></h3>
+                <h3 id="series_name_class" class="w3-padding">{{series.name}}</h3>
             {% for main in series.main %}
                 
                 <div id="m{{main.m_id}}_ro_at_id" style="display:none"></div>
@@ -35,7 +35,7 @@
         
 
         <div class="w3-half w3-card-4 w3-group">
-                <h3><center class="w3-padding"> 購物清單 </center></h3>
+                <h3 class="w3-padding">購物清單</h3>
 
 
                 <div class="w3-row w3-center">
@@ -136,7 +136,7 @@
             <footer class="w3-container">
                 <div class="w3-container w3-col s4 w3-padding">
                     <input id="item_price" class="w3-input w3-sand" type="text" value="0" readonly>
-                    <input id="m_id" type="hidden" readonly>
+                    <input id="m_id" type="hidden">
                 </div>
                 <div class="w3-container w3-col s4 w3-padding-24">
                     元

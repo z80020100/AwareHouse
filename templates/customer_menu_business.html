@@ -9,27 +9,21 @@
     </div>
 
 
-    <div class="w3-form w3-container w3-card-4">
-      <center>
-      <div class="w3-input-group w3-half" >
-          <label class="w3-label" style="width:50%" ></label>
-          <input id="table_num" class="w3-input w3-border"  type="text" style="width:50%" placeholder="桌號">
-      </div>
-      <div class="w3-input-group w3-half">
-          <label class="w3-label" style="width:50%"></label>
-          <input id="people_num" class="w3-input w3-border" value="1" min="1" type="number" style="width:50%" placeholder="人數">
+    <div  class="w3-form w3-container w3-card-4">
+      <div id="div_of_table" class="w3-input-group w3-half" >
+          <label class="w3-label" ></label>
+          <input id="table_num" class="w3-input w3-border"  type="text" style="width:50%" placeholder="末三碼/桌號">
       </div>
 
           <br>
           <br>
           <br>
-      </center>
     </div>
 
 
     {% for series in all_series %}
     <div id="s{{series.s_id}}" class="w3-group w3-row w3-padding-left w3-card-4">
-            <h3><center id="series_name_class" class="w3-padding"> {{series.name}} </center></h3>
+            <h3 id="series_name_class" class="w3-padding"> {{series.name}} </h3>
         {% for main in series.main %}
             
             <div id="m{{main.m_id}}_ro_at_id" style="display:none"></div>
@@ -53,7 +47,7 @@
     
     <div>
         <button id="open_cart" class="w3-btn-floating-large">
-            <img src="./includes/images/shopping-cart.svg" style="width:50%; height:50%;">
+            <img src="./includes/images/shopping-cart.svg" alt="shopping-cart" style="width:50%; height:50%;">
         </button>
     </div>
 
@@ -129,7 +123,7 @@
 
             <div class="w3-row w3-container">
                 <div class="w3-col s5  w3-padding-8">
-                    <h3 id="item_name" ></h3>
+                    <h3 id="item_name"></h3>
                     <input id="m_price" type="hidden" value="-1">
                 </div>
 
@@ -165,7 +159,7 @@
             <footer class="w3-container">
                 <div class="w3-container w3-col s4 w3-padding">
                     <input id="item_price" class="w3-input w3-sand" type="text" value="0" readonly>
-                    <input id="m_id" type="hidden" readonly>
+                    <input id="m_id" type="hidden">
                 </div>
                 <div class="w3-container w3-col s4 w3-padding-24">
                     元

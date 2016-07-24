@@ -1,6 +1,18 @@
 
 
 
+h1,h3{
+    text-align: center;
+}
+
+#div_of_table_num{
+    text-align: center;
+    margin: 0 auto;
+    margin-right: auto; 
+    margin-left: auto; 
+    width: 800px; 
+}
+
 button[id^='m']
 {
     background-color:#ffc952;
