@@ -1,8 +1,9 @@
-<script type="text/javascript" src="templates/edit_menu.js"></script>
-<link rel="stylesheet" href="./templates/edit_menu.css">
+<script src="templates/edit_menu.js"></script>
+
+<link href="./templates/edit_menu.css" rel="stylesheet">
 
 <div id="button" style="text-align:center;">
-	</br>
+	<br>
     <button id="add_series" class="w3-btn w3-round-xlarge" style="background: #ffc952; color: #ff7473;">新增系列</button>
 	<button id="edit_additional" class="w3-btn w3-round-xlarge" style="background: #ffc952; color: #ff7473;">編輯加點項目</button>
 	<button id="add_main" class="w3-btn w3-round-xlarge" style="background: #ffc952; color: #ff7473;">新增品項</button>
@@ -17,8 +18,8 @@
 	<div id="s{{series.s_id}}" class="series_div w3-group w3-row w3-padding-left w3-card-4">
 
 				<h3 style="text-align:center;">
-					<input id="es_{{series.s_id}}" type="text" value="{{series.name}}"></br>
-					<a class="icon" id="del_s_{{series.s_id}}" href="javascript:void(0)"><img src="icon/del_at_icon.png"></a>
+					<input id="es_{{series.s_id}}" type="text" value="{{series.name}}"><br>
+					<a class="icon" id="del_s_{{series.s_id}}" href="javascript:void(0)"><img src="icon/del_at_icon.png" alt="del_at_icon"></a>
 				</h3>
 
 
@@ -38,7 +39,7 @@
     </div>
     {% endfor %}
 </div>
-<br/>
+<br>
 
 <div id="new_main_set" class="w3-modal w3-padding-top" style="z-index:2">
     <div class="w3-modal-content w3-card-4">
@@ -55,12 +56,12 @@
 						<option value="s_0">請選擇所屬系列</option>
 					</select>
 				</span>
-				</br>
+				<br>
 				<span style="padding:5px">品項名稱：<input id="new_main_name" type="text" value="" placeholder="請輸入品項名稱" style="width: 100%;" /></span>
-				</br>
+				<br>
 				<span style="padding:5px">基底價格：<input id="new_main_price" type="number" value="0" min="0" style="width: 100%;" /></span>
-				</br>
-				<center><span style="padding:5px">（總價=<span id="warning" style="font-weight: bold; color:red;">基底價格+細項價格</span>）</span></center>
+				<br>
+				<span style="padding:5px; text-align:center">（總價=<span id="warning" style="font-weight: bold; color:red;">基底價格+細項價格</span>）</span>
 			</div>
 			<div style="height:10px;"></div>
 		</div>
@@ -68,7 +69,7 @@
 		<div>
 			<div style="width: 50%; width: 50%; padding:10px; float:left; word-break: break-all; border:0px solid #9bdf70;background:#f0fbeb">
 				主餐細項(多選)
-				<a href='javascript:void(0)' id="add_multi_choice"><img src="icon/add_at_icon.png"></a>
+				<a href='javascript:void(0)' id="add_multi_choice"><img src="icon/add_at_icon.png" alt="add_at_icon"></a>
 				<div class="multi_choice" id="multi_choice">
 					<input type="checkbox" name="single" value="single_0" id="single_0">
 					<label for="single_0">漢堡種類</label>
@@ -79,19 +80,19 @@
 			</div>
 			<div style="width: 50%; padding:10px; float:right; word-break: break-all; border:0px solid #a9c9e2;background:#e8f5fe">
 				加點細項(單選)
-				<a href='javascript:void(0)' id="add_single_choice"><img src="icon/add_at_icon.png"></a>
+				<a href='javascript:void(0)' id="add_single_choice"><img src="icon/add_at_icon.png" alt="add_at_icon" ></a>
 				<div class="single_choice" id="single_choice">
 					<input type="radio" name="mul" value="mul_0" id="mul_0" checked>
 					<label for="mul_0">
-						<a href='javascript:void(0)' id="edit_at_icon_0" onclick="alert('編輯加點細項');"><img src="icon/edit_at_icon.png"></a>
+						<a href='javascript:void(0)' id="edit_at_icon_0" onclick="alert('編輯加點細項');"><img src="icon/edit_at_icon.png" alt="edit_at_icon"></a>
 						無加點
-						<a href='javascript:void(0)' id="del_at_icon_0" onclick="alert('刪除加點類別');"><img src="icon/del_at_icon.png"></a>
+						<a href='javascript:void(0)' id="del_at_icon_0" onclick="alert('刪除加點類別');"><img src="icon/del_at_icon.png" alt="del_at_icon"></a>
 						</label>
 				</div>
 			</div>
 			<div style="clear: both;"></div> <!--清除float效果-->
 			<div id="edit_add" style="padding:10px; word-break: break-all; border:0px solid #e3e197;background:#ffffdd">
-				<span>細項編輯<a href="javascript:void(0)" id="add_additional_item"><img src="icon/add_at_icon.png"></a></span>
+				<span>細項編輯<a href="javascript:void(0)" id="add_additional_item"><img src="icon/add_at_icon.png" alt="add_at_icon"></a></span>
 				<div id="edit_add_detail"></div>
 			</div>
 		</div>
