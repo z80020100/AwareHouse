@@ -489,6 +489,8 @@ function getOrdersReport(ret, t2) {
   $('#piechart').css("display", "block");
 
   var countOrSize = 1;    //default: 1(price)
+  $("input[value='price']").prop("checked", true);
+
   d3.select("#p_form").selectAll("input").on("click", function change() {
     if (this.value == "quantity") {
       countOrSize = 0;   // 0: quantity
@@ -679,7 +681,7 @@ function getMenuReport(ret, t3) {
   ret.remove(0);
 
   var menu = "";
-  var tmp_row = "<div class='menu_row'><div class='menu_item'>銷售金額：" + total + "</div></div>";
+  var tmp_row = "<div class='menu_row'><div class='menu_item' style='font-size: 20px; font-weight: bold'>銷售金額：$" + total + "</div></div><br/>";
   menu += tmp_row;
 
   // Start to handle all the quantity
