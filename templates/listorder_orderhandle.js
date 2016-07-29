@@ -368,7 +368,7 @@ function order_block( order_info ){
 
 window.page_ordertime = '1900-01-01 00:00:00';
 
-var bellring = new Audio("templates/Bell-ding.mp3");
+var bellring = new Audio("templates/iphone_sound.mp3");
 
 
 function refresh_order( fresh_page  ){
