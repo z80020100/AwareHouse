@@ -1,7 +1,7 @@
 <?php
 
 
-$_PAGE_TITLE = '早餐店後台管理系統';
+$_PAGE_TITLE = '早餐店點餐系統';
 require_once('includes/header.php');
 
 $template = $twig->loadTemplate('login.html');
