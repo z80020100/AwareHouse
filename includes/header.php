@@ -17,10 +17,14 @@ else{
 	$_USER_IDENTITY = 'guest';
 }
 
+if(!isset($all_series))
+	$all_series = array();
+
 
 $_HTML .= $template->render(array(
 	'PAGE_TITLE' => $_PAGE_TITLE,
 	'USER_IDENTITY' => $_USER_IDENTITY,
+	'all_series' => $all_series,
 ));
 
 

@@ -64,6 +64,11 @@
 {% if USER_IDENTITY == 'admin'  %}
     <nav id="nav_bar" class="w3-sidenav w3-white w3-card-2">
 		<a id="nav_cross" href="javascript:void(0)" class="w3-closenav w3-xxlarge w3-center" style="z-index:2">&times;</a>
+        <hr>
+		{% for series in all_series %}
+        <a href="#s{{series.s_id}}" class="w3-center" >{{series.name}}</a>
+        <br>
+        {% endfor %}		
 		<hr>
 		<a href="listorder.php" rel="external" class="w3-center">即時訂單資訊</a>
 		<br>
@@ -75,11 +80,16 @@
 		<br>
 		<a href="register.php" rel="external" class="w3-center">創造帳號</a>
 		<br>
-		<a href="login.php" rel="external" class="w3-center">登出</a>
+		<a href="login.php" rel="external" class="w3-center">登出</a>		
     </nav>
 {% elseif USER_IDENTITY == 'member' %}
     <nav id="nav_bar" class="w3-sidenav w3-white w3-card-2">
         <a id="nav_cross" href="javascript:void(0)" class="w3-closenav w3-xxlarge w3-center" style="z-index:2">&times;</a>
+		<hr>
+        {% for series in all_series %}
+        <a href="#s{{series.s_id}}" class="w3-center" >{{series.name}}</a>
+        <br>
+        {% endfor %}
 		<hr>
 		<a href="index.php" class="w3-center" >下單</a>
 		<br>
@@ -87,10 +97,6 @@
 		<br>
 		<a href="login.php" class="w3-center" >登出</a>
 		<hr>
-        {% for series in all_series %}
-        <a href="#s{{series.s_id}}" class="w3-center" >{{series.name}}</a>
-        <br>
-        {% endfor %}
     </nav>
 {% else %}
     <nav id="nav_bar" class="w3-sidenav w3-white w3-card-2">
