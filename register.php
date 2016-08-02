@@ -1,6 +1,6 @@
 <?php
 
-$_PAGE_TITLE = '早餐店後台管理系統';
+$_PAGE_TITLE = '創造帳號';
 require_once('includes/header.php');
 
 

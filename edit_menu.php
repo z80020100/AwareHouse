@@ -3,7 +3,7 @@
 require_once('includes/general.php');
 header("Content-Type:text/html; charset=utf-8");
 
-$_PAGE_TITLE = '編輯菜單';
+$_PAGE_TITLE = '菜單編輯';
 require_once('includes/header.php');
 
 not_admin_redirect();
