@@ -318,7 +318,7 @@ function order_block( order_info ){
 
 	var orderblock_start = '<tbody class="order_view" order_id="'+order_info.o_id+'">                                                                                                                                        \n\
 			<tr class="order_title" id="order_detail_'+order_info.o_id+'">                                                                                                                                                                                           			\n\
-				<th>#'+order_info.table_num+'</th>                                                                                                                                                                                    \n\
+				<th>#'+order_info.table_num+' ('+order_info.user.u_name+'/'+order_info.user.ui_phone+')</th>                                                                                                                                                                                    \n\
 				<th class="order_status"></th>                                                                                                                                                                                            \n\
 				<th>'+orderSummary_block(order_info.summary_array)+'</th>                                                                                                                                                                                   \n\
 				<th>$'+order_info.total+'</th>                                                                                                                                                                                            \n\
