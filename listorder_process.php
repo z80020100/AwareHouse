@@ -54,6 +54,14 @@ switch($reqType){
 
 		$outOrder_temp = order_detail($order['o_id']);
 		
+		
+		$sql = "SELECT * FROM `user` LEFT JOIN (`user_info`) ON `user_info`.`u_id` = `user`.`u_id` WHERE `user`.`u_id` = '".$order['u_id']."'";
+		$uresult = $db->query($sql);
+		$order_user = $db->fetch_array($uresult);
+		
+		$order['user'] = $order_user;
+		
+		
 		$outOrder = array_merge($order, $outOrder_temp);
 		array_push( $order_info, $outOrder );
 	}
