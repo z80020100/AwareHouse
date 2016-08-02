@@ -6,6 +6,8 @@
 $_PAGE_TITLE = '即時訂單';
 require_once('includes/header.php');
 
+not_login_redirect();
+not_staff_redirect();
 
 $template = $twig->loadTemplate('listorder.html');
 
@@ -16,7 +18,7 @@ $num = $db->numrow($result);
 $all_orders = array();
 */
 
-not_admin_redirect();
+not_staff_redirect();
 
 $_HTML .= $template->render(array(
 	

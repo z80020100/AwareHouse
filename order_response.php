@@ -24,7 +24,7 @@ var test_order_info = {
 */
 require_once('includes/general.php');
 
-not_login_redirect();
+is_above_customer();
 
 header("Content-Type:text/html; charset=utf-8");
 

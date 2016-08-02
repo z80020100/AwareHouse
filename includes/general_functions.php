@@ -26,6 +26,22 @@ $GLOBALS['STATUS'] = array(
 	'ARCHIVE'  // cannot be deleted
 );
 
+define("IDGUEST", 0);
+define("IDCUSTOMER", 1);
+define("IDSTAFF", 2);
+define("IDADMIN", 3);
+
+define("AUGUEST", (1 << IDGUEST) );
+define("AUCUSTOMER", (1 << IDCUSTOMER) );
+define("AUSTAFF", (1 << IDSTAFF));
+define("AUADMIN", (1 << IDADMIN));
+
+$_Identity = array();
+$_Identity[IDGUEST] = array('desc' => '訪客/未啟用顧客');
+$_Identity[IDCUSTOMER] = array('desc' => '顧客');
+$_Identity[IDSTAFF] = array('desc' => '職員');
+$_Identity[IDADMIN] = array('desc' => '老闆');
+
 function statusUp( $cStatus){
 	$kIndex = array_search( $cStatus, $GLOBALS['STATUS']);
 	if($kIndex == sizeof($GLOBALS['STATUS'])-1)
@@ -75,7 +91,7 @@ function user_create($username, $userpass, $phone_info){
 	}
 
 	// hash("sha256", "test1234");
-	$sql = "INSERT INTO `user` (`u_id`, `u_name`, `u_pass`, `u_type`) VALUES (NULL, '".$username."', '".hash("sha256",$userpass)."', '0');";
+	$sql = "INSERT INTO `user` (`u_id`, `u_name`, `u_pass`, `u_type`) VALUES (NULL, '".$username."', '".hash("sha256",$userpass)."', '".IDGUEST."');";
 	if( !$result = $db->query($sql) ){
 
 		die('error gf_uc_1<br>');
@@ -189,9 +205,9 @@ function user_login($username, $password, $phone_info){
 
 				$_SESSION['u_name'] = $Quser['u_name'];
 				$_SESSION['u_id'] = $Quser['u_id'];
-				$_SESSION['admin'] = ($Quser['u_type'] == 2);
+				$_SESSION['admin'] = ($Quser['u_type'] == IDADMIN);
 				$_SESSION['u_type'] = $Quser['u_type'];
-
+				$_SESSION['u_auth'] = 1 << $Quser['u_type'];
 				$_SESSION['ui_phone'] = $Quser_info['ui_phone'];
 				return true;
 			}
@@ -206,9 +222,9 @@ function user_login($username, $password, $phone_info){
 
 				$_SESSION['u_name'] = $Quser['u_name'];
 				$_SESSION['u_id'] = $Quser['u_id'];
-				$_SESSION['admin'] = ($Quser['u_type'] == 2);
+				$_SESSION['admin'] = ($Quser['u_type'] == IDADMIN);
 				$_SESSION['u_type'] = $Quser['u_type'];
-
+				$_SESSION['u_auth'] = 1 << $Quser['u_type'];
 				$_SESSION['ui_phone'] = $Quser_info['ui_phone'];
 				return true;
 			}
@@ -222,6 +238,13 @@ function user_login($username, $password, $phone_info){
 		return false;
 }
 
+function checkAuth($page_auth){
+	if( ($_SESSION['u_auth'] & $page_auth) != 0 )
+		return true;
+	else
+		return false;
+}
+
 function is_login(){
 	if( !isset($_SESSION['u_name'])){
 		return false;
@@ -231,20 +254,53 @@ function is_login(){
 }
 
 function is_admin(){
-	if(isset($_SESSION['admin'])){
+	
+	if(checkAuth(AUADMIN))
+		return true;
+	else
+		return false;
+/*	if(isset($_SESSION['admin'])){
 		if( $_SESSION['admin'] == true)
 			return true;
 		else
 			return false;
 	}
 	else
-		return false;
+		return false;*/
 }
+
+function is_staff(){ // boss (admin) is included in staff
+	return checkAuth(AUSTAFF | AUADMIN);
+}
+
+function is_above_customer(){
+	return checkAuth(AUCUSTOMER | AUSTAFF | AUADMIN);
+}
+
+function not_staff_redirect(){
+	if(!is_staff()){
+		if(is_login()){
+			header("location:index.php");
+			die('');
+		}
+		else{
+			header("location:login.php");
+			die('');
+		}
+	}
+}
+
 
 function not_admin_redirect(){
 	if(!is_admin()){
-		header("location:login.php");
-		die('');
+		if(is_login()){
+			header("location:index.php");
+			die('');
+		}
+		else{
+			header("location:login.php");
+			die('');
+		}
 	}
 }
 

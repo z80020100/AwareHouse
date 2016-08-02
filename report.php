@@ -5,7 +5,7 @@
 
 $_PAGE_TITLE = '早餐店報表';
 require_once('includes/header.php');
-
+not_admin_redirect();
 // $login_error = false;
 // if(!isset($_SESSION['user_name'])){
 // //  header('location:login.php');

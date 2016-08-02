@@ -70,7 +70,7 @@ switch($reqType){
 
 	case "updateOrderStatus":
 		if (!is_login()) die('not loginned');
-		if (!is_admin()) die('not admin');
+		if (!is_staff()) die('not staff');
 
 		if($_REQUEST['request']['swipe'] == 'right'){
 			$nextStatus = statusUp($_REQUEST['request']['current_status']);
@@ -109,7 +109,7 @@ switch($reqType){
 
 	case "updateOrderEstimate":
 		if (!is_login()) die('not loginned');
-		if (!is_admin()) die('not admin');
+		if (!is_staff()) die('not staff');
 
 		$sql = "SELECT * FROM `orders` WHERE `orders`.`o_id` = ".$_REQUEST['request']['oid'].";";
 		$order = $db->query_select_one($sql);

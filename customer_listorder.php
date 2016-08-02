@@ -3,14 +3,11 @@
 $_PAGE_TITLE = '早餐店後台管理系統';
 require_once('includes/header.php');
 
-
-
-
-$login_error = false;
-if(!isset($_SESSION['user_name'])){
-//	header('location:login.php');
+not_login_redirect();
+if(!checkAuth(AUCUSTOMER|AUSTAFF|AUADMIN)){
+		header("location:register.php");
+		die('');
 }
-
 
 $template = $twig->loadTemplate('customer_listorder.html');
 

@@ -3,6 +3,8 @@ require_once('includes/general.php');
 
 header("Content-Type:text/html; charset=utf-8");
 
+not_admin_redirect();
+
 $action = $_REQUEST["action"];
 
 $ro_arrays = array();

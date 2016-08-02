@@ -21,10 +21,13 @@ $twig = new Twig_Environment($loader, array(
 
 session_start();
 header("Content-Type:text/html; charset=utf-8");
-/*if(isset($_SESSION['user_name']))
-	echo $_SESSION['user_name'];
-else
-	echo "Stranger";*/
+
+if(!isset($_SESSION['u_auth']))
+	$_SESSION['u_auth'] = AUGUEST;
+
+// 未來要獨立成為設定檔的部分 -----------------------
+// 可能會變成資料庫存取
+
 
 $db = new Db("localhost", "root" , "", "bfproj");
 
@@ -32,6 +35,20 @@ $db = new Db("localhost", "root" , "", "bfproj");
 $shift_start =0;
 $shift_end = 24;
 
-$_AWMode = "BUSINESS" // ACCOUNTING, BUSINESS
+$_AWMode = "BUSINESS"; // ACCOUNTING, BUSINESS
+
+
+
+
+//$_Auth = array();
+//$_Auth['index.php'] = AUGUEST| AUCUSTOMER | AUSTAFF | AUADMIN;
+//$_Auth['listorder.php'] = AUSTAFF | AUADMIN;
+
+//echo basename($_SERVER["SCRIPT_FILENAME"]);
+//echo $_Auth[basename($_SERVER["SCRIPT_FILENAME"])];
+
+
+// 未來要獨立成為設定檔的部分 -----------------
+
 
 ?>

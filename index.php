@@ -5,6 +5,11 @@
 require_once('includes/general.php');
 header("Content-Type:text/html; charset=utf-8");
 
+not_login_redirect();
+if(!checkAuth(AUCUSTOMER|AUSTAFF|AUADMIN)){
+		header("location:register.php");
+		die('');
+}
 
 // List Series by order_num
 $sql = "SELECT * FROM `series` ORDER BY `series`.`order_num` ASC ";
@@ -77,11 +82,6 @@ while($series_data = $db->fetch_array($result)){
 $_PAGE_TITLE = '早餐店菜單';
 require_once('includes/header.php');
 
-$login_error = false;
-if(!isset($_SESSION['user_name'])){
-    //  header('location:login.php');
-}
-
 
 //$template = new Mustache_Engine(array());
 
@@ -91,17 +91,12 @@ if($_AWMode == "ACCOUNTING")
 else if($_AWMode == "BUSINESS")
     $template = $twig->loadTemplate('customer_menu_business.html');
 
-not_login_redirect();
-if($_SESSION['u_type'] == 0){
-		header("location:register.php");
-		die('');
-}
+
 	
 	
 
 
 $_HTML .= $template->render(array(
-	'World2' => 'Mars2',
 	'all_series' => $all_series,
     //'verification_code' => $Qver['value'],
 ));

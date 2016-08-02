@@ -2,7 +2,7 @@
 require_once('includes/general.php');
 
 header("Content-Type:text/html; charset=utf-8");
-
+not_login_redirect();
 //echo $at_id;
 // hamburger 40
 // milk tea 10
