@@ -347,7 +347,9 @@ function order_block( order_info ){
 		
 	}
 
-	$("#order_list_header").after( orderblock_start + '<tr><td colspan="7" class="separator"></td></tr></tbody>');  // -- 寫入html
+	//$("#order_list_header").after( orderblock_start + '<tr><td colspan="7" class="separator"></td></tr></tbody>');  // -- 寫入html
+	//order_list
+	$("#order_list").append( orderblock_start + '<tr><td colspan="7" class="separator"></td></tr></tbody>');  // -- 寫入html
 	var t = order_disptime.split(/[- :]/);
 	var ordertime = new Date(t[0], t[1]-1, t[2], t[3], t[4], t[5]);
 
