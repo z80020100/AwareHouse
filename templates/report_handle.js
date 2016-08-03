@@ -603,6 +603,8 @@ function drawPieChart(dataset, set) {
   });
 
   if (tier == 0) {
+    $('.back').hide();
+
     path.on('click', function(d) {
       console.log("click "+d.data.label+" "+d.data.quantity);
 
@@ -614,6 +616,8 @@ function drawPieChart(dataset, set) {
     });
   }
   else if (tier == 1) {
+    $('.back').show();
+
     // Only enter this for when the dataset is from series
     for (var i = 0; i < dataset.length; i++) {
       if (dataset[i]["label"] != labelName) continue;
@@ -669,7 +673,7 @@ function drawPieChart(dataset, set) {
 
 //GET ALL THE DETAILS OF ALL MENU
 function getMenuReport(ret, t3) {
-  $('#total_menu_report > div').remove();
+  $('#total_menu_report > *').remove();
   var size = ret.length - 1;  //becasue the ret[0] is total revenue
   var row = 4;
   var row_num = Math.floor(size / row);

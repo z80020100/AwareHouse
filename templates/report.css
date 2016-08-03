@@ -95,6 +95,7 @@ svg {
   background-color: #ffffff;
   border: 1px #3F72AF solid;
   border-radius: 20px;
+  display: none;
 }
 
 #piechart svg {
