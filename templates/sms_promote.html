@@ -2,6 +2,8 @@
 
 
 <script type="text/javascript" src="./includes/jquery.tablesorter.js"></script>
+<script type="text/javascript" src="./templates/sms_promote.js"></script>
+
 <div class="w3-padding w3-margin" style="width:80%;background-color:grey">
 篩選
 
@@ -52,10 +54,10 @@
 
 
 
-<table  id="myTable" class="w3-table-all">
+<table  id="promote_table" class="w3-table-all w3-centered">
 <thead>
     <tr>
-        <td rowspan="2">選擇</td>
+        <td rowspan="2">選擇<input class="w3-check sms_checkbox" type="checkbox" id="select_all"></td>
         <td rowspan="2">號碼</td>
         <td colspan="4">訂餐紀錄</td>
         <td rowspan="2">已推播簡訊</td>
@@ -71,7 +73,7 @@
 </thead>
 <tbody>
     <tr>
-    <td>X</td>
+    <td><input class="w3-check sms_checkbox" type="checkbox"></td>
     <td>0981665365</td>
     <td>2016/01/03</td>
     <td>5</td>
@@ -81,7 +83,7 @@
     </tr>
 
     <tr>
-    <td>X</td>
+    <td><input class="w3-check sms_checkbox" type="checkbox"></td>
     <td>0981251365</td>
     <td>2015/02/04</td>
     <td>2</td>
@@ -91,7 +93,7 @@
     </tr>
 
     <tr>
-    <td>X</td>
+    <td><input class="w3-check sms_checkbox" type="checkbox"></td>
     <td>0981111165</td>
     <td>2016/10/03</td>
     <td>7</td>
@@ -105,12 +107,20 @@
 </table>
 
 <br>
-<script>
 
-$(function(){
-      $("#myTable").tablesorter();
-      $("#myTable").tablesorter({ sortList: [[0,0], [1,0]] });
 
-});
+<div id="sms_content" class="w3-modal">
+    <div class="w3-modal-content w3-card-4">
+        <header class="w3-container"> 
+            <span class="w3-closebtn" id="close_sms_content">&times;</span>
+            <h3>輸入簡訊內容</h3>
+        </header>
 
-</script>
+        <div class="w3-container">
+            <textarea>
+            </textarea>
+        </div>
+
+    </div>
+</div>
+

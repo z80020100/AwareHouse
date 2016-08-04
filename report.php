@@ -3,7 +3,7 @@
 // require_once('includes/general.php');
 // header("Content-Type:text/html; charset=utf-8");
 
-$_PAGE_TITLE = '早餐店報表';
+$_PAGE_TITLE = '營運報表';
 require_once('includes/header.php');
 not_admin_redirect();
 // $login_error = false;
