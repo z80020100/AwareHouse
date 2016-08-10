@@ -8,7 +8,7 @@ header("Content-Type:text/html; charset=utf-8");
 not_login_redirect();
 if(!checkAuth(AUCUSTOMER|AUSTAFF|AUADMIN)){
 		header("location:register.php");
-		die('');
+		die();
 }
 
 // List Series by order_num

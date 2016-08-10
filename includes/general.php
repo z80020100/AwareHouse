@@ -38,7 +38,7 @@ $shift_end = 24;
 $_AWMode = "BUSINESS"; // ACCOUNTING, BUSINESS
 
 
-
+$_DontSendSMS = true;
 
 //$_Auth = array();
 //$_Auth['index.php'] = AUGUEST| AUCUSTOMER | AUSTAFF | AUADMIN;

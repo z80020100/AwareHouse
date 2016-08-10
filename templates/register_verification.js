@@ -13,7 +13,7 @@ $('#sendVerification').click(function(e){
 		data:{request:req}
 	} )
 	.done(function(msg){
-		alert(msg);
+		//alert(msg);
 	})
 	.fail(function(jqXHR, textStatus, errorThrown){
 		console.log(textStatus, errorThrown);

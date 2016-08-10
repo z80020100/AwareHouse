@@ -44,8 +44,32 @@ if(!isset($_POST['occupation']))
 
 if(isset($_POST['submit'])){	
 	if($page_verify == false){
-		$uc_return = user_create($_POST['username'] , $_POST['userpass'], $_POST['phone']);
-		if( $uc_return == 1 ){
+		
+		$userRegInfo = array(
+			'phone' => $_POST['phone'],
+		);
+				
+		if(is_admin()){
+			$userRegInfo['advsecurity'] = $_POST['enablepass'];
+			$userRegInfo['utype'] = $_POST['utype'];
+		}
+		else{
+			$userRegInfo['advsecurity'] = $_POST['enablepass'];
+			$userRegInfo['utype'] = IDGUEST; 
+		}
+		
+		$uc_return = user_create($_POST['username'] , $_POST['userpass'], $userRegInfo);
+		if( $uc_return != -1 && is_admin() ){
+			$message = "帳號創立成功";
+			if($userRegInfo['utype'] == IDGUEST)
+			{
+				$vercode = user_vercode(false, $_POST['username'], $uc_return);
+				$message .= "，傳送驗證碼到".$_POST['phone'];
+				send_sms($_POST['phone'], '你的驗證碼是:'.$vercode['hash'] );
+			}
+			//header("refresh:1;url=register.php");
+		}
+		else if( $uc_return != -1 ){
 			$message = "傳送驗證碼中..";
 			
 			user_login($_POST['username'] , $_POST['userpass'], $_POST['phone']);
@@ -67,6 +91,7 @@ if(isset($_POST['submit'])){
 			$message = "驗證碼正確，即將轉到菜單..";
 			$verification_success = true;
 			$_SESSION['u_type'] = 1;
+			$_SESSION['u_auth'] = 1 << 1;
 			header("refresh:1;url=index.php");
 		}
 		else{
@@ -96,6 +121,7 @@ $_HTML .=  $template->render(array(
 	'REGISTER_TITLE' => $register_title,
 	'REGISTER_MESSAGE' => $message,
 	'REGISTER_ADMIN' => $register_admin,
+	'all_utype' => $_Identity,
 	'VERIFICATION_SUCCESS' => $verification_success,
 ));
 

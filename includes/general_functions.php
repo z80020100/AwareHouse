@@ -37,10 +37,10 @@ define("AUSTAFF", (1 << IDSTAFF));
 define("AUADMIN", (1 << IDADMIN));
 
 $_Identity = array();
-$_Identity[IDGUEST] = array('desc' => '訪客/未啟用顧客');
-$_Identity[IDCUSTOMER] = array('desc' => '顧客');
-$_Identity[IDSTAFF] = array('desc' => '職員');
-$_Identity[IDADMIN] = array('desc' => '老闆');
+$_Identity[IDGUEST] = array('id' => IDGUEST, 'desc' => '訪客/未啟用顧客', 'name' => 'guest');
+$_Identity[IDCUSTOMER] = array('id' => IDCUSTOMER,'desc' => '顧客', 'name' => 'customer');
+$_Identity[IDSTAFF] = array('id' => IDSTAFF,'desc' => '職員', 'name' => 'staff');
+$_Identity[IDADMIN] = array('id' => IDADMIN,'desc' => '老闆', 'name' => 'admin');
 
 function statusUp( $cStatus){
 	$kIndex = array_search( $cStatus, $GLOBALS['STATUS']);
@@ -69,7 +69,7 @@ function statusDown( $cStatus){
 
 */
 
-function user_create($username, $userpass, $phone_info){
+function user_create($username, $userpass, $userRegInfo){
 	global $db;
 
 	if(!is_admin()){
@@ -91,47 +91,36 @@ function user_create($username, $userpass, $phone_info){
 	}
 
 	// hash("sha256", "test1234");
-	$sql = "INSERT INTO `user` (`u_id`, `u_name`, `u_pass`, `u_type`) VALUES (NULL, '".$username."', '".hash("sha256",$userpass)."', '".IDGUEST."');";
+	$sql = "INSERT INTO `user` (`u_id`, `u_name`, `u_pass`, `u_type`) VALUES (NULL, '".$username."', '".hash("sha256",$userpass)."', '".$userRegInfo['utype']."');";
 	if( !$result = $db->query($sql) ){
 
 		die('error gf_uc_1<br>');
 	}
 
-	$sql = "INSERT INTO `user_info` (`ui_id`, `u_id`, `ui_advsecurity`, `ui_phone`) VALUES (NULL, '".$db->mysqli->insert_id."', '0', '".$phone_info."')";
+	$new_user_id = $db->mysqli->insert_id;
+	
+	$sql = "INSERT INTO `user_info` (`ui_id`, `u_id`, `ui_advsecurity`, `ui_phone`) VALUES (NULL, '".$db->mysqli->insert_id."', '".$userRegInfo['advsecurity']."', '".$userRegInfo['phone']."')";
 	if( !$result = $db->query($sql) ){
 		//die($sql);
 		die('error gf_uc_2');
 	}
-	return 1;
+	return $new_user_id;
 
 }
 
-function user_vercode( $updateAnyway = false){
+function user_vercode( $updateAnyway = false, $u_name = false , $u_id = false){
 	global $db;
 
-	/*
-	$sql = "SELECT * FROM `config` WHERE `name` = 'verification'";
-	$Qver = $db->query_select_one($sql);
-
-	$sql = "SELECT * FROM `config` WHERE `name` = 'verification_time'";
-	$Qver_t = $db->query_select_one($sql);
-
-	if( $Qver_t['value']  < time() ){
-		$sql = "UPDATE `config` SET `value` = '".(time()+30)."' WHERE `config`.`name` = 'verification_time'";
-		$db->query($sql);
-
-		$new_hash = substr( hash("sha256", $Qver['value']) , 0, 4);
-
-		$sql = "UPDATE `config` SET `value` = '".$new_hash."' WHERE `config`.`name` = 'verification' ";
-		$db->query($sql);
-
-		$Qver['value'] = $new_hash;
-	}*/
-
-	$hashme = $_SESSION['u_name'].' '.$_SESSION['u_id'].' '.time().' '.rand();
+	if(!$u_name)
+		$u_name = $_SESSION['u_name'];
+	
+	if(!$u_id)
+		$u_id = $_SESSION['u_id'];
+	
+	$hashme = $u_name.' '.$u_id.' '.time().' '.rand();
 	$new_hash = substr( hash("sha256", $hashme) , 0, 4);
 
-	$sql = "SELECT * FROM `user_register` WHERE `u_id` = '".$_SESSION['u_id']."'";
+	$sql = "SELECT * FROM `user_register` WHERE `u_id` = '".$u_id."'";
 	$Quver = $db->query_select_one($sql);
 
 	$returnme = array(
@@ -140,7 +129,7 @@ function user_vercode( $updateAnyway = false){
 	);
 
 	if( !$Quver ){
-		$sql = "INSERT INTO `user_register` (`u_id`, `code`, `expiration`) VALUES ('".$_SESSION['u_id']."', '".$new_hash."', '".(time()+60)."')";
+		$sql = "INSERT INTO `user_register` (`u_id`, `code`, `expiration`) VALUES ('".$u_id."', '".$new_hash."', '".(time()+60)."')";
 		$db->query($sql);
 
 		$returnme['hash'] = $new_hash;
@@ -150,7 +139,7 @@ function user_vercode( $updateAnyway = false){
 	else{
 		if(time() > $Quver['expiration'] || $updateAnyway == true)
 		{
-			$sql = "UPDATE `user_register` SET `code` = '".$new_hash."', `expiration` = '".(time()+60)."' WHERE `user_register`.`u_id` = '".$_SESSION['u_id']."'";
+			$sql = "UPDATE `user_register` SET `code` = '".$new_hash."', `expiration` = '".(time()+60)."' WHERE `user_register`.`u_id` = '".$u_id."'";
 			$db->query($sql);
 			$returnme['hash'] = $new_hash;
 			$returnme['updated'] = true;
@@ -165,28 +154,34 @@ function user_vercode( $updateAnyway = false){
 }
 
 function send_sms($dst, $msg){
-	$smsURL = "http://202.39.48.216/kotsmsapi-1.php";
+	global $_DontSendSMS;
+	if($_DontSendSMS == false){
+	
+		$smsURL = "http://202.39.48.216/kotsmsapi-1.php";
 
-	$post = array(
-		'username' => 'awarehouse',
-		'password' => 'm198916',
-		'dstaddr' => $dst,
-		'smbody' => iconv("UTF-8", "big5", $msg),
-		'dlvtime' => 0, // instantly
-	);
+		$post = array(
+			'username' => 'awarehouse',
+			'password' => 'm198916',
+			'dstaddr' => $dst,
+			'smbody' => iconv("UTF-8", "big5", $msg),
+			'dlvtime' => 0, // instantly
+		);
 
-	$ch = curl_init();
+		$ch = curl_init();
 
-	$opt = array(
-		CURLOPT_URL => $smsURL,
-		CURLOPT_POST => true,
-		CURLOPT_POSTFIELDS => $post,
-	);
+		$opt = array(
+			CURLOPT_URL => $smsURL,
+			CURLOPT_POST => true,
+			CURLOPT_POSTFIELDS => $post,
+		);
 
-	curl_setopt_array($ch, $opt);
-	curl_exec($ch);
-	curl_close($ch);
-
+		curl_setopt_array($ch, $opt);
+		curl_exec($ch);
+		curl_close($ch);
+	}
+	else{
+		echo $msg;
+	}
 }
 
 function user_login($username, $password, $phone_info){
