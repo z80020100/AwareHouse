@@ -4,7 +4,7 @@
 <script type="text/javascript" src="./includes/jquery.tablesorter.js"></script>
 <script type="text/javascript" src="./templates/sms_promote.js"></script>
 
-<div class="w3-padding w3-margin" style="width:80%;background-color:grey">
+<div class="w3-padding w3-margin-top" style="width:100%;background-color:grey">
 篩選
 
 
@@ -36,7 +36,7 @@
     <option value="3">Option 3</option>
 </select>
 
-<button id="search_button" class="w3-btn w3-margin-bottom w3-round w3-right">搜尋</button>
+<button id="search_button" class="w3-btn w3-margin-bottom w3-round w3-right" style="background-color:#FFBB00">搜尋</button>
 
 <hr>
 <h6>
@@ -46,7 +46,7 @@
 </h6>
 <h6>
 搜尋結果:共<span>3</span>筆
-<button id="sms_button" class="w3-btn w3-margin-bottom w3-round w3-right">簡訊推播</button>
+<button id="sms_button" class="w3-btn w3-margin-bottom w3-round w3-right" style="background-color:#FFBB00">簡訊推播</button>
 </h6>
 
 
@@ -116,9 +116,13 @@
             <h3>輸入簡訊內容</h3>
         </header>
 
-        <div class="w3-container">
-            <textarea>
+        <div class="w3-container w3-center w3-margin" >
+            <textarea style="width:90%;">
             </textarea>
+            <br>
+            <br>
+            <button id="save_sms_content" class="w3-border-right w3-btn w3-margin-bottom w3-round w3-right">儲存內容</button>
+            <button id="sms_send" class="w3-btn w3-margin-bottom w3-round w3-right">傳送</button>
         </div>
 
     </div>
