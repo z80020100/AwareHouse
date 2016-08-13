@@ -217,9 +217,7 @@ switch ($type) {
         }
     }
     array_push($ret, $time);
-    $ret[3] = getOrderInfo($db, $start_time, $end_time);
-    $ret[4] = getAllLists($db);
-    $ret[5] = getLogInfo($db, $start_time, $end_time);
+    $ret[3] = getLogInfo($db, $start_time, $end_time);
     echo json_encode($ret, JSON_UNESCAPED_UNICODE);
     break;
 

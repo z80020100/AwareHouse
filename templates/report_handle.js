@@ -409,81 +409,79 @@ function getOrdersReport(ret, t2) {
   //   $('#orders_timestamp').append(app);
   // }
 
-
-  var menu_raw = {};
-  var order_info = ret[3], order_info_size = ret[3].length;
-  var all_series = ret[4], all_series_size = ret[4].length;
-  var log_info = ret[5], log_info_size = ret[5].length;
+  var log_info = ret[3], log_info_size = ret[3].length;
   var series_dataset = [];
-
-  if (order_info_size == 0) {
-    alert("查無資料");
-    return 0;
-  }
-
-  // CONSTRUCT menu_raw
-  for (var i = 0; i < all_series_size; i++) {
-    var main_of_series = all_series[i].main, main_of_series_size = all_series[i].main.length;
-    // console.log(series, main_of_series, main_of_series_size);
-
-    for (var j = 0; j < main_of_series_size; j++) {
-      // initialize all the menu item quantity and price into zero
-      menu_raw[main_of_series[j].name] = {};
-      menu_raw[main_of_series[j].name]["quantity"] = 0;
-      menu_raw[main_of_series[j].name]["price"] = 0;
-    }
-  }
 
   if (log_info_size == 0) {
     alert("查無資料");
     return 0;
   }
-  // CALCULATE THE quantity AND price OF ALL ITEM IN menu_raw
-  for (var i = 0; i < log_info_size; i++) {
-    menu_raw[log_info[i]["m_text"]]["quantity"] += parseInt(log_info[i]["quantity"]);
-    menu_raw[log_info[i]["m_text"]]["price"] += parseInt(log_info[i]["price"]) * parseInt(log_info[i]["quantity"]);
+
+  // Check which series is in the log
+  /*
+  AllDataArray = {
+    series : {
+      main: {
+        quantity: #,
+        price: #
+      },
+      main: {
+        quantity: #,
+        price: #
+      },
+      ...
+    },
+    series : {
+      ...
+    },
+    ...
   }
+  */
+  var AllDataArray = {};
+  for (var i = 0; i < log_info_size; i++) {
+    if (!AllDataArray.hasOwnProperty(log_info[i]["s_text"])) {
+      AllDataArray[log_info[i]["s_text"]] = {};
+    }
+    var main;
+    if (!AllDataArray[log_info[i]["s_text"]].hasOwnProperty(log_info[i]["m_text"])) {
+      main  = {};
+      main["quantity"] = 0;
+      main["price"] = 0;
+      AllDataArray[log_info[i]["s_text"]][log_info[i]["m_text"]] = main;
+    }
+    main = AllDataArray[log_info[i]["s_text"]][log_info[i]["m_text"]];
 
-  // UPDATE series_dataset
-  for (var i = 0; i < all_series_size; i++) {
-    var series = {"label": all_series[i].name, "details": []};
-    var main_of_series = all_series[i].main, main_of_series_size = all_series[i].main.length;
+    main["quantity"] += parseInt(log_info[i]["quantity"]);
+    main["price"] += parseInt(log_info[i]["price"]) * parseInt(log_info[i]["quantity"]);
+  }
+  console.log(AllDataArray);
 
-    var check = 0; // check if there's thing in series
+  // According to the AllDataArray to construct series_dataset
+  for (s_key in AllDataArray) {
+    if (!AllDataArray.hasOwnProperty(s_key)) continue;
+
     var total_quantity = 0;
     var total_price = 0;
 
-    for (var j = 0; j < main_of_series_size; j++) {
-      //update the data in json
-      var name = main_of_series[j].name;
+    var series = {label: s_key, details: [], quantity: 0, price: 0};
+    for (m_key in AllDataArray[s_key]) {
+      var mainObject = {};
+      mainObject["label"] = m_key;
+      mainObject["quantity"] = AllDataArray[s_key][m_key]["quantity"];
+      mainObject["price"] = AllDataArray[s_key][m_key]["price"];
 
-      var tmp = {};
-      tmp["label"] = name;
-      tmp["quantity"] = menu_raw[name]["quantity"];
-      tmp["price"] = menu_raw[name]["price"];
+      total_quantity += parseInt(mainObject["quantity"]);
+      total_price += parseInt(mainObject["price"]);
 
-      total_quantity += parseInt(tmp["quantity"]);
-      total_price += parseInt(tmp["price"]);
-
-      if (tmp["quantity"] == 0) continue;
-
-      series["details"].push(tmp);   //push into the series array
-      check = 1;
+      series["details"].push(mainObject);
     }
-    if (check == 0) continue;
     series["quantity"] = total_quantity;
     series["price"] = total_price;
-    series_dataset.push(series);  //push into the json array
+    series_dataset.push(series);
   }
 
-  // if (graph_json["children"].length == 0) {
-  //   var tmp = {};
-  //   tmp["name"] = ' ';
-  //   tmp["quantity"] = 0;
-  //   tmp["price"] = 0;
+  console.log(series_dataset);
 
-  //   graph_json["children"].push(tmp);
-  // }
 
   $('#piechart svg').remove();
   $('#piechart').css("display", "block");
@@ -521,8 +519,8 @@ function drawPieChart(dataset, set) {
   var legendSpacing = 4;
 
   console.log(dataset);
-  console.log("tier", tier);
-  console.log("labelName", labelName);
+  //console.log("tier", tier);
+  //console.log("labelName", labelName);
 
   var color = d3.scale.category20();
 
