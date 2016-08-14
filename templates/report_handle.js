@@ -409,10 +409,10 @@ function getOrdersReport(ret, t2) {
   //   $('#orders_timestamp').append(app);
   // }
 
-  var log_info = ret[3], log_info_size = ret[3].length;
+  var AllDataArray = ret[3], AllDataArray_size = ret[3].length;
   var series_dataset = [];
 
-  if (log_info_size == 0) {
+  if (AllDataArray_size == 0) {
     alert("查無資料");
     return 0;
   }
@@ -437,24 +437,24 @@ function getOrdersReport(ret, t2) {
     ...
   }
   */
-  var AllDataArray = {};
-  for (var i = 0; i < log_info_size; i++) {
-    if (!AllDataArray.hasOwnProperty(log_info[i]["s_text"])) {
-      AllDataArray[log_info[i]["s_text"]] = {};
-    }
-    var main;
-    if (!AllDataArray[log_info[i]["s_text"]].hasOwnProperty(log_info[i]["m_text"])) {
-      main  = {};
-      main["quantity"] = 0;
-      main["price"] = 0;
-      AllDataArray[log_info[i]["s_text"]][log_info[i]["m_text"]] = main;
-    }
-    main = AllDataArray[log_info[i]["s_text"]][log_info[i]["m_text"]];
+  // var AllDataArray = {};
+  // for (var i = 0; i < log_info_size; i++) {
+  //   if (!AllDataArray.hasOwnProperty(log_info[i]["s_text"])) {
+  //     AllDataArray[log_info[i]["s_text"]] = {};
+  //   }
+  //   var main;
+  //   if (!AllDataArray[log_info[i]["s_text"]].hasOwnProperty(log_info[i]["m_text"])) {
+  //     main  = {};
+  //     main["quantity"] = 0;
+  //     main["price"] = 0;
+  //     AllDataArray[log_info[i]["s_text"]][log_info[i]["m_text"]] = main;
+  //   }
+  //   main = AllDataArray[log_info[i]["s_text"]][log_info[i]["m_text"]];
 
-    main["quantity"] += parseInt(log_info[i]["quantity"]);
-    main["price"] += parseInt(log_info[i]["price"]) * parseInt(log_info[i]["quantity"]);
-  }
-  console.log(AllDataArray);
+  //   main["quantity"] += parseInt(log_info[i]["quantity"]);
+  //   main["price"] += parseInt(log_info[i]["price"]) * parseInt(log_info[i]["quantity"]);
+  // }
+  // console.log(AllDataArray);
 
   // According to the AllDataArray to construct series_dataset
   for (s_key in AllDataArray) {

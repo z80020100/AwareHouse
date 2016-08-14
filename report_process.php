@@ -180,6 +180,43 @@ function getLogInfo($db, $start_time, $end_time) {
     return $ret;
 }
 
+function getAllDataArray($log) {
+    /*
+    AllDataArray = {
+      series : {
+        main: {
+          quantity: #,
+          price: #
+        },
+        main: {
+          quantity: #,
+          price: #
+        },
+        ...
+      },
+      series : {
+        ...
+      },
+      ...
+    }
+    */
+    $AllDataArray = array();
+    $log_size = count($log);
+    for ($i = 0; $i < $log_size; $i++) {
+        if (!array_key_exists($log[$i]["s_text"], $AllDataArray)) {
+            $AllDataArray[$log[$i]["s_text"]] = array();
+        }
+
+        if (!array_key_exists($log[$i]["m_text"], $AllDataArray[$log[$i]["s_text"]])) {
+            $AllDataArray[$log[$i]["s_text"]][$log[$i]["m_text"]] = array("quantity" => 0, "price" => 0);
+        }
+
+        $AllDataArray[$log[$i]["s_text"]][$log[$i]["m_text"]]["quantity"] += intval($log[$i]["quantity"]);
+        $AllDataArray[$log[$i]["s_text"]][$log[$i]["m_text"]]["price"] += intval($log[$i]["price"]) * intval($log[$i]["quantity"]);
+    }
+    return $AllDataArray;
+}
+
 $type = $_REQUEST['request']['type'];
 $start_time = $_REQUEST['request']['time'][0];
 $end_time = $_REQUEST['request']['time'][1];
@@ -217,7 +254,8 @@ switch ($type) {
         }
     }
     array_push($ret, $time);
-    $ret[3] = getLogInfo($db, $start_time, $end_time);
+    $log = getLogInfo($db, $start_time, $end_time);
+    $ret[3] = getAllDataArray($log);
     echo json_encode($ret, JSON_UNESCAPED_UNICODE);
     break;
 
