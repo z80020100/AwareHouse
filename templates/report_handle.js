@@ -417,45 +417,6 @@ function getOrdersReport(ret, t2) {
     return 0;
   }
 
-  // Check which series is in the log
-  /*
-  AllDataArray = {
-    series : {
-      main: {
-        quantity: #,
-        price: #
-      },
-      main: {
-        quantity: #,
-        price: #
-      },
-      ...
-    },
-    series : {
-      ...
-    },
-    ...
-  }
-  */
-  // var AllDataArray = {};
-  // for (var i = 0; i < log_info_size; i++) {
-  //   if (!AllDataArray.hasOwnProperty(log_info[i]["s_text"])) {
-  //     AllDataArray[log_info[i]["s_text"]] = {};
-  //   }
-  //   var main;
-  //   if (!AllDataArray[log_info[i]["s_text"]].hasOwnProperty(log_info[i]["m_text"])) {
-  //     main  = {};
-  //     main["quantity"] = 0;
-  //     main["price"] = 0;
-  //     AllDataArray[log_info[i]["s_text"]][log_info[i]["m_text"]] = main;
-  //   }
-  //   main = AllDataArray[log_info[i]["s_text"]][log_info[i]["m_text"]];
-
-  //   main["quantity"] += parseInt(log_info[i]["quantity"]);
-  //   main["price"] += parseInt(log_info[i]["price"]) * parseInt(log_info[i]["quantity"]);
-  // }
-  // console.log(AllDataArray);
-
   // According to the AllDataArray to construct series_dataset
   for (s_key in AllDataArray) {
     if (!AllDataArray.hasOwnProperty(s_key)) continue;
@@ -672,40 +633,36 @@ function drawPieChart(dataset, set) {
 //GET ALL THE DETAILS OF ALL MENU
 function getMenuReport(ret, t3) {
   $('#total_menu_report > *').remove();
-  var size = ret.length - 1;  //becasue the ret[0] is total revenue
-  var row = 4;
-  var row_num = Math.floor(size / row);
+  var row = 3;
   console.log(ret);
-  console.log(size);
-  console.log(row_num);
 
   var total = ret[0];
-  ret.remove(0);
+  var dataArray = ret[1];
 
   var menu = "";
-  var tmp_row = "<div class='menu_row'><div class='menu_item' style='font-size: 20px; font-weight: bold'>銷售金額：$" + total + "</div></div><br/>";
+  var tmp_row = "<div class='menu_row'><div style='font-size: 20px; font-weight: bold; text-align: center'>銷售金額：$" + total + "</div></div>";
   menu += tmp_row;
 
-  // Start to handle all the quantity
-  for (var i = 0; i < row_num; i++) {
-    tmp_row = "<div class='menu_row'>";
-    for (var j = 0; j < row; j++) {
-      var tmp = "<div class='menu_item'>";
-      tmp += ret[i*row+j].name + ' ' + ret[i*row+j].quantity + "</div>";
-      tmp_row += tmp;
+  for (var series_name in dataArray) {
+    if (!dataArray.hasOwnProperty(series_name)) continue;
+    tmp_row = "<div class='menu_row'><div style='font-size: 16px; font-weight: bold'>"+ series_name + "</div></div>";
+
+    var itr = 0;
+    for (var main_name in dataArray[series_name]) {
+      if(itr % row == 0) {
+        if (itr != 0) tmp_row += "</div>";
+        tmp_row += "<div class='menu_row'>";
+      }
+
+      var tmp = dataArray[series_name][main_name];
+      tmp_row += "<div class='menu_item'>";
+      tmp_row += main_name + " " + tmp["quantity"];
+      tmp_row += "</div>";
+      itr++;
     }
     tmp_row += "</div>";
     menu += tmp_row;
   }
-  // The last row, nee to be handled additionally
-  tmp_row = "<div class='menu_row'>";
-  for (var i = row*row_num; i < size; i++) {
-    var tmp = "<div class='menu_item'>";
-    tmp += ret[i].name + ' ' + ret[i].quantity + "</div>";
-    tmp_row += tmp;
-  }
-  tmp_row += "</div>";
-  menu += tmp_row;
 
   $('#total_menu_report').append(menu);
 }
@@ -734,8 +691,6 @@ function getData() {
     }
     var start_time = t1.start + ' 00:00:00';
     var end_time = t1.end + ' 23:59:59';
-    // console.log(start_time);
-    // console.log(end_time);
     req['time'] = [start_time, end_time];
   }
   else if (type == "orders") {
@@ -752,8 +707,6 @@ function getData() {
     }
     var start_time = t2.start + ' 00:00:00';
     var end_time = t2.end + ' 23:59:59';
-    // console.log(start_time);
-    // console.log(end_time);
     req['time'] = [start_time, end_time];
   }
   else if (type == "menu") {
@@ -770,8 +723,6 @@ function getData() {
     }
     var start_time = t3.start + ' 00:00:00';
     var end_time = t3.end + ' 23:59:59';
-    // console.log(start_time);
-    // console.log(end_time);
     req['time'] = [start_time, end_time];
   }
   else {

@@ -104,18 +104,18 @@ svg {
 
 .menu_row {
   position: relative;
-  width: 600px;
+  width: 450px;
   height: 30px;
   margin: 0px auto;
-  text-align: center;
 }
 
 .menu_item {
   position: relative;
   width: 150px;
+  height: 30px;
   display: inline-block;
-  margin: 8px auto 0px;
-  vertical-align: middle;
+  margin: 0px auto;
+  vertical-align: top;
   text-align: center;
 }
 

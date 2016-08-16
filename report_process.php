@@ -211,8 +211,9 @@ function getAllDataArray($log) {
             $AllDataArray[$log[$i]["s_text"]][$log[$i]["m_text"]] = array("quantity" => 0, "price" => 0);
         }
 
-        $AllDataArray[$log[$i]["s_text"]][$log[$i]["m_text"]]["quantity"] += intval($log[$i]["quantity"]);
-        $AllDataArray[$log[$i]["s_text"]][$log[$i]["m_text"]]["price"] += intval($log[$i]["price"]) * intval($log[$i]["quantity"]);
+        $tmp = & $AllDataArray[$log[$i]["s_text"]][$log[$i]["m_text"]];
+        $tmp["quantity"] += intval($log[$i]["quantity"]);
+        $tmp["price"] += intval($log[$i]["price"]) * intval($log[$i]["quantity"]);
     }
     return $AllDataArray;
 }
@@ -262,19 +263,19 @@ switch ($type) {
   case "menu":
     $menu = getMenu($db);
     $log = getLogInfo($db, $start_time, $end_time);
+    $AllDataArray = getAllDataArray($log);
     $log_size = count($log);
     $total = 0;
-    for ($i = 0; $i < $log_size; $i++) {
-        $menu[$log[$i]['m_text']] += $log[$i]['quantity'];
-        $total += ($log[$i]['quantity'] * $log[$i]['price']);
+    $ret = array();
+    foreach ($AllDataArray as $series => $main_array) {
+        foreach ($main_array as $main => $value) {
+            if (!array_key_exists($main, $menu)) unset($main);
+            else $total += intval($value["price"]);
+        }
     }
 
-    $ret = array();
     array_push($ret, $total);
-    foreach ($menu as $key => $value) {
-        $tmp = array('name' => $key, 'quantity' => $value);
-        array_push($ret, $tmp);
-    }
+    array_push($ret, $AllDataArray);
 
     echo json_encode($ret, JSON_UNESCAPED_UNICODE);
     break;
