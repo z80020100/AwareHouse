@@ -257,6 +257,32 @@ switch ($type) {
     array_push($ret, $time);
     $log = getLogInfo($db, $start_time, $end_time);
     $ret[3] = getAllDataArray($log);
+
+    /////////////////////////////////
+    // Add Menu Report operation here
+    /////////////////////////////////
+    $menu = getMenu($db);
+    // $log = getLogInfo($db, $start_time, $end_time);
+    // $AllDataArray = getAllDataArray($log);
+    $AllDataArray = $ret[3];
+    $log_size = count($log);
+    $total = 0;
+    $menu_ret = array();
+    foreach ($AllDataArray as $series => $main_array) {
+        foreach ($main_array as $main => $value) {
+            if (!array_key_exists($main, $menu)) unset($main);
+            else $total += intval($value["price"]);
+        }
+    }
+
+    array_push($menu_ret, $total);
+    array_push($menu_ret, $AllDataArray);
+    //////////////////////////////
+    // End Menu Report Return Here
+    //////////////////////////////
+
+    array_push($ret, $menu_ret);
+
     echo json_encode($ret, JSON_UNESCAPED_UNICODE);
     break;
 
