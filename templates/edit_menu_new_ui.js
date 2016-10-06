@@ -9,6 +9,7 @@ var g_click_main_m_id;
 
 function road_main_by_s_id(){
     //console.log("Enter: road_main_by_s_id");
+    $("#button_cancel").trigger('click');
     var series_s_id = $(this).data('series_s_id');
     g_click_series_s_id = series_s_id;
     console.log('series_s_id = ' + series_s_id);
@@ -83,6 +84,10 @@ function road_main_by_s_id(){
     //console.log("Exit: road_main_by_s_id");
 }
 
+function open_edit_addition_windows(){
+    $('#edit_addition_window').css({"display":"block"});
+}
+
 function road_add_type(){
     // 取得所有附加選項名稱
     $.ajax({
@@ -95,13 +100,15 @@ function road_add_type(){
     .done(function(add_type_array){
         $('#single_choice_by_user').empty();
         $('#single_choice_by_user').append($('<div>').append('單選項目'));
-        $('#single_choice_by_user').append($('<div>').attr({'class': 'edit_add_type', 'id': 'edit_single'}).append('編輯'));
+        $('#single_choice_by_user').append($('<div>').attr({'class': 'edit_add_type', 'id': 'button_edit_single'}).append('編輯'));
+        button_edit_addition_type('button_edit_single');
         $('#single_choice_by_user').append($('<br>'));
         $('#single_choice_by_user').append($('<hr>').attr({'width': '100%'}));
         
         $('#multi_choice_by_user').empty();
         $('#multi_choice_by_user').append($('<div>').append('多選附加項目'));
-        $('#multi_choice_by_user').append($('<div>').attr({'class': 'edit_add_type', 'id': 'edit_multi'}).append('編輯'));
+        $('#multi_choice_by_user').append($('<div>').attr({'class': 'edit_add_type', 'id': 'button_edit_multi'}).append('編輯'));
+        button_edit_addition_type('button_edit_multi');
         $('#multi_choice_by_user').append($('<br>'));
         $('#multi_choice_by_user').append($('<hr>').attr({'width': '100%'}));
         $('#multi_choice_by_user') // 增加「無加點」選項
@@ -116,7 +123,10 @@ function road_add_type(){
                         )
                     )
                 );
-        
+
+        $('#addition_left').empty();
+        $('#addition_right').empty();
+
         for(var i = 0; i < add_type_array.length; i++){
             var add_type_at_id = add_type_array[i]['at_id'];
             var add_type_option_name = add_type_array[i]['option_name'];
@@ -157,17 +167,46 @@ function road_add_type(){
                     )
                 );
 
+            $('#addition_left')
+                .append($('<div>').attr({'class':'addition_type', 'id':'edit_add_type_at_id_' + add_type_at_id})
+                    .append(add_type_option_name)
+                    .data('add_type', {
+                            'at_id':add_type_at_id,
+                            'option_name':add_type_option_name,
+                            'multiple_choice': add_type_multiple_choice}
+                        )
+                );
+
             console.log("add_type_at_id: " + $("#" + 'add_type_at_id_' + add_type_at_id).data('add_type').at_id);
             console.log("add_type_option_name: " + $("#" + 'add_type_at_id_' + add_type_at_id).data('add_type').option_name);
             console.log("add_type_multiple_choice: " + $("#" + 'add_type_at_id_' + add_type_at_id).data('add_type').multiple_choice);
             console.log('--------我是分隔線--------');
         }
-        
+
         // 顯示選項「無加點」內之資料
         console.log("add_type_at_id: " + $("#" + 'add_type_at_id_0').data('add_type').at_id);
         console.log("add_type_option_name: " + $("#" + 'add_type_at_id_0').data('add_type').option_name);
         console.log("add_type_multiple_choice: " + $("#" + 'add_type_at_id_0').data('add_type').multiple_choice);
         console.log('--------我是分隔線--------');
+
+        // 增加單選新增按鈕
+        $('#addition_left')
+            .append($('<div>').attr({'class':'addition_type', 'id':'edit_add_type_at_id_' + 'add_single'})
+                .append('+新增')
+                .data('add_type', {
+                        'multiple_choice': 0}
+                    )
+            );
+
+        // 增加多選新增按鈕
+        $('#addition_left')
+            .append($('<div>').attr({'class':'addition_type', 'id':'edit_add_type_at_id_' + 'add_multi'})
+                .append('+新增')
+                .data('add_type', {
+                        'multiple_choice': 1}
+                    )
+            );
+
     })
     .fail(function(){
 		alertify.error('錯誤：無法取得附加選項資料');
@@ -262,6 +301,44 @@ function button_submit(target){
     }
 }
 
+function button_edit_addition_type(target){
+    var button_edit_addition_type = $('#' + target);
+    var hide_target;
+
+    button_edit_addition_type.bind('click', function(){
+
+        console.log('Click: ' + target);
+
+        var edit_add_type_at_id_array = $("div[id^='edit_add_type_at_id_']");
+        console.log('edit_add_type_at_id_array.size() = ' + edit_add_type_at_id_array.size());
+
+        $('#edit_addition_window_title').empty();
+        $('#edit_addition_window_text').empty();
+        if(target == 'button_edit_single'){
+            $('#edit_addition_window_title').append('編輯 單選選項');
+            $('#edit_addition_window_text').append('點餐時只能單選的項目');
+            hide_target = 1;
+        }
+        else{
+            $('#edit_addition_window_title').append('編輯 多選選項');
+            $('#edit_addition_window_text').append('點餐時可以多選的項目');
+            hide_target = 0;
+        }
+
+        for(var i = 0; i < edit_add_type_at_id_array.size(); i++){
+            //console.log($(edit_add_type_at_id_array[i]).data('add_type').at_id);
+            if($(edit_add_type_at_id_array[i]).data('add_type').multiple_choice == hide_target){
+                $(edit_add_type_at_id_array[i]).hide();
+            }
+            else{
+                $(edit_add_type_at_id_array[i]).show();
+            }
+        }
+
+        open_edit_addition_windows();
+    });
+}
+
 function button_cancel(){
     var button_cancel = $("#button_cancel");
     button_cancel.bind('click', function(){
@@ -270,6 +347,31 @@ function button_cancel(){
         road_add_type();
         $('#main_name').val('');
         $('#main_price').val(0);
+    });
+}
+
+function button_cancel(){
+    var button_cancel = $("#button_cancel");
+    button_cancel.bind('click', function(){
+
+        $('#body_right').hide();
+        road_add_type();
+        $('#main_name').val('');
+        $('#main_price').val(0);
+    });
+}
+
+function button_close(){
+    var button_close = $("#button_close");
+    button_close.bind('click', function(){
+        close_edit_addition_windows();
+    });
+}
+
+function button_finish(){
+    var button_finish = $("#button_finish");
+    button_finish.bind('click', function(){
+        close_edit_addition_windows();
     });
 }
 
@@ -303,6 +405,7 @@ function add_series() {
 function add_main(){
     console.log('Enter: add_main()');
     g_click_main_m_id = 0;
+    $('#button_delete').hide();
     
     if(g_button_submit_bind_state == true){
         $("#button_submit").unbind();
@@ -329,6 +432,11 @@ function add_main(){
     console.log('Exit: add_main()');
 }
 
+function close_edit_addition_windows(){
+    //console.log('close_edit_addition_windows');
+    $('#edit_addition_window').css({"display":"none"});
+}
+
 $(document).ready(function(){
     $("div[id^='series_s_id_']").bind('click', road_main_by_s_id);
     
@@ -336,6 +444,9 @@ $(document).ready(function(){
     
     $("#add_series").bind("click", add_series);// 新增系列
     
+    button_close();
+    button_finish();
+
     // navbar_setting
     $("#nav_cross").click(function(){
         $(".w3-sidenav").toggle();

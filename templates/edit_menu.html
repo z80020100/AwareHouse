@@ -10,7 +10,7 @@
 
 #body_left{
     width:9%;
-    height:720px;
+    height:576px;
     border:1px #666 solid;
     margin-left:5px;
     margin-top:5px;
@@ -20,7 +20,7 @@
 
 #body_right{
     width:34%;
-    height:720px;
+    height:576px;
     border:1px #666 solid;
     margin-right:5px;
     margin-top:5px;
@@ -30,8 +30,29 @@
 
 #body_cenetr{
     width:54%;
-    height:720px;
+    height:576px;
     border:1px #666 solid;
+    margin-left:0px;
+    margin-top:5px;
+    margin-bottom:5px;
+    float:left;
+}
+
+#addition_left{
+    width:33%;
+    height:300px;
+    //border:1px #666 solid;
+    border-right:1px #666 solid;
+    margin-left:5px;
+    margin-top:5px;
+    margin-bottom:5px;
+    float:left;
+}
+
+#addition_right{
+    width:66%;
+    height:300px;
+    //border:1px #666 solid;
     margin-left:0px;
     margin-top:5px;
     margin-bottom:5px;
@@ -45,6 +66,15 @@
 .series{
     width:100%;
     //height:60px;
+    border:1px #666 solid;
+	text-align:center;
+}
+
+.addition_type{
+    width:80%;
+    //height:60px;
+    margin-left:10%;
+     margin-top:10px;
     border:1px #666 solid;
 	text-align:center;
 }
@@ -104,6 +134,25 @@
 	text-align:center;
 	float: left;
 }
+
+.addition_item{
+	border:1px #666 solid;
+	width:40%;
+	text-align:center;
+	float: left;
+	margin-left:10%;
+	margin-top:8px;
+}
+
+.addition_item_price{
+	//border:1px #666 solid;
+	width:40%;
+	text-align:center;
+	float: left;
+	margin-left:5%;
+	margin-top:8px;
+}
+
 </style>
 
 <div id="container">
@@ -180,4 +229,46 @@
 	</div>
     <div class="clear"></div>
 
+</div>
+
+<div id="edit_addition_window" class="w3-modal w3-padding-top" style="z-index:2; display:none;">
+    <div class="w3-modal-content w3-card-4">
+        <header class="w3-container">
+            <div id="button_close" class="w3-closebtn w3-xlarge">&times;</div>
+            <h3 id="edit_addition_window_title">編輯細項抬頭</h3>
+            <div id="edit_addition_window_text" style="float:right;">編輯細項說明</div>
+        </header>
+
+		<div style= "padding:10px;">
+            <div id="addition_left">
+                <div class="addition_type">飲料份量</div>
+                <div class="addition_type">麵包種類</div>
+                <div class="addition_type">+新增</div>
+            </div>
+
+            <div id="addition_right">
+                <div id="addition_name" style="margin-left:40px; margin-top:10px;">飲料份量</div>
+                <hr width="90%" style="margin-left:5%">
+                <div>
+                    <div class="addition_item">大</div>
+                    <div class="addition_item_price"><input type="text"> 元</div>
+                </div>
+                <div>
+                    <div class="addition_item">中</div>
+                    <div class="addition_item_price"><input type="text"> 元</div>
+                </div>
+                <div>
+                    <div class="addition_item">+新增細項名稱</div>
+                    <div class="addition_item_price"></div>
+                </div>
+            </div>
+            <div class="clear"></div>
+		</div>
+
+        <footer class="w3-container">
+            <div>
+                <div id="button_finish" class="w3-btn w3-right w3-round" style="margin-bottom:10px; margin-top:10px;">完成</div>
+            </div>
+        </footer>
+    </div>
 </div>
